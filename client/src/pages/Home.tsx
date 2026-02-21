@@ -28,6 +28,9 @@ export default function Home() {
               <p className="text-lg text-gray-700 mb-6">
                 PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
               </p>
+              <p className="text-lg text-gray-700 mb-6">
+                Each box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and working within the movement.
+              </p>
               <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
                 SUBSCRIBE NOW
               </button>
