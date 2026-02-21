@@ -23,10 +23,10 @@ export default function Home() {
           <div className="flex flex-col justify-center px-6 md:px-8 py-12 md:py-20 bg-gradient-to-br from-purple-50 to-pink-50">
             <div className="max-w-md">
               <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#1a1a1a", lineHeight: 1.1 }} className="mb-4">
-                Let Piece this together
+                Let Piece it together
               </h1>
               <p className="text-lg text-gray-700 mb-6">
-                Discover a monthly subscription box featuring stylized puzzle portraits of inspiring community members. Each puzzle tells a unique story.
+                PsychedBox a monthly Discovery box featuring stylized puzzle portraits of inspiring community members. Each puzzle tells a unique story.
               </p>
               <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
                 SUBSCRIBE NOW
