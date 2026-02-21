@@ -26,7 +26,7 @@ export default function Home() {
                 Let Piece it together
               </h1>
               <p className="text-lg text-gray-700 mb-6">
-                PsychedBox a monthly Discovery box featuring stylized puzzle portraits of inspiring community members. Each puzzle tells a unique story.
+                PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
               </p>
               <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
                 SUBSCRIBE NOW
