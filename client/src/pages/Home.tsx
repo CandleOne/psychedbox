@@ -23,7 +23,7 @@ export default function Home() {
           alt="Psychedelic puzzle pattern"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-black/65" />
 
         <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full">
           <div className="max-w-md">
