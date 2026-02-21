@@ -17,33 +17,28 @@ export default function Home() {
       <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
       {/* Hero Section */}
-      <section className="relative w-full overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-          {/* Left: Tagline & CTA */}
-          <div className="flex flex-col justify-center px-6 md:px-8 py-12 md:py-20 bg-gradient-to-br from-purple-50 to-pink-50">
-            <div className="max-w-md">
-              <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#1a1a1a", lineHeight: 1.1 }} className="mb-4">
-                Let Piece it together
-              </h1>
-              <p className="text-lg text-gray-700 mb-6">
-                PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
-              </p>
-              <p className="text-lg text-gray-700 mb-6">
-                Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
-              </p>
-              <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
-                SUBSCRIBE NOW
-              </button>
-            </div>
-          </div>
+      <section className="relative w-full overflow-hidden min-h-[520px] flex items-center">
+        <img
+          src="https://private-us-east-1.manuscdn.com/sessionFile/mlT7Ir3Q0O51J7zY8nz4Zd/sandbox/4NsjTC8C2NH03jIu1uF372-img-1_1771710920000_na1fn_cHN5Y2hlZGJveC1oZXJvLXB1enpsZQ.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvbWxUN0lyM1EwTzUxSjd6WThuejRaZC9zYW5kYm94LzROc2pUQzhDMk5IMDNqSXUxdUYzNzItaW1nLTFfMTc3MTcxMDkyMDAwMF9uYTFmbl9jSE41WTJobFpHSnZlQzFvWlhKdkxYQjFlbnBzWlEuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=MxYK~x3LW42U8qcQS0Hzpdcanr00FXGArbeWeS3Pwmlahe5j4uL1oyHZ~IVtxUXy-CGr1ttovIpTDL~djqqPyw7K5QpwoOrsd~USOZnpTYkj40pyVYCS47nIFT0v66WEVM-3tRYrtxUQz-BulVbQkbALM~0NXS7M0kAoWtSi7LMVtTmxIqxNgeX3BsY-TZkCoKCMYeu1c7T8JCv3UI5zd3w-IbvCM3wwWEKSDewnXZl3h8VFBmvtOXj3splYfhuPKSTMCmhXgrDyjOTFAcTTFc~NFQSgbg2unqeyMxw8Hq5IbVaHVwPb~7ESbzQm22grdUeJvtPP2qbJCA80fB-uQA__"
+          alt="Psychedelic puzzle pattern"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/55" />
 
-          {/* Right: Featured Image */}
-          <div className="relative h-96 md:h-auto">
-            <img
-              src="https://private-us-east-1.manuscdn.com/sessionFile/mlT7Ir3Q0O51J7zY8nz4Zd/sandbox/4NsjTC8C2NH03jIu1uF372-img-1_1771710920000_na1fn_cHN5Y2hlZGJveC1oZXJvLXB1enpsZQ.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvbWxUN0lyM1EwTzUxSjd6WThuejRaZC9zYW5kYm94LzROc2pUQzhDMk5IMDNqSXUxdUYzNzItaW1nLTFfMTc3MTcxMDkyMDAwMF9uYTFmbl9jSE41WTJobFpHSnZlQzFvWlhKdkxYQjFlbnBzWlEuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=MxYK~x3LW42U8qcQS0Hzpdcanr00FXGArbeWeS3Pwmlahe5j4uL1oyHZ~IVtxUXy-CGr1ttovIpTDL~djqqPyw7K5QpwoOrsd~USOZnpTYkj40pyVYCS47nIFT0v66WEVM-3tRYrtxUQz-BulVbQkbALM~0NXS7M0kAoWtSi7LMVtTmxIqxNgeX3BsY-TZkCoKCMYeu1c7T8JCv3UI5zd3w-IbvCM3wwWEKSDewnXZl3h8VFBmvtOXj3splYfhuPKSTMCmhXgrDyjOTFAcTTFc~NFQSgbg2unqeyMxw8Hq5IbVaHVwPb~7ESbzQm22grdUeJvtPP2qbJCA80fB-uQA__"
-              alt="Psychedelic puzzle pattern"
-              className="w-full h-full object-cover"
-            />
+        <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full">
+          <div className="max-w-md">
+            <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }} className="mb-4">
+              Let Piece it together
+            </h1>
+            <p className="text-lg text-white mb-6">
+              PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
+            </p>
+            <p className="text-lg text-white mb-6">
+              Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
+            </p>
+            <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
+              SUBSCRIBE NOW
+            </button>
           </div>
         </div>
       </section>
