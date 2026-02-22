@@ -25,24 +25,29 @@ const movementPillars = [
 
 const donationPartners = [
   {
-    name: "Community Healing Collective",
-    focus: "Peer support and integration circles",
-    contribution: "Ongoing monthly donation",
+    name: "The Zendo Project",
+    logo: "https://logo.clearbit.com/zendoproject.org",
+    donateUrl: "https://www.every.org/zendoproject?utm_campaign=donate-link#/donate/card",
   },
   {
-    name: "Safe Journey Project",
-    focus: "Harm reduction resources and volunteer training",
-    contribution: "Partner campaign contributions",
+    name: "DanceSafe",
+    logo: "https://logo.clearbit.com/dancesafe.org",
+    donateUrl: "https://dancesafe.org/donate/?srsltid=AfmBOor62cnd5UJt4Ys7htm6eUy7OecXlDIRB3sh_ofkaggmPckGZcRQ",
   },
   {
-    name: "Roots of Equity Initiative",
-    focus: "Scholarships and community access programming",
-    contribution: "Seasonal fundraising support",
+    name: "Heroic Hearts Project",
+    logo: "https://logo.clearbit.com/heroicheartsproject.org",
+    donateUrl: "https://heroicheartsproject.org/how-to-help/donate/",
   },
   {
-    name: "Artists for Wellness Network",
-    focus: "Creative wellness workshops and storytelling",
-    contribution: "Featured box giveback allocation",
+    name: "Bicycle Day (Tricycle Day)",
+    logo: "https://logo.clearbit.com/tricycleday.com",
+    donateUrl: "https://www.tricycleday.com/",
+  },
+  {
+    name: "Fireside Project",
+    logo: "https://logo.clearbit.com/firesideproject.org",
+    donateUrl: "https://firesideproject.org/donate",
   },
 ];
 
@@ -94,16 +99,22 @@ export default function Movement() {
             We regularly contribute to partner organizations advancing education, harm reduction, and equitable community wellness.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {donationPartners.map((partner) => (
               <article key={partner.name} className="rounded-xl bg-white border border-gray-200 p-6">
+                <a href={partner.donateUrl} target="_blank" rel="noreferrer" className="block mb-4">
+                  <img src={partner.logo} alt={`${partner.name} logo`} className="h-16 w-auto object-contain" />
+                </a>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{partner.name}</h3>
-                <p className="text-gray-700 mb-2">
-                  <span className="font-semibold">Focus:</span> {partner.focus}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">How we donate:</span> {partner.contribution}
-                </p>
+                <a
+                  href={partner.donateUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ backgroundColor: "#FF6B6B" }}
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-white font-bold hover:opacity-90 transition-opacity"
+                >
+                  Visit / Donate
+                </a>
               </article>
             ))}
           </div>
