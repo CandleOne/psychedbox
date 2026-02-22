@@ -8,9 +8,9 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Announcement Bar */}
       <div style={{ backgroundColor: "#FF6B6B" }} className="w-full py-2 text-center">
-        <p className="text-white text-sm font-semibold">
+        <a href="/movement" className="text-white text-sm font-semibold hover:opacity-80 transition-opacity">
           ✨ Take a piece give a piece! Learn more about our efforts to support the movement ✨
-        </p>
+        </a>
       </div>
 
       {/* Navbar */}
