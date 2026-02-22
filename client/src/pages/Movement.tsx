@@ -95,19 +95,19 @@ export default function Movement() {
       </section>
 
       <section style={{ backgroundColor: "#F7F7F7" }} className="px-6 py-16 md:py-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <HeartHandshake style={{ color: "#FF6B6B" }} size={22} />
             <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Partners we donate to</h2>
           </div>
-          <p className="text-gray-600 text-lg max-w-4xl mb-10">
+          <p className="text-gray-600 text-lg max-w-4xl mb-10 mx-auto">
             We regularly contribute to partner organizations advancing education, harm reduction, and equitable community wellness.
           </p>
 
           <div className="flex flex-wrap justify-center gap-8">
             {donationPartners.map((partner) => (
-              <article key={partner.name} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]">
-                <a href={partner.donateUrl} target="_blank" rel="noreferrer" className="block mb-4">
+              <article key={partner.name} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] text-center">
+                <a href={partner.donateUrl} target="_blank" rel="noreferrer" className="inline-block mb-4">
                   <span className={partner.logoWrapperClassName}>
                     <img src={partner.logo} alt={`${partner.name} logo`} className="h-16 w-auto object-contain" />
                   </span>
