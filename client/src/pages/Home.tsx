@@ -36,13 +36,14 @@ export default function Home() {
             <p className="text-lg text-white mb-6">
               Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
             </p>
-            <button style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
               Learn more about the work!
-            </button>
-            <br></br>
-            <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
+              </button>
+              <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
               SUBSCRIBE NOW
-            </button>
+              </button>
+            </div>
           </div>
         </div>
       </section>
