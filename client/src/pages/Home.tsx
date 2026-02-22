@@ -1,20 +1,12 @@
-import { useState } from "react";
-import { Search, LogIn, Menu, X, Star, Users, Gift, Zap } from "lucide-react";
+import { Star, Users, Gift, Zap } from "lucide-react";
+import SiteFooter from "@/components/SiteFooter";
+import SiteNavbar from "@/components/SiteNavbar";
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Announcement Bar */}
-      <div style={{ backgroundColor: "#FF6B6B" }} className="w-full py-2 text-center">
-        <a href="/movement" className="text-white text-sm font-semibold hover:opacity-80 transition-opacity">
-          ✨ Take a piece give a piece! Learn more about our efforts to support the movement ✨
-        </a>
-      </div>
-
       {/* Navbar */}
-      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <SiteNavbar showAnnouncement />
 
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden min-h-[520px] flex items-center">
@@ -170,141 +162,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: "#1a1a1a" }} className="w-full py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Company</p>
-              {["About Us", "Contact", "Careers"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Support</p>
-              {["FAQ", "Shipping Info", "Returns"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Legal</p>
-              {["Privacy Policy", "Terms of Service"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Follow</p>
-              {["Instagram", "Twitter", "Facebook"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-8 text-center">
-            <p className="text-white/60 text-sm">© 2026 PsychedBox. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
-  );
-}
-
-function Logo() {
-  return (
-    <a href="/" className="flex items-center">
-      <span style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontWeight: 900, fontSize: "1.2rem", letterSpacing: "0.05em", color: "#ffffff", textTransform: "uppercase", lineHeight: 1 }}>
-        Psych<span style={{ color: "#FF6B6B" }}>ed</span>Box
-      </span>
-    </a>
-  );
-}
-
-function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v: boolean) => void }) {
-  const [searchOpen, setSearchOpen] = useState(false);
-
-  return (
-    <>
-      <nav style={{ backgroundColor: "#1a1a1a" }} className="sticky top-0 z-50 w-full">
-        <div className="flex items-center justify-between px-4 py-3 max-w-screen-xl mx-auto">
-          <div className="flex items-center gap-3">
-            {searchOpen ? (
-              <div className="flex items-center gap-2 bg-white/10 rounded px-3 py-1.5">
-                <Search size={14} className="text-white/70" />
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Search..."
-                  className="bg-transparent text-white text-sm outline-none placeholder:text-white/50 w-48"
-                  onBlur={() => setSearchOpen(false)}
-                />
-              </div>
-            ) : (
-              <button onClick={() => setSearchOpen(true)} className="text-white/80 hover:text-white transition-colors">
-                <Search size={18} />
-              </button>
-            )}
-            <Logo />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <a href="#" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
-              ACCOUNT
-            </a>
-            <a href="#" className="text-white hover:text-white/80 transition-colors hidden sm:block">
-              <LogIn size={18} />
-            </a>
-            <button onClick={() => setMenuOpen(!menuOpen)} className="text-white hover:text-white/80 transition-colors">
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {menuOpen && (
-        <div
-          className="fixed inset-0 top-16 z-40 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
-          onClick={() => setMenuOpen(false)}
-          style={{ animation: "fadeIn 0.3s ease-out" }}
-        />
-      )}
-
-      <div
-        className="fixed top-16 left-0 right-0 z-50 w-full overflow-y-auto max-h-[calc(100vh-4rem)]"
-        style={{
-          backgroundColor: "#1a1a1a",
-          borderTop: "1px solid rgba(255,255,255,0.1)",
-          transform: menuOpen ? "translateY(0)" : "translateY(-100%)",
-          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          visibility: menuOpen ? "visible" : "hidden",
-        }}
-      >
-        <div className="p-6">
-          <div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Shop</p>
-              {["Monthly Boxes", "Gift Subscriptions", "Past Puzzles"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Community</p>
-              {["Member Gallery", "Stories", "Events"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">About</p>
-              {["Our Mission", "How It Works", "Contact"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-            <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Support</p>
-              {["FAQ", "Shipping", "Returns"].map(item => (
-                <a key={item} href="#" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">{item}</a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
   );
 }

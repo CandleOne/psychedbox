@@ -5,11 +5,56 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import {
+  AboutPage,
+  AccountPage,
+  CareersPage,
+  ContactPage,
+  EventsPage,
+  FAQPage,
+  GiftSubscriptionsPage,
+  HowItWorksPage,
+  MemberGalleryPage,
+  MissionPage,
+  MonthlyBoxesPage,
+  PastPuzzlesPage,
+  PrivacyPage,
+  ReturnsPage,
+  ShippingPage,
+  StoriesPage,
+  TermsPage,
+} from "./pages/InfoPages";
+import Movement from "./pages/Movement";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/account"} component={AccountPage} />
+
+      <Route path={"/shop/monthly-boxes"} component={MonthlyBoxesPage} />
+      <Route path={"/shop/gift-subscriptions"} component={GiftSubscriptionsPage} />
+      <Route path={"/shop/past-puzzles"} component={PastPuzzlesPage} />
+
+      <Route path={"/community/member-gallery"} component={MemberGalleryPage} />
+      <Route path={"/community/stories"} component={StoriesPage} />
+      <Route path={"/community/events"} component={EventsPage} />
+
+      <Route path={"/about/our-mission"} component={MissionPage} />
+      <Route path={"/about/how-it-works"} component={HowItWorksPage} />
+
+      <Route path={"/about-us"} component={AboutPage} />
+      <Route path={"/contact"} component={ContactPage} />
+      <Route path={"/careers"} component={CareersPage} />
+
+      <Route path={"/faq"} component={FAQPage} />
+      <Route path={"/shipping-info"} component={ShippingPage} />
+      <Route path={"/returns"} component={ReturnsPage} />
+
+      <Route path={"/privacy-policy"} component={PrivacyPage} />
+      <Route path={"/terms-of-service"} component={TermsPage} />
+
+      <Route path={"/movement"} component={Movement} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

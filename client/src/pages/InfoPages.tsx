@@ -1,0 +1,251 @@
+import GenericPage from "./GenericPage";
+import SiteFooter from "@/components/SiteFooter";
+import SiteNavbar from "@/components/SiteNavbar";
+
+function PageShell({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-white">
+      <SiteNavbar />
+
+      <section style={{ backgroundColor: "#FF6B6B" }} className="px-6 py-16 md:py-20">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-white/80 text-xs uppercase tracking-[0.2em] font-bold mb-4">{eyebrow}</p>
+          <h1 className="text-white text-4xl md:text-6xl font-black leading-tight max-w-3xl mb-6">{title}</h1>
+          <p className="text-white text-lg md:text-xl max-w-3xl">{description}</p>
+        </div>
+      </section>
+
+      <section className="px-6 py-16">
+        <div className="max-w-5xl mx-auto">{children}</div>
+      </section>
+
+      <SiteFooter />
+    </div>
+  );
+}
+
+function InfoCard({ title, description }: { title: string; description: string }) {
+  return (
+    <article className="rounded-xl border border-gray-200 p-6 bg-white">
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </article>
+  );
+}
+
+export function AccountPage() {
+  return (
+    <PageShell
+      eyebrow="Account"
+      title="Your Account"
+      description="Everything you need to manage your membership, deliveries, and preferences in one place."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InfoCard title="Manage Subscription" description="Switch plans, update billing details, and review renewal dates with full control." />
+        <InfoCard title="Track Deliveries" description="Check shipping status for your current and upcoming boxes with order visibility." />
+        <InfoCard title="Member Preferences" description="Set content preferences and email settings so your experience stays personalized." />
+        <InfoCard title="Need Help Fast" description="Contact support directly from your account for shipping, billing, or membership questions." />
+      </div>
+    </PageShell>
+  );
+}
+
+export function MonthlyBoxesPage() {
+  return <GenericPage eyebrow="Shop" title="Monthly Boxes" description="Explore monthly puzzle boxes featuring community stories, themed goodies, and exclusive content." />;
+}
+
+export function GiftSubscriptionsPage() {
+  return <GenericPage eyebrow="Shop" title="Gift Subscriptions" description="Send PsychedBox as a thoughtful gift and share discovery with someone you care about." />;
+}
+
+export function PastPuzzlesPage() {
+  return <GenericPage eyebrow="Shop" title="Past Puzzles" description="Browse previous featured community members and revisit past puzzle drops." />;
+}
+
+export function MemberGalleryPage() {
+  return <GenericPage eyebrow="Community" title="Member Gallery" description="See puzzle builds, community creations, and highlights shared by members." />;
+}
+
+export function StoriesPage() {
+  return <GenericPage eyebrow="Community" title="Stories" description="Read stories from featured members and community voices." />;
+}
+
+export function EventsPage() {
+  return <GenericPage eyebrow="Community" title="Events" description="Find upcoming events, circles, and community gatherings." />;
+}
+
+export function MissionPage() {
+  return <GenericPage eyebrow="About" title="Our Mission" description="Learn how PsychedBox uses storytelling and art to support education, safety, and community care." />;
+}
+
+export function HowItWorksPage() {
+  const steps = [
+    {
+      title: "1) We curate each monthly theme",
+      description: "Every month centers around a featured community voice, designed to educate and inspire through art and story.",
+    },
+    {
+      title: "2) Your box arrives with puzzle + story",
+      description: "Each delivery includes a featured puzzle portrait, themed goodies, and a story spotlighting impact in the movement.",
+    },
+    {
+      title: "3) A portion supports partner organizations",
+      description: "Your membership helps fund aligned organizations focused on education, harm reduction, and community wellness.",
+    },
+    {
+      title: "4) Stay connected all month",
+      description: "Members get access to exclusive updates, content, and opportunities to engage with the broader community.",
+    },
+  ];
+
+  return (
+    <PageShell
+      eyebrow="About"
+      title="How It Works"
+      description="From curation to community impact, here’s how a PsychedBox subscription works month to month."
+    >
+      <div className="space-y-4">
+        {steps.map((step) => (
+          <InfoCard key={step.title} title={step.title} description={step.description} />
+        ))}
+      </div>
+    </PageShell>
+  );
+}
+
+export function AboutPage() {
+  return (
+    <PageShell
+      eyebrow="Company"
+      title="About Us"
+      description="PsychedBox blends art, storytelling, and community care to make the movement more human, informed, and accessible."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <InfoCard
+          title="Our Vision"
+          description="A connected community where education, safety, and creative expression can grow side by side."
+        />
+        <InfoCard
+          title="Our Approach"
+          description="Each monthly box centers a community story and creates tangible support for movement-aligned organizations."
+        />
+        <InfoCard
+          title="Our Commitment"
+          description="We prioritize responsible storytelling, inclusive representation, and partner transparency."
+        />
+      </div>
+    </PageShell>
+  );
+}
+
+export function ContactPage() {
+  return (
+    <PageShell
+      eyebrow="Company"
+      title="Contact"
+      description="Reach out for support, partnerships, or general questions—we’d love to hear from you."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InfoCard
+          title="General Support"
+          description="For account, orders, and shipping questions: support@psychedbox.com"
+        />
+        <InfoCard
+          title="Partnerships"
+          description="For movement and giveback collaborations: partnerships@psychedbox.com"
+        />
+        <InfoCard
+          title="Media & Stories"
+          description="For storytelling features and press requests: stories@psychedbox.com"
+        />
+        <InfoCard
+          title="Response Window"
+          description="We typically reply within 1–2 business days, Monday through Friday."
+        />
+      </div>
+    </PageShell>
+  );
+}
+
+export function CareersPage() {
+  return <GenericPage eyebrow="Company" title="Careers" description="Explore ways to build with us and support the movement." />;
+}
+
+export function FAQPage() {
+  const faqs = [
+    {
+      question: "How often do boxes ship?",
+      answer: "Boxes ship monthly. Once your order is processed, you’ll receive tracking details when it leaves our fulfillment team.",
+    },
+    {
+      question: "Can I gift a subscription?",
+      answer: "Yes. Gift subscriptions are available and can be sent directly to a recipient with a personalized note.",
+    },
+    {
+      question: "What if I need to skip or cancel?",
+      answer: "You can manage plan changes from your account settings before the next renewal date.",
+    },
+    {
+      question: "Do you support causes with each purchase?",
+      answer: "Yes. A portion of proceeds supports mission-aligned movement partners focused on education, safety, and equity.",
+    },
+  ];
+
+  return (
+    <PageShell
+      eyebrow="Support"
+      title="Frequently Asked Questions"
+      description="Quick answers to the most common questions from members and first-time subscribers."
+    >
+      <div className="space-y-4">
+        {faqs.map((item) => (
+          <article key={item.question} className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{item.question}</h3>
+            <p className="text-gray-600">{item.answer}</p>
+          </article>
+        ))}
+      </div>
+    </PageShell>
+  );
+}
+
+export function ShippingPage() {
+  return (
+    <PageShell
+      eyebrow="Support"
+      title="Shipping Info"
+      description="Everything you need to know about processing times, delivery windows, and tracking."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InfoCard
+          title="Processing Time"
+          description="Orders are usually processed in 2–4 business days before leaving our fulfillment center."
+        />
+        <InfoCard
+          title="Delivery Window"
+          description="Standard deliveries typically arrive within 5–10 business days after shipment."
+        />
+        <InfoCard
+          title="Tracking"
+          description="A tracking link is emailed as soon as your order ships so you can follow each step."
+        />
+        <InfoCard
+          title="International Shipping"
+          description="Availability varies by destination and local carrier support. Rates are shown at checkout."
+        />
+      </div>
+    </PageShell>
+  );
+}
+
+export function ReturnsPage() {
+  return <GenericPage eyebrow="Support" title="Returns" description="Understand return options and support steps for order issues." />;
+}
+
+export function PrivacyPage() {
+  return <GenericPage eyebrow="Legal" title="Privacy Policy" description="Learn how we handle your data and protect your privacy." />;
+}
+
+export function TermsPage() {
+  return <GenericPage eyebrow="Legal" title="Terms Of Service" description="Review the terms that apply to using PsychedBox products and services." />;
+}
