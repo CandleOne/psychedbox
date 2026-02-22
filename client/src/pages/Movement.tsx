@@ -99,9 +99,9 @@ export default function Movement() {
             We regularly contribute to partner organizations advancing education, harm reduction, and equitable community wellness.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-wrap justify-center gap-8">
             {donationPartners.map((partner) => (
-              <article key={partner.name} className="rounded-xl bg-white border border-gray-200 p-6">
+              <article key={partner.name} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]">
                 <a href={partner.donateUrl} target="_blank" rel="noreferrer" className="block mb-4">
                   <img src={partner.logo} alt={`${partner.name} logo`} className="h-16 w-auto object-contain" />
                 </a>
