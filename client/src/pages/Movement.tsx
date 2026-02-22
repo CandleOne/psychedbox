@@ -104,6 +104,11 @@ export default function Movement() {
             We regularly contribute to partner organizations advancing education, harm reduction, and equitable community wellness.
           </p>
 
+          <p className="text-gray-900 text-lg font-semibold mb-10">
+            <span style={{ color: "#FF6B6B" }}>10% of revenues</span> are donated to these causes, and another
+            <span style={{ color: "#FF6B6B" }}> 10%</span> is given to the person featured in that month&apos;s puzzle.
+          </p>
+
           <div className="flex flex-wrap justify-center gap-8">
             {donationPartners.map((partner) => (
               <article key={partner.name} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] text-center">
