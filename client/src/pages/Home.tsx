@@ -9,7 +9,7 @@ export default function Home() {
       {/* Announcement Bar */}
       <div style={{ backgroundColor: "#FF6B6B" }} className="w-full py-2 text-center">
         <p className="text-white text-sm font-semibold">
-          ✨ February Box Now Available • Limited Edition Puzzle Inside 🧩
+          ✨ Take a piece give a piece! Learn more about our efforts to support the movement ✨
         </p>
       </div>
 
