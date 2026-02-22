@@ -48,9 +48,6 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="/movement" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
-              MOVEMENT
-            </a>
             <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
               ACCOUNT
             </a>
