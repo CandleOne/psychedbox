@@ -20,7 +20,7 @@ export default function Home() {
         <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full">
           <div className="max-w-md">
             <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }} className="mb-4">
-              Let Piece it together
+              Let's Piece it together
             </h1>
             <p className="text-lg text-white mb-6">
               PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
