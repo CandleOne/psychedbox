@@ -28,26 +28,31 @@ const donationPartners = [
     name: "The Zendo Project",
     logo: "/partners/zendo-project.png",
     donateUrl: "https://www.every.org/zendoproject?utm_campaign=donate-link#/donate/card",
+    logoWrapperClassName: "",
   },
   {
     name: "DanceSafe",
     logo: "/partners/dancesafe.webp",
     donateUrl: "https://dancesafe.org/donate/?srsltid=AfmBOor62cnd5UJt4Ys7htm6eUy7OecXlDIRB3sh_ofkaggmPckGZcRQ",
+    logoWrapperClassName: "",
   },
   {
     name: "Heroic Hearts Project",
     logo: "/partners/heroic-hearts.png",
     donateUrl: "https://heroicheartsproject.org/how-to-help/donate/",
+    logoWrapperClassName: "",
   },
   {
     name: "Bicycle Day (Tricycle Day)",
     logo: "/partners/tricycle-day.png",
     donateUrl: "https://www.tricycleday.com/",
+    logoWrapperClassName: "",
   },
   {
     name: "Fireside Project",
     logo: "/partners/fireside-project.png",
     donateUrl: "https://firesideproject.org/donate",
+    logoWrapperClassName: "inline-block rounded-lg px-3 py-2 bg-gradient-to-r from-[#4f5d8f] via-[#744b73] to-[#b24747]",
   },
 ];
 
@@ -103,7 +108,9 @@ export default function Movement() {
             {donationPartners.map((partner) => (
               <article key={partner.name} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]">
                 <a href={partner.donateUrl} target="_blank" rel="noreferrer" className="block mb-4">
-                  <img src={partner.logo} alt={`${partner.name} logo`} className="h-16 w-auto object-contain" />
+                  <span className={partner.logoWrapperClassName}>
+                    <img src={partner.logo} alt={`${partner.name} logo`} className="h-16 w-auto object-contain" />
+                  </span>
                 </a>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{partner.name}</h3>
                 <a
