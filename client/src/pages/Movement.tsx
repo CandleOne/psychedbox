@@ -26,27 +26,27 @@ const movementPillars = [
 const donationPartners = [
   {
     name: "The Zendo Project",
-    logo: "https://logo.clearbit.com/zendoproject.org",
+    logo: "/partners/zendo-project.png",
     donateUrl: "https://www.every.org/zendoproject?utm_campaign=donate-link#/donate/card",
   },
   {
     name: "DanceSafe",
-    logo: "https://logo.clearbit.com/dancesafe.org",
+    logo: "/partners/dancesafe.webp",
     donateUrl: "https://dancesafe.org/donate/?srsltid=AfmBOor62cnd5UJt4Ys7htm6eUy7OecXlDIRB3sh_ofkaggmPckGZcRQ",
   },
   {
     name: "Heroic Hearts Project",
-    logo: "https://logo.clearbit.com/heroicheartsproject.org",
+    logo: "/partners/heroic-hearts.png",
     donateUrl: "https://heroicheartsproject.org/how-to-help/donate/",
   },
   {
     name: "Bicycle Day (Tricycle Day)",
-    logo: "https://logo.clearbit.com/tricycleday.com",
+    logo: "/partners/tricycle-day.png",
     donateUrl: "https://www.tricycleday.com/",
   },
   {
     name: "Fireside Project",
-    logo: "https://logo.clearbit.com/firesideproject.org",
+    logo: "/partners/fireside-project.png",
     donateUrl: "https://firesideproject.org/donate",
   },
 ];
