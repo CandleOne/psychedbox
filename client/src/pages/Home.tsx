@@ -39,6 +39,7 @@ export default function Home() {
             <button style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
               Learn more about the work!
             </button>
+            <br></br>
             <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity inline-block">
               SUBSCRIBE NOW
             </button>
