@@ -1,8 +1,85 @@
 import { Star, Users, Gift, Zap } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useSEO } from "@/hooks/useSEO";
+import { useJsonLd } from "@/hooks/useJsonLd";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://psychedbox.com/#organization",
+      name: "PsychedBox",
+      url: "https://psychedbox.com",
+      logo: "https://psychedbox.com/og-image.jpg",
+      sameAs: [
+        "https://instagram.com/psychedbox",
+        "https://twitter.com/psychedbox",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "support@psychedbox.com",
+        contactType: "customer service",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://psychedbox.com/#website",
+      url: "https://psychedbox.com",
+      name: "PsychedBox",
+      publisher: { "@id": "https://psychedbox.com/#organization" },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://psychedbox.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@type": "Product",
+      name: "PsychedBox Monthly Subscription",
+      description:
+        "A monthly subscription box featuring a unique puzzle portrait of an inspiring psychedelic community member, themed goodies, and their story.",
+      brand: { "@id": "https://psychedbox.com/#organization" },
+      url: "https://psychedbox.com",
+      offers: [
+        {
+          "@type": "Offer",
+          name: "Monthly Plan",
+          price: "29.00",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://psychedbox.com/shop/monthly-boxes",
+        },
+        {
+          "@type": "Offer",
+          name: "Quarterly Plan",
+          price: "79.00",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://psychedbox.com/shop/monthly-boxes",
+        },
+        {
+          "@type": "Offer",
+          name: "Annual Plan",
+          price: "299.00",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://psychedbox.com/shop/monthly-boxes",
+        },
+      ],
+    },
+  ],
+};
 
 export default function Home() {
+  useSEO({
+    title: "Monthly Psychedelic Art & Story Subscription Box",
+    description:
+      "PsychedBox delivers a monthly puzzle portrait of an inspiring psychedelic community member, curated goodies, and their story — straight to your door. Subscribe from $29/mo.",
+    canonical: "/",
+  });
+  useJsonLd(organizationSchema);
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
@@ -72,6 +149,7 @@ export default function Home() {
             <img
               src="https://private-us-east-1.manuscdn.com/sessionFile/mlT7Ir3Q0O51J7zY8nz4Zd/sandbox/4NsjTC8C2NH03jIu1uF372-img-2_1771710920000_na1fn_cHN5Y2hlZGJveC1tb250aGx5LXRoZW1l.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvbWxUN0lyM1EwTzUxSjd6WThuejRaZC9zYW5kYm94LzROc2pUQzhDMk5IMDNqSXUxdUYzNzItaW1nLTJfMTc3MTcxMDkyMDAwMF9uYTFmbl9jSE41WTJobFpHSnZlQzF0YjI1MGFHeDVMWFJvWlcxbC5qcGc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=IVT0uXbVFTdzAyFbnuKA22Vm4-mqYLEuS-Ljfk25eUgZ9Ha-KvRkVVffpgQnI2oKdkzHoKoXFp9p-d5DPlyONwBrJNtshLtcZQs79eWlzvPjbUCrKXTaXXcAzjMHJ7QcDuaRZGEUrVRQEAWGgS48EKentFkpIB~0DrzfNZhtwQ9oHi2TRK-WEBgRIU1d-7mU~TYlx-oR64mAnQY8PQ-J-QKEZBN9Syw6Cl7Y5JzWcRpQP~9SllB5HpK9nnAIaeT9~ZFq~KWM1b501KJzeTWVUeWo1HVTJBgvpLRU8HdNxBSkcVhQ326kXcSDTG4VaChfnVmTIViyi8mjoGnmTOkUtw__"
               alt="February featured member puzzle"
+              loading="lazy"
               className="w-full rounded-lg"
             />
           </div>
@@ -135,7 +213,8 @@ export default function Home() {
           </p>
           <img
             src="https://private-us-east-1.manuscdn.com/sessionFile/mlT7Ir3Q0O51J7zY8nz4Zd/sandbox/4NsjTC8C2NH03jIu1uF372-img-4_1771710918000_na1fn_cHN5Y2hlZGJveC1jb21tdW5pdHk.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvbWxUN0lyM1EwTzUxSjd6WThuejRaZC9zYW5kYm94LzROc2pUQzhDMk5IMDNqSXUxdUYzNzItaW1nLTRfMTc3MTcxMDkxODAwMF9uYTFmbl9jSE41WTJobFpHSnZlQzFqYjIxdGRXNXBkSGsuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=Csc6N6z74XovSgQOUkJ5qhC20GNl71EkGSHTcxb9gMV~KX-ANJQpXtX8peF-gEsB0726fmDITvjYlZN9sORari19637qAVKsGXofXdstB7z6XwqPYHwcQCZbhJ436AjI4ceHMzejYWT8uzlFhWshRDvjaN4t712Lfn2pqjgPq8U30zvKkjckyAJN~I5SFjeIPqE0ykkZIkHE355H17YaG8GjheoKKB4qB6u4WRzDWq33LP5Y7-cJFOcnSnmtn6~BAnifHq0J15Gx4fNg9iWmJyghSIE-~Pgs14ynyh3H9WCfAXezOwj6ALaiDY5dUi9YyA--2itUV8Y7oehAiE-RVQ__"
-            alt="Community members"
+            alt="Community members sharing completed psychedelic puzzles"
+            loading="lazy"
             className="w-full rounded-lg max-w-2xl mx-auto"
           />
         </div>

@@ -1,17 +1,33 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useSEO } from "@/hooks/useSEO";
 
 type GenericPageProps = {
   eyebrow?: string;
   title: string;
   description: string;
+  canonical?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  noIndex?: boolean;
 };
 
 export default function GenericPage({
   eyebrow = "PsychedBox",
   title,
   description,
+  canonical,
+  seoTitle,
+  seoDescription,
+  noIndex,
 }: GenericPageProps) {
+  useSEO({
+    title: seoTitle ?? title,
+    description: seoDescription ?? description,
+    canonical,
+    noIndex,
+  });
+
   return (
     <div className="min-h-screen bg-white">
       <SiteNavbar />

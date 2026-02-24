@@ -1,6 +1,8 @@
 import { HeartHandshake, Sprout, ShieldCheck, BookOpen } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useSEO } from "@/hooks/useSEO";
+import { useJsonLd } from "@/hooks/useJsonLd";
 
 const movementPillars = [
   {
@@ -56,7 +58,29 @@ const donationPartners = [
   },
 ];
 
+const movementSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "The Movement | PsychedBox",
+  description:
+    "PsychedBox donates 10% of revenues to psychedelic harm reduction, education, and equity partners including The Zendo Project, DanceSafe, and Heroic Hearts Project.",
+  url: "https://psychedbox.com/movement",
+  publisher: {
+    "@type": "Organization",
+    name: "PsychedBox",
+    url: "https://psychedbox.com",
+  },
+};
+
 export default function Movement() {
+  useSEO({
+    title: "The Movement — Psychedelic Education, Harm Reduction & Community",
+    description:
+      "PsychedBox donates 10% of revenues to psychedelic harm reduction, education, and equity partners including The Zendo Project, DanceSafe, and Heroic Hearts Project.",
+    canonical: "/movement",
+  });
+  useJsonLd(movementSchema);
+
   return (
     <div className="min-h-screen bg-white">
       <SiteNavbar />
