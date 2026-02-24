@@ -4,7 +4,10 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import CheckoutCancel from "./pages/CheckoutCancel";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Home from "./pages/Home";
+import Pricing from "./pages/Pricing";
 import {
   AboutPage,
   AccountPage,
@@ -31,6 +34,9 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/pricing"} component={Pricing} />
+      <Route path={"/checkout/success"} component={CheckoutSuccess} />
+      <Route path={"/checkout/cancel"} component={CheckoutCancel} />
       <Route path={"/account"} component={AccountPage} />
 
       <Route path={"/shop"} component={ShopPage} />

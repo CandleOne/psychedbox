@@ -106,12 +106,12 @@ export default function Home() {
               Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
+              <a href="/movement" style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
               Learn more about the work!
-              </button>
-              <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
+              </a>
+              <a href="/pricing" style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
               SUBSCRIBE NOW
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -194,9 +194,9 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <button style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#F0F0F0", color: i === 1 ? "white" : "#333" }} className="w-full py-3 font-bold rounded-lg hover:opacity-90 transition-opacity">
+              <a href="/pricing" style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#F0F0F0", color: i === 1 ? "white" : "#333" }} className="w-full py-3 font-bold rounded-lg hover:opacity-90 transition-opacity block text-center">
                 {i === 1 ? "MOST POPULAR" : "SELECT"}
-              </button>
+              </a>
             </div>
           ))}
         </div>
