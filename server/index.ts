@@ -3,6 +3,10 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { stripeRouter } from "./stripe.js";
+import dotenv from "dotenv";
+
+// Load .env file
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
