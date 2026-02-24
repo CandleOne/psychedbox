@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #1a1a1a;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,107,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .frame {
+    position: absolute;
+    inset: 40px;
+    border: 1.5px solid rgba(255,107,107,0.25);
+    border-radius: 6px;
+  }
+  .content {
+    z-index: 10;
+    text-align: center;
+    padding: 60px;
+  }
+  .eyebrow {
+    color: #FF6B6B;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .monogram {
+    font-size: 200px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -10px;
+    margin-bottom: 40px;
+  }
+  .p { color: #fff; }
+  .b { color: #FF6B6B; }
+  .tagline {
+    color: rgba(255,255,255,0.9);
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .sub {
+    color: rgba(255,255,255,0.4);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .divider {
+    width: 50px; height: 2px;
+    background: #FF6B6B;
+    margin: 24px auto;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="frame"></div>
+  <div class="content">
+    <p class="eyebrow">Introducing</p>
+    <div class="monogram"><span class="p">P</span><span class="b">B</span></div>
+    <div class="tagline">PsychedBox</div>
+    <div class="divider"></div>
+    <p class="sub">Monthly Immersive Art Subscription</p>
+  </div>
+</body>
+</html>

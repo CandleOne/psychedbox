@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #1a1a1a;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    width: 800px; height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,107,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .content {
+    z-index: 10;
+    text-align: center;
+    padding: 80px;
+  }
+  .eyebrow {
+    color: #FF6B6B;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+  .big-num {
+    font-size: 220px;
+    font-weight: 900;
+    color: #FF6B6B;
+    line-height: 0.9;
+    margin-bottom: 16px;
+  }
+  .pct {
+    font-size: 80px;
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .label {
+    color: #fff;
+    font-size: 36px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .divider {
+    width: 50px; height: 2px;
+    background: #FF6B6B;
+    margin: 28px auto;
+  }
+  .sub {
+    color: rgba(255,255,255,0.5);
+    font-size: 20px;
+    font-weight: 400;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    max-width: 700px;
+  }
+  .sub strong { color: rgba(255,255,255,0.85); font-family: 'Arial Black', Arial; }
+  .logo {
+    position: absolute;
+    bottom: 55px; right: 70px;
+    font-size: 20px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="content">
+    <p class="eyebrow">The Giveback</p>
+    <div class="big-num">10<span class="pct">%</span></div>
+    <p class="label">Goes directly to<br>the person featured</p>
+    <div class="divider"></div>
+    <p class="sub">Every month, <strong>10% of revenues</strong> go straight to the community member in the box. Another <strong>10%</strong> goes to our movement partners.</p>
+  </div>
+  <p class="logo">PB</p>
+</body>
+</html>

@@ -14,7 +14,7 @@ const organizationSchema = {
       url: "https://psychedbox.com",
       logo: "https://psychedbox.com/og-image.jpg",
       sameAs: [
-        "https://instagram.com/psychedbox",
+        "https://www.instagram.com/psychedbox",
         "https://twitter.com/psychedbox",
       ],
       contactPoint: {

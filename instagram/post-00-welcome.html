@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #1a1a1a;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Subtle dark texture */
+  .bg-noise {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px,
+      transparent 1px, transparent 10px
+    );
+  }
+
+  /* Welcome text */
+  .welcome {
+    z-index: 10;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .welcome-small {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 10px;
+  }
+  .welcome-big {
+    font-size: 72px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .welcome-big span { color: #FF6B6B; }
+
+  /* Puzzle logo container */
+  .puzzle-wrap {
+    position: relative;
+    z-index: 10;
+    width: 700px;
+    height: 700px;
+  }
+
+  /* The logo image, clipped into puzzle pieces via CSS grid + clip-path */
+  .puzzle-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .piece {
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+  }
+
+  /* Each piece shows a portion of the logo via background-image + position */
+  .piece img {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    object-fit: cover;
+  }
+
+  /* Coral accent border on alternating pieces */
+  .piece.accent {
+    box-shadow: inset 0 0 0 2px rgba(255,107,107,0.5);
+  }
+
+  /* Gap glow between pieces */
+  .puzzle-grid {
+    background: #FF6B6B;
+    border-radius: 10px;
+    padding: 6px;
+  }
+
+  .tagline {
+    z-index: 10;
+    margin-top: 40px;
+    font-size: 18px;
+    font-weight: 400;
+    font-family: Arial, sans-serif;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-noise"></div>
+
+  <div class="welcome">
+    <p class="welcome-small">Welcome to</p>
+    <h1 class="welcome-big">Psych<span>ed</span>Box</h1>
+  </div>
+
+  <div class="puzzle-wrap">
+    <div class="puzzle-grid" id="grid"></div>
+  </div>
+
+  <p class="tagline">Monthly Immersive Art Subscription</p>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const cols = 5, rows = 5;
+    const totalW = 700, totalH = 700;
+    const pieceW = (totalW - (cols + 1) * 6) / cols;
+    const pieceH = (totalH - (rows + 1) * 6) / rows;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const piece = document.createElement('div');
+        piece.className = 'piece' + ((r + c) % 3 === 0 ? ' accent' : '');
+        piece.style.cssText = `overflow:hidden;position:relative;border-radius:6px;`;
+
+        const img = document.createElement('img');
+        img.src = 'logo.jpg';
+        img.style.cssText = `
+          position: absolute;
+          width: ${totalW}px;
+          height: ${totalH}px;
+          object-fit: cover;
+          left: ${-(c * (pieceW + 6))}px;
+          top: ${-(r * (pieceH + 6))}px;
+        `;
+
+        piece.appendChild(img);
+        grid.appendChild(piece);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #ffffff;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+  .top-bar {
+    background: #1a1a1a;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    padding: 0 80px;
+  }
+  .top-bar h1 {
+    color: #fff;
+    font-size: 52px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  .top-bar span { color: #FF6B6B; }
+  .items {
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  .num {
+    font-size: 52px;
+    font-weight: 900;
+    color: #FF6B6B;
+    line-height: 1;
+    min-width: 60px;
+  }
+  .item-text h3 {
+    font-size: 28px;
+    font-weight: 900;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .item-text p {
+    font-size: 18px;
+    color: #666;
+    font-weight: 400;
+    line-height: 1.4;
+    font-family: Arial, sans-serif;
+  }
+  .logo {
+    position: absolute;
+    bottom: 50px; right: 70px;
+    font-size: 22px;
+    font-weight: 900;
+    color: #1a1a1a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .logo span { color: #FF6B6B; }
+  .side-bar {
+    position: absolute;
+    left: 0; top: 200px; bottom: 0;
+    width: 12px;
+    background: #FF6B6B;
+  }
+</style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>What's <span>Inside</span><br>Every Box</h1>
+  </div>
+  <div class="side-bar"></div>
+  <div class="items">
+    <div class="item">
+      <div class="num">01</div>
+      <div class="item-text">
+        <h3>Puzzle Portrait</h3>
+        <p>A stylized puzzle of an inspiring community member — unique every month.</p>
+      </div>
+    </div>
+    <div class="item">
+      <div class="num">02</div>
+      <div class="item-text">
+        <h3>Their Story</h3>
+        <p>A printed + digital deep-dive into who they are and why their work matters.</p>
+      </div>
+    </div>
+    <div class="item">
+      <div class="num">03</div>
+      <div class="item-text">
+        <h3>Themed Goodies</h3>
+        <p>Curated items tied to the month's theme — art, zines, wellness, and more.</p>
+      </div>
+    </div>
+    <div class="item">
+      <div class="num">04</div>
+      <div class="item-text">
+        <h3>10% Goes to Them</h3>
+        <p>Every month, 10% of revenues go directly to the person featured.</p>
+      </div>
+    </div>
+  </div>
+  <p class="logo">Psych<span>ed</span>Box</p>
+</body>
+</html>

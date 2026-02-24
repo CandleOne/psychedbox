@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #FF6B6B;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .noise {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px,
+      transparent 1px, transparent 8px
+    );
+  }
+  .puzzle-grid {
+    position: absolute;
+    inset: 60px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 4px;
+    opacity: 0.15;
+  }
+  .puzzle-piece {
+    background: rgba(255,255,255,0.6);
+    border-radius: 4px;
+  }
+  .content {
+    z-index: 10;
+    text-align: center;
+    padding: 80px;
+  }
+  .big-text {
+    font-size: 90px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    line-height: 1.0;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    margin-bottom: 32px;
+  }
+  .big-text .dark { color: #1a1a1a; }
+  .divider {
+    width: 60px; height: 3px;
+    background: #1a1a1a;
+    margin: 0 auto 32px;
+  }
+  .sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 24px;
+    font-weight: 400;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    max-width: 700px;
+  }
+  .logo {
+    position: absolute;
+    bottom: 55px; right: 70px;
+    font-size: 20px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="puzzle-grid">
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+    <div class="puzzle-piece"></div><div class="puzzle-piece"></div><div class="puzzle-piece"></div>
+  </div>
+  <div class="content">
+    <h1 class="big-text">Let's<br><span class="dark">Piece</span><br>It Together</h1>
+    <div class="divider"></div>
+    <p class="sub">Every month a new story.<br>Every box a new connection.</p>
+  </div>
+  <p class="logo">PB</p>
+</body>
+</html>

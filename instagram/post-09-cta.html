@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #FF6B6B;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .noise {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px,
+      transparent 1px, transparent 8px
+    );
+  }
+  .frame {
+    position: absolute;
+    inset: 40px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+  }
+  .content {
+    z-index: 10;
+    text-align: center;
+    padding: 80px;
+  }
+  .eyebrow {
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  h1 {
+    font-size: 86px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.0;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.15);
+  }
+  h1 .dark { color: #1a1a1a; }
+  .divider {
+    width: 60px; height: 3px;
+    background: #1a1a1a;
+    margin: 36px auto;
+  }
+  .url {
+    font-size: 30px;
+    font-weight: 900;
+    color: #1a1a1a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .sub {
+    color: rgba(255,255,255,0.8);
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0.05em;
+  }
+  .logo {
+    position: absolute;
+    bottom: 60px; right: 80px;
+    font-size: 20px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="frame"></div>
+  <div class="content">
+    <p class="eyebrow">Subscribe Now</p>
+    <h1>Let's<br>Piece<br>Together<br><span class="dark">Peace.</span></h1>
+    <div class="divider"></div>
+    <p class="url">psychedbox.com</p>
+    <p class="sub">Link in bio — from $29/month</p>
+  </div>
+  <p class="logo">PB</p>
+</body>
+</html>

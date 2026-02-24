@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1920px;
+    background: #1a1a1a;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Background radial glow */
+  .glow {
+    position: absolute;
+    width: 900px; height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,107,0.18) 0%, transparent 65%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Diagonal stripe texture */
+  .texture {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px,
+      transparent 1px, transparent 12px
+    );
+  }
+
+  /* Top logo */
+  .top-logo {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+  }
+  .top-logo-text {
+    font-size: 28px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .top-logo-text span { color: #FF6B6B; }
+
+  /* Eye icon — SVG */
+  .eye-wrap {
+    z-index: 10;
+    margin-bottom: 56px;
+  }
+
+  /* Main content */
+  .content {
+    z-index: 10;
+    text-align: center;
+    padding: 0 80px;
+  }
+
+  .eyebrow {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #FF6B6B;
+    margin-bottom: 28px;
+  }
+
+  .keep {
+    font-size: 42px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .an-eye-out {
+    font-size: 100px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 10px;
+  }
+
+  .on-our {
+    font-size: 42px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .story {
+    font-size: 100px;
+    font-weight: 900;
+    color: #FF6B6B;
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 56px;
+  }
+
+  /* Divider */
+  .divider {
+    width: 60px; height: 3px;
+    background: #FF6B6B;
+    margin: 0 auto 56px;
+  }
+
+  /* March badge */
+  .march-wrap {
+    display: inline-block;
+    border: 3px solid #FF6B6B;
+    border-radius: 16px;
+    padding: 28px 64px;
+    margin-bottom: 40px;
+  }
+  .for-our {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 6px;
+  }
+  .collection {
+    font-size: 52px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .coming-in {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+  .march {
+    font-size: 80px;
+    font-weight: 900;
+    color: #FF6B6B;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* Bottom swipe hint */
+  .bottom {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+  }
+  .swipe-text {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 10px;
+  }
+  .swipe-arrow {
+    font-size: 28px;
+    color: rgba(255,107,107,0.5);
+  }
+
+  /* Puzzle dots decoration */
+  .dots {
+    position: absolute;
+    z-index: 5;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    background: #FF6B6B;
+    border-radius: 50%;
+    position: absolute;
+    opacity: 0.3;
+  }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="texture"></div>
+
+  <!-- Decorative dots -->
+  <div class="dots">
+    <div class="dot" style="top:320px;left:80px;opacity:0.5;width:14px;height:14px;"></div>
+    <div class="dot" style="top:380px;left:130px;opacity:0.2;"></div>
+    <div class="dot" style="top:300px;right:80px;opacity:0.4;width:12px;height:12px;"></div>
+    <div class="dot" style="top:370px;right:120px;opacity:0.2;"></div>
+    <div class="dot" style="bottom:400px;left:90px;opacity:0.35;width:12px;height:12px;"></div>
+    <div class="dot" style="bottom:360px;left:140px;opacity:0.15;"></div>
+    <div class="dot" style="bottom:400px;right:90px;opacity:0.4;width:14px;height:14px;"></div>
+    <div class="dot" style="bottom:360px;right:140px;opacity:0.2;"></div>
+  </div>
+
+  <div class="top-logo">
+    <p class="top-logo-text">Psych<span>ed</span>Box</p>
+  </div>
+
+  <!-- Big eye SVG -->
+  <div class="eye-wrap">
+    <svg width="200" height="120" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer eye shape -->
+      <path d="M10 60 Q100 -20 190 60 Q100 140 10 60Z" stroke="#FF6B6B" stroke-width="3" fill="none"/>
+      <!-- Iris -->
+      <circle cx="100" cy="60" r="30" stroke="#FF6B6B" stroke-width="3" fill="none"/>
+      <!-- Pupil -->
+      <circle cx="100" cy="60" r="14" fill="#FF6B6B"/>
+      <!-- Shine -->
+      <circle cx="108" cy="52" r="5" fill="white" opacity="0.6"/>
+      <!-- Eyelashes top -->
+      <line x1="60" y1="30" x2="58" y2="16" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+      <line x1="80" y1="18" x2="80" y2="4" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+      <line x1="100" y1="14" x2="100" y2="0" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+      <line x1="120" y1="18" x2="120" y2="4" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+      <line x1="140" y1="30" x2="142" y2="16" stroke="#FF6B6B" stroke-width="2" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <div class="content">
+    <p class="eyebrow">👁 Heads Up</p>
+    <p class="keep">Keep</p>
+    <p class="an-eye-out">An Eye<br>Out</p>
+    <p class="on-our">On Our</p>
+    <p class="story">Story</p>
+
+    <div class="divider"></div>
+
+    <div class="march-wrap">
+      <p class="for-our">For Our</p>
+      <p class="collection">Collection</p>
+      <p class="coming-in">Coming In</p>
+      <p class="march">March 🌀</p>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <p class="swipe-text">Stay tuned</p>
+    <p class="swipe-arrow">↓</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #fff;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .left-block {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 520px;
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+  }
+  .eyebrow {
+    color: #FF6B6B;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-size: 68px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.0;
+    margin-bottom: 32px;
+  }
+  h1 span { color: #FF6B6B; }
+  .body-text {
+    font-size: 19px;
+    color: rgba(255,255,255,0.6);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .right-block {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    left: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+    gap: 28px;
+  }
+  .stat {
+    border-left: 4px solid #FF6B6B;
+    padding: 20px 24px;
+    background: #f7f7f7;
+    border-radius: 0 12px 12px 0;
+  }
+  .stat-num {
+    font-size: 52px;
+    font-weight: 900;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+  .stat-num span { color: #FF6B6B; }
+  .stat-label {
+    font-size: 15px;
+    color: #888;
+    font-family: Arial;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+  .logo {
+    position: absolute;
+    bottom: 40px; right: 50px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #ccc;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .logo span { color: #FF6B6B; }
+</style>
+</head>
+<body>
+  <div class="left-block">
+    <p class="eyebrow">Community</p>
+    <h1>Built<br>by <span>you.</span></h1>
+    <p class="body-text">PsychedBox is more than a subscription. It's a movement. Every box amplifies a voice that deserves to be heard.</p>
+  </div>
+  <div class="right-block">
+    <div class="stat">
+      <p class="stat-num">10<span>%</span></p>
+      <p class="stat-label">to the featured member</p>
+    </div>
+    <div class="stat">
+      <p class="stat-num">10<span>%</span></p>
+      <p class="stat-label">to movement partners</p>
+    </div>
+    <div class="stat">
+      <p class="stat-num">1<span>/mo</span></p>
+      <p class="stat-label">story told. voice amplified.</p>
+    </div>
+  </div>
+  <p class="logo">Psych<span>ed</span>Box</p>
+</body>
+</html>

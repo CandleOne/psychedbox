@@ -23,7 +23,7 @@ export default function SiteFooter() {
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Follow</p>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Instagram</a>
+            <a href="https://www.instagram.com/psychedbox" target="_blank" rel="noreferrer" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Instagram</a>
             <a href="https://x.com" target="_blank" rel="noreferrer" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Twitter</a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Facebook</a>
           </div>

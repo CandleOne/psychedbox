@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    background: #FF6B6B;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .noise {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px,
+      transparent 1px, transparent 8px
+    );
+  }
+  .frame {
+    position: absolute;
+    inset: 40px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+  }
+  .content {
+    z-index: 10;
+    padding: 80px;
+    text-align: left;
+  }
+  .eyebrow {
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .quote {
+    color: #ffffff;
+    font-size: 62px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 48px;
+    max-width: 900px;
+  }
+  .quote span {
+    color: #1a1a1a;
+  }
+  .attr {
+    color: rgba(255,255,255,0.8);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .logo {
+    position: absolute;
+    bottom: 60px; right: 70px;
+    font-size: 22px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="frame"></div>
+  <div class="content">
+    <p class="eyebrow">Our Mission</p>
+    <h1 class="quote">Educate.<br><span>Connect.</span><br>Give back.</h1>
+    <p class="attr">psychedbox.com</p>
+  </div>
+  <p class="logo">PB</p>
+</body>
+</html>
