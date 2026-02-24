@@ -31,6 +31,12 @@ const routes = [
       "PsychedBox donates 10% of revenues to psychedelic harm reduction, education, and equity partners including The Zendo Project, DanceSafe, and Heroic Hearts Project.",
   },
   {
+    path: "/shop",
+    title: `Shop — Psychedelic Art, Tools & Ceremony Supplies | ${SITE_NAME}`,
+    description:
+      "Shop the PsychedBox catalog — ceremony eye masks, integration journals, artist grinders, harm reduction test kits, enamel pins, playing cards, grow kits, and more. Built for the psychedelic community.",
+  },
+  {
     path: "/shop/monthly-boxes",
     title: `Monthly Subscription Boxes — ${SITE_NAME}`,
     description:
