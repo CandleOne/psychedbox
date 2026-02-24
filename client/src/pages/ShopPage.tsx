@@ -2,7 +2,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useSEO } from "@/hooks/useSEO";
 import { useState } from "react";
-import { ShoppingCart, Tag, Star, Zap } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 // ─── Product Data ────────────────────────────────────────────────────────────
 
@@ -17,10 +17,9 @@ interface Product {
   category: Category;
   badge?: string;
   badgeColor?: string;
-  emoji: string;
+  image: string;
   variants?: string[];
   description: string;
-  comingSoon?: boolean;
 }
 
 const products: Product[] = [
@@ -33,9 +32,9 @@ const products: Product[] = [
     category: "ceremony",
     badge: "Fan Favorite",
     badgeColor: "#FF6B6B",
-    emoji: "🌑",
+    image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=400&fit=crop",
     variants: ["Silk Black", "Velvet Violet", "Cotton Cream", "Weighted Indigo"],
-    description: "Weighted, blackout eye masks designed for ceremony, meditation, and deep inner work. Blocks 100% of light. Adjustable strap, breathable lining.",
+    description: "Weighted, blackout eye masks designed for ceremony, meditation, and deep inner work.",
   },
   {
     id: "integration-journal",
@@ -45,9 +44,9 @@ const products: Product[] = [
     category: "ceremony",
     badge: "New",
     badgeColor: "#7C3AED",
-    emoji: "📓",
+    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=400&fit=crop",
     variants: ["Classic Guided", "Blank Canvas", "90-Day Deep Dive", "Microdose Log"],
-    description: "Guided prompts for before, during, and after your experiences. Different editions for different needs — from first-timers to seasoned explorers.",
+    description: "Guided prompts for before, during, and after your experiences.",
   },
   {
     id: "singing-bowl",
@@ -56,9 +55,9 @@ const products: Product[] = [
     price: "$38",
     priceFrom: true,
     category: "ceremony",
-    emoji: "🔔",
+    image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400&h=400&fit=crop",
     variants: ["Tibetan Brass 5\"", "Tibetan Brass 7\"", "Crystal Clear", "Crystal Rose"],
-    description: "Hand-hammered Tibetan and crystal singing bowls for ceremony, sound healing, and grounding. Each one rings differently — find your frequency.",
+    description: "Hand-hammered Tibetan and crystal singing bowls for ceremony and sound healing.",
   },
   {
     id: "incense-bundle",
@@ -66,9 +65,9 @@ const products: Product[] = [
     tagline: "Scent as ceremony",
     price: "$18",
     category: "ceremony",
-    emoji: "🌿",
+    image: "https://images.unsplash.com/photo-1602928321679-560bb453f190?w=400&h=400&fit=crop",
     variants: ["Palo Santo", "Copal + Holder", "Nag Champa", "Dragon's Blood", "Blue Lotus", "Custom Blend"],
-    description: "Premium incense and smoke bundles sourced from small producers. Each pack includes 10–15 sticks or pieces, and optional hand-carved holders.",
+    description: "Premium incense and smoke bundles sourced from small producers.",
   },
 
   // TOOLS
@@ -81,9 +80,9 @@ const products: Product[] = [
     category: "tools",
     badge: "Monthly Drop",
     badgeColor: "#FF6B6B",
-    emoji: "🎨",
+    image: "https://images.unsplash.com/photo-1584448082637-23d7d3283848?w=400&h=400&fit=crop",
     variants: ["Aluminum 4-piece", "Wood Lid Series", "Acrylic Clear", "Limited Artist Collab"],
-    description: "4-piece aluminum grinders featuring rotating artist designs on the lid. Each month a new artist. Collect them all or just grab your favorite.",
+    description: "4-piece aluminum grinders featuring rotating artist designs on the lid.",
   },
   {
     id: "reagent-kit",
@@ -94,9 +93,9 @@ const products: Product[] = [
     category: "tools",
     badge: "Community Essential",
     badgeColor: "#059669",
-    emoji: "🔬",
+    image: "https://images.unsplash.com/photo-1584515933487-779824d29609?w=400&h=400&fit=crop",
     variants: ["Ehrlich (LSD/Indoles)", "Hofmann (LSD/NBOMe)", "Mecke (MDMA/Opioids)", "Full Starter Set (3-pack)"],
-    description: "Ehrlich, Hofmann, and Mecke reagent test kits for harm reduction and substance verification. Completely legal. Community-trusted. Know what you're working with.",
+    description: "Reagent test kits for harm reduction and substance verification.",
   },
   {
     id: "rolling-tray",
@@ -104,9 +103,9 @@ const products: Product[] = [
     tagline: "Your ritual deserves a stage",
     price: "$26",
     category: "tools",
-    emoji: "🎭",
+    image: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=400&h=400&fit=crop",
     variants: ["Small (7\"×5\")", "Medium (11\"×7\")", "Large (14\"×10\")"],
-    description: "Metal rolling trays with full-coverage psychedelic art prints. Rotating artist designs. Curved edges, magnetic lid option, durable powder coat finish.",
+    description: "Metal rolling trays with full-coverage psychedelic art prints.",
   },
   {
     id: "mushroom-kit",
@@ -117,9 +116,9 @@ const products: Product[] = [
     category: "tools",
     badge: "🍄 Legal",
     badgeColor: "#854d0e",
-    emoji: "🍄",
+    image: "https://images.unsplash.com/photo-1515696955266-4f67e13219e8?w=400&h=400&fit=crop",
     variants: ["Lion's Mane", "Oyster (Blue)", "Oyster (Pink)", "Shiitake", "Reishi", "Mystery Variety"],
-    description: "All-in-one gourmet mushroom grow kits. Legal everywhere. Yields 2–3 harvests. Perfect for kitchen counter growing, gifting, or getting into the cultivation mindset. No experience needed.",
+    description: "All-in-one gourmet mushroom grow kits. Legal everywhere. Yields 2–3 harvests.",
   },
 
   // ART & COLLECTIBLES
@@ -132,9 +131,9 @@ const products: Product[] = [
     category: "collectibles",
     badge: "Monthly Drop",
     badgeColor: "#FF6B6B",
-    emoji: "📌",
+    image: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=400&h=400&fit=crop",
     variants: ["Mushroom Series", "Sacred Geometry", "Cosmic Eye", "Artist Collab", "Limited Edition"],
-    description: "Hard enamel pins designed by independent psychedelic artists. 1.25\" standard, butterfly clutch backing. New designs drop monthly. Collect the whole set.",
+    description: "Hard enamel pins designed by independent psychedelic artists.",
   },
   {
     id: "playing-cards",
@@ -145,9 +144,9 @@ const products: Product[] = [
     category: "collectibles",
     badge: "Collector's Item",
     badgeColor: "#7C3AED",
-    emoji: "🃏",
+    image: "https://images.unsplash.com/photo-1529480780361-4db4eb267204?w=400&h=400&fit=crop",
     variants: ["Sacred Geometry Deck", "Mushroom Kingdom", "Cosmic Horror", "Artist Series Vol. 1", "Tarot-Inspired"],
-    description: "Fully illustrated 54-card decks featuring original psychedelic art. Casino-grade card stock with linen finish. Each deck tells a visual story from Ace to King.",
+    description: "Fully illustrated 54-card decks featuring original psychedelic art.",
   },
   {
     id: "art-print",
@@ -156,9 +155,9 @@ const products: Product[] = [
     price: "$22",
     priceFrom: true,
     category: "art",
-    emoji: "🖼️",
+    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=400&fit=crop",
     variants: ["8\"×10\"", "11\"×14\"", "16\"×20\"", "Signed Edition"],
-    description: "Museum-quality giclée prints from independent psychedelic artists. New artists featured monthly. Printed on heavyweight acid-free paper. Arrives ready to frame.",
+    description: "Museum-quality giclée prints from independent psychedelic artists.",
   },
   {
     id: "tapestry",
@@ -167,9 +166,9 @@ const products: Product[] = [
     price: "$44",
     priceFrom: true,
     category: "art",
-    emoji: "🌌",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
     variants: ["Small (60\"×40\")", "Large (80\"×60\")", "Artist Series"],
-    description: "Vibrant full-coverage tapestries featuring rotating psychedelic art. Machine-washable polyester microfiber. Hang rings included. Different artists each drop.",
+    description: "Vibrant full-coverage tapestries featuring rotating psychedelic art.",
   },
   {
     id: "sticker-pack",
@@ -177,9 +176,9 @@ const products: Product[] = [
     tagline: "Stick your vibe everywhere",
     price: "$10",
     category: "collectibles",
-    emoji: "✨",
+    image: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop",
     variants: ["8-pack Mixed", "12-pack Artist Series", "Holographic Edition"],
-    description: "Waterproof vinyl sticker packs featuring original psychedelic art. UV-resistant, dishwasher-safe. Great for laptops, water bottles, and everywhere else you want to make a statement.",
+    description: "Waterproof vinyl sticker packs featuring original psychedelic art.",
   },
 
   // WELLNESS
@@ -190,9 +189,9 @@ const products: Product[] = [
     price: "$26",
     priceFrom: true,
     category: "wellness",
-    emoji: "💎",
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop",
     variants: ["Amethyst Set", "Lapis Lazuli", "Smoky Quartz", "Labradorite", "Mystery Rotation"],
-    description: "Curated crystal and stone sets sourced from ethical suppliers. Each set includes 3–5 stones with a card describing their traditional uses. New varieties rotate monthly.",
+    description: "Curated crystal and stone sets sourced from ethical suppliers.",
   },
   {
     id: "candle",
@@ -201,9 +200,9 @@ const products: Product[] = [
     price: "$24",
     priceFrom: true,
     category: "wellness",
-    emoji: "🕯️",
+    image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=400&h=400&fit=crop",
     variants: ["Earthy (Cedar + Vetiver)", "Floral (Rose + Jasmine)", "Resinous (Frankincense + Myrrh)", "Sacred (Palo Santo + Copal)"],
-    description: "Hand-poured soy wax candles in psychedelic-art-labeled jars. Scents designed to complement ceremony, meditation, and creative work. 40+ hour burn time.",
+    description: "Hand-poured soy wax candles in psychedelic-art-labeled jars.",
   },
   {
     id: "tea-ceremony-set",
@@ -211,21 +210,21 @@ const products: Product[] = [
     tagline: "Ritual in a cup",
     price: "$42",
     category: "wellness",
-    emoji: "🍵",
+    image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop",
     variants: ["Kava Starter", "Blue Lotus Blend", "Cacao Ceremony", "Mushroom Adaptogen"],
-    description: "Complete tea ceremony kits for kava, blue lotus, cacao, and adaptogenic mushroom teas. Includes strainer, scoop, blend, and a guide card. Everything you need to brew with intention.",
+    description: "Complete tea ceremony kits for kava, blue lotus, cacao, and adaptogenic mushroom teas.",
   },
 ];
 
 // ─── Category Filter ─────────────────────────────────────────────────────────
 
-const categories: { id: Category; label: string; emoji: string }[] = [
-  { id: "all", label: "All Products", emoji: "🌀" },
-  { id: "ceremony", label: "Ceremony", emoji: "🌑" },
-  { id: "tools", label: "Tools", emoji: "🔬" },
-  { id: "art", label: "Art", emoji: "🖼️" },
-  { id: "collectibles", label: "Collectibles", emoji: "📌" },
-  { id: "wellness", label: "Wellness", emoji: "💎" },
+const categories: { id: Category; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "ceremony", label: "Ceremony" },
+  { id: "tools", label: "Tools" },
+  { id: "art", label: "Art" },
+  { id: "collectibles", label: "Collectibles" },
+  { id: "wellness", label: "Wellness" },
 ];
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
@@ -234,93 +233,77 @@ function ProductCard({ product }: { product: Product }) {
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] ?? "");
   const [isHovered, setIsHovered] = useState(false);
 
-  // Gradient backgrounds per category
-  const categoryGradients: Record<Category, string> = {
-    ceremony: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
-    tools: "linear-gradient(135deg, #2d1b4e 0%, #1a1a2e 100%)",
-    art: "linear-gradient(135deg, #4a1942 0%, #2d1b4e 100%)",
-    collectibles: "linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%)",
-    wellness: "linear-gradient(135deg, #1a2f1e 0%, #0f1f14 100%)",
-    all: "linear-gradient(135deg, #2d1b4e 0%, #1a1a2e 100%)",
-  };
-
   return (
     <article 
-      className="rounded-3xl bg-white overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-2 border border-gray-100"
+      className="group relative bg-white border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Art area with gradient */}
-      <div
-        className="flex items-center justify-center h-48 text-7xl select-none relative overflow-hidden"
-        style={{ background: categoryGradients[product.category] || categoryGradients.all }}
-      >
-        <span className={`transition-transform duration-500 ${isHovered ? 'scale-110 rotate-3' : ''}`}>
-          {product.emoji}
+      {/* Badge */}
+      {product.badge && (
+        <span 
+          className="absolute top-3 left-3 z-10 text-white text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md"
+          style={{ backgroundColor: product.badgeColor ?? "#FF6B6B" }}
+        >
+          {product.badge}
         </span>
-        {/* Decorative orbs */}
-        <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/5 blur-xl" />
-        <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-purple-500/10 blur-lg" />
+      )}
+
+      {/* Image */}
+      <div className="aspect-square overflow-hidden bg-gray-100">
+        <img 
+          src={product.image} 
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
       </div>
 
-      <div className="p-6 flex flex-col flex-1 relative">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+      {/* Quick Add on Hover */}
+      <button
+        className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-gray-900 hover:text-white ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        onClick={() => alert(`Quick add: ${product.name}`)}
+      >
+        <ShoppingCart size={18} />
+      </button>
 
-        {/* Badge */}
-        {product.badge && (
-          <span
-            className="self-start text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 shadow-lg"
-            style={{ backgroundColor: product.badgeColor ?? "#FF6B6B" }}
-          >
-            {product.badge}
-          </span>
-        )}
-
-        <h3 className="text-gray-900 font-bold text-xl leading-tight mb-2">{product.name}</h3>
-        <p className="text-gray-500 text-sm mb-4 font-medium">{product.tagline}</p>
-        <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">{product.description}</p>
-
-        {/* Variant selector */}
-        {product.variants && product.variants.length > 1 && (
-          <div className="mb-5">
-            <p className="text-gray-400 text-xs uppercase tracking-wider mb-2 font-semibold">Select</p>
-            <div className="flex flex-wrap gap-2">
-              {product.variants.slice(0, 4).map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setSelectedVariant(v)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    selectedVariant === v 
-                      ? 'bg-gray-900 text-white shadow-lg' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {v}
-                </button>
-              ))}
-              {product.variants.length > 4 && (
-                <span className="px-3 py-1.5 text-xs text-gray-400">+{product.variants.length - 4} more</span>
-              )}
-            </div>
+      {/* Info */}
+      <div className="p-4">
+        <h3 className="text-gray-900 font-bold text-lg leading-tight mb-1">{product.name}</h3>
+        <p className="text-gray-500 text-sm mb-3">{product.tagline}</p>
+        
+        {/* Variants */}
+        {product.variants && product.variants.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {product.variants.slice(0, 3).map((v) => (
+              <button
+                key={v}
+                onClick={() => setSelectedVariant(v)}
+                className={`text-xs px-2 py-1 rounded border transition-colors ${
+                  selectedVariant === v 
+                    ? 'border-gray-900 bg-gray-900 text-white' 
+                    : 'border-gray-200 text-gray-600 hover:border-gray-400'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+            {product.variants.length > 3 && (
+              <span className="text-xs text-gray-400 py-1">+{product.variants.length - 3}</span>
+            )}
           </div>
         )}
 
-        {/* Price + CTA */}
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-          <p className="text-gray-900 font-black text-2xl">
+        {/* Price & Add */}
+        <div className="flex items-center justify-between">
+          <p className="text-gray-900 font-black text-xl">
             {product.priceFrom && <span className="text-gray-400 text-sm font-normal mr-1">from</span>}
             {product.price}
           </p>
           <button
-            className="flex items-center gap-2 px-5 py-3 rounded-xl text-white text-sm font-bold transition-all hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105 active:scale-95"
-            style={{ backgroundColor: "#FF6B6B" }}
-            onClick={() => {
-              alert(`Add to cart: ${product.name} — ${selectedVariant}`);
-            }}
+            className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors"
+            onClick={() => alert(`Add to cart: ${product.name} — ${selectedVariant}`)}
           >
-            <ShoppingCart size={16} />
-            Add
+            Add to Cart
           </button>
         </div>
       </div>
@@ -335,77 +318,41 @@ export default function ShopPage() {
 
   useSEO({
     title: "Shop — Psychedelic Art, Tools & Ceremony Supplies | PsychedBox",
-    description:
-      "Shop the PsychedBox catalog — ceremony eye masks, integration journals, artist grinders, harm reduction test kits, enamel pins, playing cards, grow kits, and more. Built for the psychedelic community.",
+    description: "Shop the PsychedBox catalog — ceremony supplies, collectible art, harm reduction tools, and more.",
     canonical: "/shop",
   });
 
-  const filtered =
-    activeCategory === "all"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+  const filtered = activeCategory === "all" ? products : products.filter((p) => p.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-white">
       <SiteNavbar />
 
       {/* Hero */}
-      <section className="relative px-6 py-16 md:py-24 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-950 to-gray-900" />
-        <div className="absolute inset-0 opacity-30" style={{ 
-          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.4) 0%, transparent 40%),
-                           radial-gradient(circle at 80% 50%, rgba(255, 107, 107, 0.3) 0%, transparent 40%)`,
-        }} />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ 
-          backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }} />
-        
-        <div className="max-w-5xl mx-auto relative">
-          <p className="text-purple-300/60 text-xs uppercase tracking-[0.2em] font-bold mb-4">The Catalog</p>
-          <h1 className="text-white text-4xl md:text-6xl font-black leading-tight max-w-3xl mb-6">
-            Tools for the{" "}
-            <span className="bg-gradient-to-r from-rose-400 to-purple-400 bg-clip-text text-transparent">conscious explorer</span>
+      <section className="bg-gray-900 px-6 py-16 md:py-20">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-white text-4xl md:text-5xl font-black leading-tight mb-4">
+            Shop
           </h1>
-          <p className="text-white/70 text-lg md:text-xl max-w-2xl leading-relaxed">
-            Ceremony supplies, collectible art, harm reduction tools, and more — curated for the psychedelic community. New drops every month.
+          <p className="text-gray-400 text-lg">
+            Curated tools for the conscious explorer. New drops every month.
           </p>
-          
-          {/* Stats */}
-          <div className="flex gap-8 mt-10 pt-8 border-t border-white/10">
-            <div>
-              <p className="text-3xl font-black text-white">16+</p>
-              <p className="text-white/40 text-sm">Products</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black text-white">5</p>
-              <p className="text-white/40 text-sm">Categories</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black text-white">Monthly</p>
-              <p className="text-white/40 text-sm">New Drops</p>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Category Filters */}
-      <section className="sticky top-[52px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 px-6 py-4 shadow-sm">
-        <div className="max-w-6xl mx-auto flex items-center gap-3 overflow-x-auto scrollbar-none pb-1">
+      {/* Filters */}
+      <section className="sticky top-[52px] z-30 bg-white border-b border-gray-200 px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center gap-3 overflow-x-auto">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all hover:scale-105 active:scale-95"
-              style={
+              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
-                  ? { backgroundColor: "#FF6B6B", color: "#fff", boxShadow: "0 4px 15px rgba(255,107,107,0.3)" }
-                  : { backgroundColor: "#F3F4F6", color: "#374151" }
-              }
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
             >
-              <span className="text-base">{cat.emoji}</span>
               {cat.label}
             </button>
           ))}
@@ -413,54 +360,14 @@ export default function ShopPage() {
       </section>
 
       {/* Product Grid */}
-      <section className="px-6 py-12 relative">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-30" style={{ 
-          backgroundImage: `radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-                           radial-gradient(circle at 75% 75%, rgba(255, 107, 107, 0.08) 0%, transparent 50%)`,
-        }} />
-        
-        <div className="max-w-6xl mx-auto relative">
-          <div className="flex items-center justify-between mb-8">
-            <p className="text-gray-500 text-sm font-medium">
-              {filtered.length} {filtered.length === 1 ? 'product' : 'products'}
-            </p>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Ready to ship
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <section className="px-6 py-12">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-gray-500 text-sm mb-6">{filtered.length} products</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Monthly drops CTA */}
-      <section className="px-6 py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 via-purple-500/10 to-cyan-500/10" />
-        <div className="max-w-4xl mx-auto rounded-3xl p-10 md:p-14 text-center relative overflow-hidden" style={{ 
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        }}>
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-rose-500/20 rounded-full blur-3xl" />
-          
-          <Zap size={40} className="mx-auto mb-6 text-amber-400" />
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4 relative">Get everything in one box</h2>
-          <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto relative">
-            Subscribe to PsychedBox and get a curated selection of these products — plus exclusive items — delivered every month.
-          </p>
-          <a
-            href="/shop/monthly-boxes"
-            className="inline-block px-10 py-4 rounded-xl text-white font-bold text-lg transition-all hover:scale-105 hover:shadow-xl hover:shadow-rose-500/25"
-            style={{ backgroundColor: "#FF6B6B" }}
-          >
-            View Subscription Plans
-          </a>
         </div>
       </section>
 
