@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createPaymentRouter } from "./payments.js";
+import { stripeRouter } from "./stripe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,8 +11,22 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // ── API routes (must be registered before the static/SPA catch-all) ──
-  app.use("/api/payments", createPaymentRouter());
+  // ⚠️  Webhook route MUST come before express.json() middleware
+  // Stripe needs the raw body buffer for signature verification
+  app.post(
+    "/api/stripe/webhook",
+    express.raw({ type: "application/json" }),
+    (req, res, next) => {
+      // Pass raw buffer to router
+      next();
+    }
+  );
+
+  // Parse JSON for all other routes
+  app.use(express.json());
+
+  // Stripe API routes
+  app.use("/api/stripe", stripeRouter);
 
   // Serve static files from dist/public in production
   const staticPath =

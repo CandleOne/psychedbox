@@ -1,39 +1,66 @@
 import { useState } from "react";
-import { redirectToCheckout, redirectToPortal } from "@/lib/payments";
 
-/**
- * Hook that wraps Stripe checkout / portal redirects with loading
- * and error state so the UI can show spinners and error messages.
- */
-export function useCheckout() {
+type Plan = "monthly" | "quarterly" | "annual";
+
+interface UseCheckoutReturn {
+  redirectToCheckout: (plan: Plan) => Promise<void>;
+  redirectToPortal: (customerId: string) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+}
+
+export function useCheckout(): UseCheckoutReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function checkout(planId: string, donationAmountCents?: number) {
+  const redirectToCheckout = async (plan: Plan) => {
     setLoading(true);
     setError(null);
+
     try {
-      await redirectToCheckout(planId, donationAmountCents);
+      const res = await fetch("/api/stripe/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to start checkout.");
+      }
+
+      // Redirect to Stripe-hosted checkout
+      window.location.href = data.url;
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.error || err?.message || "Something went wrong";
-      setError(msg);
+      setError(err.message);
       setLoading(false);
     }
-  }
+  };
 
-  async function manageSubscription(customerId: string) {
+  const redirectToPortal = async (customerId: string) => {
     setLoading(true);
     setError(null);
+
     try {
-      await redirectToPortal(customerId);
+      const res = await fetch("/api/stripe/create-portal-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to open billing portal.");
+      }
+
+      window.location.href = data.url;
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.error || err?.message || "Something went wrong";
-      setError(msg);
+      setError(err.message);
       setLoading(false);
     }
-  }
+  };
 
-  return { checkout, manageSubscription, loading, error };
+  return { redirectToCheckout, redirectToPortal, loading, error };
 }
