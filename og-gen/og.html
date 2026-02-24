@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    background: #1a1a1a;
+    font-family: 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Background circles removed */
+
+  /* Thin coral border frame */
+  .frame {
+    position: absolute;
+    inset: 28px;
+    border: 2px solid rgba(255,107,107,0.3);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    text-align: center;
+  }
+
+  /* PB monogram */
+  .monogram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 36px;
+  }
+
+  .letter {
+    font-size: 180px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -8px;
+  }
+
+  .letter-p {
+    color: #ffffff;
+  }
+
+  .letter-b {
+    color: #FF6B6B;
+  }
+
+  /* Dot accent above B */
+  .dot {
+    width: 18px;
+    height: 18px;
+    background: #FF6B6B;
+    border-radius: 50%;
+    position: absolute;
+    top: -8px;
+    right: -4px;
+  }
+
+  .letter-b-wrap {
+    position: relative;
+  }
+
+  .tagline {
+    font-family: 'DM Sans', Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: #FF6B6B;
+    margin: 20px auto;
+  }
+
+  .sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.35);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+
+  <div class="content">
+    <div class="monogram">
+      <span class="letter letter-p">P</span>
+      <div class="letter-b-wrap">
+        <div class="dot"></div>
+        <span class="letter letter-b">B</span>
+      </div>
+    </div>
+    <div class="tagline">PsychedBox</div>
+    <div class="divider"></div>
+    <div class="sub">Monthly Immersive Art Subscription</div>
+  </div>
+</body>
+</html>
