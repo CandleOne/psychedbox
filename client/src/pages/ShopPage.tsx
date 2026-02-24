@@ -363,7 +363,7 @@ export default function ShopPage() {
       <section className="px-6 py-12">
         <div className="max-w-6xl mx-auto">
           <p className="text-gray-500 text-sm mb-6">{filtered.length} products</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
