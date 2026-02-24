@@ -83,6 +83,7 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
           <div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Shop</p>
+              <a href="/shop" className="block text-sm py-1 font-semibold hover:opacity-80 transition-colors" style={{ color: "#FF6B6B" }}>All Products</a>
               <a href="/shop/monthly-boxes" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Monthly Boxes</a>
               <a href="/shop/gift-subscriptions" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Gift Subscriptions</a>
               <a href="/shop/past-puzzles" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Past Puzzles</a>

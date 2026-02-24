@@ -25,6 +25,7 @@ import {
   TermsPage,
 } from "./pages/InfoPages";
 import Movement from "./pages/Movement";
+import ShopPage from "./pages/ShopPage";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/account"} component={AccountPage} />
 
+      <Route path={"/shop"} component={ShopPage} />
       <Route path={"/shop/monthly-boxes"} component={MonthlyBoxesPage} />
       <Route path={"/shop/gift-subscriptions"} component={GiftSubscriptionsPage} />
       <Route path={"/shop/past-puzzles"} component={PastPuzzlesPage} />
