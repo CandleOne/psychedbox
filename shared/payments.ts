@@ -142,6 +142,20 @@ export interface CreateProductCheckoutResponse {
   url: string;
 }
 
+export interface CartLineItem {
+  productId: string;
+  variant?: string;
+  quantity: number;
+}
+
+export interface CreateCartCheckoutRequest {
+  items: CartLineItem[];
+}
+
+export interface CreateCartCheckoutResponse {
+  url: string;
+}
+
 export interface CreatePortalRequest {
   /** Stripe customer ID (stored client-side after first checkout) */
   customerId: string;

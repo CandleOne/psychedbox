@@ -1,9 +1,10 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useCart } from "@/contexts/CartContext";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { useState } from "react";
-import { Loader2, ShoppingCart } from "lucide-react";
+import { Check, Loader2, Plus, ShoppingCart } from "lucide-react";
 
 // ─── Product Data ────────────────────────────────────────────────────────────
 
@@ -230,9 +231,16 @@ const categories: { id: Category; label: string }[] = [
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
 
-function ProductCard({ product, onBuy, buying }: { product: Product; onBuy: (productId: string, variant?: string) => void; buying: boolean }) {
+function ProductCard({ product, onBuy, buying, onAddToCart }: { product: Product; onBuy: (productId: string, variant?: string) => void; buying: boolean; onAddToCart: (product: Product, variant?: string) => void }) {
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] ?? "");
   const [isHovered, setIsHovered] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  function handleAddToCart() {
+    onAddToCart(product, selectedVariant);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  }
 
   return (
     <article 
@@ -261,11 +269,10 @@ function ProductCard({ product, onBuy, buying }: { product: Product; onBuy: (pro
 
       {/* Quick Add on Hover */}
       <button
-        disabled={buying}
-        className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-gray-900 hover:text-white disabled:opacity-50 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
-        onClick={() => onBuy(product.id, selectedVariant)}
+        className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${justAdded ? 'bg-green-500 text-white' : 'bg-white hover:bg-gray-900 hover:text-white'} ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        onClick={handleAddToCart}
       >
-        {buying ? <Loader2 size={18} className="animate-spin" /> : <ShoppingCart size={18} />}
+        {justAdded ? <Check size={18} /> : <Plus size={18} />}
       </button>
 
       {/* Info */}
@@ -295,26 +302,38 @@ function ProductCard({ product, onBuy, buying }: { product: Product; onBuy: (pro
           </div>
         )}
 
-        {/* Price & Add */}
+        {/* Price & Actions */}
         <div className="flex items-center justify-between">
           <p className="text-gray-900 font-black text-xl">
             {product.priceFrom && <span className="text-gray-400 text-sm font-normal mr-1">from</span>}
             {product.price}
           </p>
-          <button
-            disabled={buying}
-            className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => onBuy(product.id, selectedVariant)}
-          >
-            {buying ? (
-              <span className="flex items-center gap-2">
-                <Loader2 size={14} className="animate-spin" />
-                Processing…
-              </span>
-            ) : (
-              "Buy Now"
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              className={`px-3 py-2 rounded-lg border text-sm font-bold transition-colors flex items-center gap-1.5 ${justAdded ? 'border-green-500 text-green-600 bg-green-50' : 'border-gray-200 text-gray-700 hover:border-gray-400'}`}
+              onClick={handleAddToCart}
+            >
+              {justAdded ? (
+                <><Check size={14} /> Added</>
+              ) : (
+                <><ShoppingCart size={14} /> Add</>
+              )}
+            </button>
+            <button
+              disabled={buying}
+              className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => onBuy(product.id, selectedVariant)}
+            >
+              {buying ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 size={14} className="animate-spin" />
+                  Processing…
+                </span>
+              ) : (
+                "Buy Now"
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -326,11 +345,23 @@ function ProductCard({ product, onBuy, buying }: { product: Product; onBuy: (pro
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const { productCheckout, loading, error } = useCheckout();
+  const { addItem } = useCart();
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
 
   function handleBuy(productId: string, variant?: string) {
     setActiveProductId(productId);
     productCheckout(productId, variant);
+  }
+
+  function handleAddToCart(product: Product, variant?: string) {
+    const priceNum = parseInt(product.price.replace(/[^0-9]/g, ""), 10) * 100;
+    addItem({
+      productId: product.id,
+      variant: variant || undefined,
+      name: product.name,
+      price: priceNum,
+      image: product.image,
+    });
   }
 
   useSEO({
@@ -394,6 +425,7 @@ export default function ShopPage() {
                 product={product}
                 onBuy={handleBuy}
                 buying={loading && activeProductId === product.id}
+                onAddToCart={handleAddToCart}
               />
             ))}
           </div>

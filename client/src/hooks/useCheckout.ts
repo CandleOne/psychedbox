@@ -1,8 +1,10 @@
 import { useState } from "react";
+import type { CartLineItem } from "@shared/payments";
 import {
   redirectToCheckout,
   redirectToPortal,
   redirectToProductCheckout,
+  redirectToCartCheckout,
 } from "@/lib/payments";
 
 /**
@@ -52,5 +54,18 @@ export function useCheckout() {
     }
   }
 
-  return { checkout, productCheckout, manageSubscription, loading, error };
+  async function cartCheckout(items: CartLineItem[]) {
+    setLoading(true);
+    setError(null);
+    try {
+      await redirectToCartCheckout(items);
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.error || err?.message || "Something went wrong";
+      setError(msg);
+      setLoading(false);
+    }
+  }
+
+  return { checkout, productCheckout, cartCheckout, manageSubscription, loading, error };
 }

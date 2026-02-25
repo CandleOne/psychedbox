@@ -24,7 +24,7 @@ export function SubscribeButton({
   className,
   variant = "default",
 }: SubscribeButtonProps) {
-  const { redirectToCheckout, loading, error } = useCheckout();
+  const { checkout, loading, error } = useCheckout();
 
   return (
     <div>
@@ -32,7 +32,7 @@ export function SubscribeButton({
         variant={variant}
         className={className}
         disabled={loading}
-        onClick={() => redirectToCheckout(plan)}
+        onClick={() => checkout(plan)}
       >
         {loading ? (
           <>

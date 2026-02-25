@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Search, LogIn, Menu, X } from "lucide-react";
+import { Search, LogIn, Menu, ShoppingCart, X } from "lucide-react";
 import { useLocation } from "wouter";
+import { useCart } from "@/contexts/CartContext";
 
 function Logo() {
   return (
@@ -16,6 +17,7 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [location] = useLocation();
+  const { count, openCart } = useCart();
 
   return (
     <>
@@ -50,6 +52,14 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
           </div>
 
           <div className="flex items-center gap-4">
+            <button onClick={openCart} className="relative text-white hover:text-white/80 transition-colors">
+              <ShoppingCart size={18} />
+              {count > 0 && (
+                <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full bg-[#FF6B6B] text-white text-[10px] font-bold flex items-center justify-center px-1">
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
+            </button>
             <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
               ACCOUNT
             </a>

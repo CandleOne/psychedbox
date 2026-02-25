@@ -1,8 +1,11 @@
 import type {
+  CartLineItem,
   CreateCheckoutRequest,
   CreateCheckoutResponse,
   CreateProductCheckoutRequest,
   CreateProductCheckoutResponse,
+  CreateCartCheckoutRequest,
+  CreateCartCheckoutResponse,
   CreatePortalRequest,
   CreatePortalResponse,
   PricingPlan,
@@ -40,6 +43,20 @@ export async function redirectToProductCheckout(
   const body: CreateProductCheckoutRequest = { productId, variant };
   const { data } = await api.post<CreateProductCheckoutResponse>(
     "/create-product-checkout",
+    body
+  );
+  window.location.href = data.url;
+}
+
+/**
+ * Create a Stripe Checkout session for a cart of multiple products.
+ */
+export async function redirectToCartCheckout(
+  items: CartLineItem[]
+): Promise<void> {
+  const body: CreateCartCheckoutRequest = { items };
+  const { data } = await api.post<CreateCartCheckoutResponse>(
+    "/create-cart-checkout",
     body
   );
   window.location.href = data.url;

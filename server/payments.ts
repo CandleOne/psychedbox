@@ -6,6 +6,8 @@ import type {
   CreateCheckoutResponse,
   CreateProductCheckoutRequest,
   CreateProductCheckoutResponse,
+  CreateCartCheckoutRequest,
+  CreateCartCheckoutResponse,
   CreatePortalRequest,
   CreatePortalResponse,
 } from "../shared/payments.js";
@@ -164,6 +166,68 @@ export function createPaymentRouter(): Router {
       res.json(response);
     } catch (err: any) {
       console.error("[Stripe] create-product-checkout error:", err);
+      res.status(500).json({ error: err.message || "Failed to create checkout session" });
+    }
+  });
+
+  // ── POST /api/payments/create-cart-checkout ──
+  // Creates a Stripe Checkout Session for multiple shop products (cart).
+  router.post("/create-cart-checkout", json(), async (req, res) => {
+    try {
+      const { items } = req.body as CreateCartCheckoutRequest;
+
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        res.status(400).json({ error: "Cart is empty" });
+        return;
+      }
+
+      if (items.length > 50) {
+        res.status(400).json({ error: "Too many items" });
+        return;
+      }
+
+      const stripe = getStripe();
+      const base = origin(req);
+
+      const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+      for (const item of items) {
+        const product = SHOP_PRODUCTS.find((p) => p.id === item.productId);
+        if (!product) {
+          res.status(400).json({ error: `Unknown product: ${item.productId}` });
+          return;
+        }
+
+        const qty = Math.max(1, Math.min(item.quantity || 1, 10));
+        const displayName = item.variant
+          ? `${product.name} — ${item.variant}`
+          : product.name;
+
+        lineItems.push({
+          price_data: {
+            currency: "usd",
+            product_data: { name: displayName },
+            unit_amount: product.price,
+          },
+          quantity: qty,
+        });
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: lineItems,
+        success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${base}/shop`,
+        metadata: {
+          source: "cart",
+          itemCount: String(lineItems.length),
+        },
+      });
+
+      const response: CreateCartCheckoutResponse = { url: session.url! };
+      res.json(response);
+    } catch (err: any) {
+      console.error("[Stripe] create-cart-checkout error:", err);
       res.status(500).json({ error: err.message || "Failed to create checkout session" });
     }
   });
