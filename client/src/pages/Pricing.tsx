@@ -70,7 +70,7 @@ export default function Pricing() {
                   borderColor: isPopular ? "#FF6B6B" : "#E0E0E0",
                   borderWidth: isPopular ? "3px" : "1px",
                 }}
-                className="rounded-lg p-8 bg-white relative"
+                className="rounded-lg p-8 bg-white relative flex flex-col"
               >
                 {isPopular && (
                   <span
@@ -101,7 +101,7 @@ export default function Pricing() {
                       : "/year"}
                 </p>
                 <p className="text-gray-600 mb-6">{plan.description}</p>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((f, j) => (
                     <li
                       key={j}
