@@ -3,6 +3,7 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { stripeRouter } from "./stripe.js";
+import { createPaymentRouter } from "./payments.js";
 import dotenv from "dotenv";
 
 // Load .env file
@@ -31,6 +32,9 @@ async function startServer() {
 
   // Stripe API routes
   app.use("/api/stripe", stripeRouter);
+
+  // Payments API routes (shop products, plans, portal)
+  app.use("/api/payments", createPaymentRouter());
 
   // Serve static files from dist/public in production
   const staticPath =

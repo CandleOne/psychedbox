@@ -1,9 +1,18 @@
 import Stripe from "stripe";
 import { Router, Request, Response } from "express";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-01-27.acacia",
-});
+let _stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new Error("STRIPE_SECRET_KEY is not set");
+    }
+    _stripe = new Stripe(key);
+  }
+  return _stripe;
+}
 
 export const stripeRouter = Router();
 
@@ -38,7 +47,7 @@ stripeRouter.post("/create-checkout-session", async (req: Request, res: Response
   const origin = process.env.APP_URL || "https://psychedbox.com";
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: successUrl || `${origin}/account?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
@@ -74,7 +83,7 @@ stripeRouter.post("/create-portal-session", async (req: Request, res: Response) 
   const origin = process.env.APP_URL || "https://psychedbox.com";
 
   try {
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
       customer: customerId,
       return_url: `${origin}/account`,
     });
@@ -101,7 +110,7 @@ stripeRouter.post(
     let event: Stripe.Event;
 
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+      event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err: any) {
       console.error("Webhook signature verification failed:", err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
