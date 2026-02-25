@@ -1,8 +1,10 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
-import { Camera, Users, BookOpen, Calendar, Heart, Package, Gift, RotateCcw, Truck, HelpCircle, Briefcase, Mail, Star, ShieldAlert } from "lucide-react";
+import { useState } from "react";
+import { Camera, Users, BookOpen, Calendar, Heart, Package, Gift, RotateCcw, Truck, HelpCircle, Briefcase, Mail, Star, ShieldAlert, Loader2 } from "lucide-react";
 
 // ─── Shared layout components ────────────────────────────────────────────────
 
@@ -77,16 +79,31 @@ export function MonthlyBoxesPage() {
     canonical: "/shop/monthly-boxes",
   });
 
+  const { checkout, loading, error } = useCheckout();
+  const [activePlan, setActivePlan] = useState<string | null>(null);
+
   const plans = [
-    { name: "Monthly", price: "$29", period: "/mo", desc: "Flexibility to explore month by month.", features: ["Monthly puzzle portrait", "Curated themed goodies", "Digital member story", "Community access"] },
-    { name: "Quarterly", price: "$79", period: "/quarter", desc: "Three boxes, save 10% vs monthly.", features: ["3 monthly puzzle portraits", "Curated themed goodies", "Digital member stories", "Community access", "Exclusive quarterly merch"] },
-    { name: "Annual", price: "$299", period: "/year", desc: "Twelve boxes, save 15% vs monthly.", features: ["12 monthly puzzle portraits", "Curated themed goodies", "Digital member stories", "Community access", "Exclusive merch drops", "VIP early access"] },
+    { id: "monthly", name: "Monthly", price: "$29", period: "/mo", desc: "Flexibility to explore month by month.", features: ["Monthly puzzle portrait", "Curated themed goodies", "Digital member story", "Community access"] },
+    { id: "quarterly", name: "Quarterly", price: "$79", period: "/quarter", desc: "Three boxes, save 10% vs monthly.", features: ["3 monthly puzzle portraits", "Curated themed goodies", "Digital member stories", "Community access", "Exclusive quarterly merch"] },
+    { id: "annual", name: "Annual", price: "$299", period: "/year", desc: "Twelve boxes, save 15% vs monthly.", features: ["12 monthly puzzle portraits", "Curated themed goodies", "Digital member stories", "Community access", "Exclusive merch drops", "VIP early access"] },
   ];
+
+  function handleCheckout(planId: string) {
+    setActivePlan(planId);
+    checkout(planId);
+  }
 
   return (
     <PageShell eyebrow="Shop" title="Monthly Boxes" description="A new story, a new portrait, a new connection every month. Choose the plan that works for you.">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-3 rounded-lg text-center text-sm mb-8">
+          {error}
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        {plans.map((plan, i) => (
+        {plans.map((plan, i) => {
+          const isLoading = loading && activePlan === plan.id;
+          return (
           <div key={plan.name} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-xl p-8 bg-white border">
             {i === 1 && <p style={{ color: "#FF6B6B" }} className="text-xs font-bold uppercase tracking-widest mb-3">Most Popular</p>}
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{plan.name}</h2>
@@ -99,11 +116,18 @@ export function MonthlyBoxesPage() {
                 </li>
               ))}
             </ul>
-            <button style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#1a1a1a" }} className="w-full py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
-              Get Started
+            <button
+              onClick={() => handleCheckout(plan.id)}
+              disabled={loading}
+              style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#1a1a1a" }}
+              className="w-full py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading ? "Redirecting…" : "Get Started"}
             </button>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8">
