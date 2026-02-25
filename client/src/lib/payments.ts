@@ -10,9 +10,24 @@ import type {
   CreatePortalResponse,
   PricingPlan,
 } from "@shared/payments";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 
 const api = axios.create({ baseURL: "/api/payments" });
+
+const STRIPE_PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
+let _stripePromise: ReturnType<typeof loadStripe> | null = null;
+function getStripe() {
+  if (!_stripePromise && STRIPE_PK) _stripePromise = loadStripe(STRIPE_PK);
+  return _stripePromise ?? Promise.resolve(null);
+}
+
+const CLIENT_PRICE_IDS: Record<string, string | undefined> = {
+  monthly:   import.meta.env.VITE_STRIPE_PRICE_MONTHLY as string | undefined,
+  quarterly: import.meta.env.VITE_STRIPE_PRICE_QUARTERLY as string | undefined,
+  annual:    import.meta.env.VITE_STRIPE_PRICE_ANNUAL as string | undefined,
+  gift:      import.meta.env.VITE_STRIPE_PRICE_GIFT as string | undefined,
+};
 
 /**
  * Attempt a server-side checkout first. If the API server is unreachable
@@ -33,13 +48,37 @@ export async function fetchPlans(): Promise<PricingPlan[]> {
  * Tries the backend API first. If it fails (static hosting / no server),
  * falls back to client-side Stripe Checkout using Price IDs.
  */
+// Payment Links — create in Stripe Dashboard → Payment Links
+// Set these as GitHub secrets: VITE_STRIPE_LINK_MONTHLY, etc.
+const PAYMENT_LINKS: Record<string, string | undefined> = {
+  monthly:   import.meta.env.VITE_STRIPE_LINK_MONTHLY as string | undefined,
+  quarterly: import.meta.env.VITE_STRIPE_LINK_QUARTERLY as string | undefined,
+  annual:    import.meta.env.VITE_STRIPE_LINK_ANNUAL as string | undefined,
+  gift:      import.meta.env.VITE_STRIPE_LINK_GIFT as string | undefined,
+};
+
 export async function redirectToCheckout(
   planId: string,
   donationAmountCents?: number
 ): Promise<void> {
-  const body: CreateCheckoutRequest = { planId, donationAmountCents };
-  const { data } = await api.post<CreateCheckoutResponse>("/create-checkout", body);
-  window.location.href = data.url;
+  // 1) Try server-side session (works when Node server is running)
+  try {
+    const body: CreateCheckoutRequest = { planId, donationAmountCents };
+    const { data } = await api.post<CreateCheckoutResponse>("/create-checkout", body);
+    window.location.href = data.url;
+    return;
+  } catch {
+    // Server unavailable (static hosting) — fall through
+  }
+
+  // 2) Static fallback: redirect to Stripe Payment Link
+  const link = PAYMENT_LINKS[planId];
+  if (!link) {
+    throw new Error(
+      `Checkout unavailable. Please contact support.`
+    );
+  }
+  window.location.href = link;
 }
 
 /**
