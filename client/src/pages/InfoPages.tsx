@@ -104,12 +104,12 @@ export function MonthlyBoxesPage() {
         {plans.map((plan, i) => {
           const isLoading = loading && activePlan === plan.id;
           return (
-          <div key={plan.name} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-xl p-8 bg-white border">
+          <div key={plan.name} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-xl p-8 bg-white border flex flex-col">
             {i === 1 && <p style={{ color: "#FF6B6B" }} className="text-xs font-bold uppercase tracking-widest mb-3">Most Popular</p>}
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4">{plan.desc}</p>
             <p className="mb-6"><span style={{ color: "#FF6B6B", fontSize: "2.5rem", fontWeight: 900 }}>{plan.price}</span><span className="text-gray-400 text-sm">{plan.period}</span></p>
-            <ul className="space-y-2 mb-8">
+            <ul className="space-y-2 mb-8 flex-1">
               {plan.features.map(f => (
                 <li key={f} className="flex items-center gap-2 text-gray-700 text-sm">
                   <span style={{ color: "#FF6B6B" }} className="font-bold">✓</span> {f}
