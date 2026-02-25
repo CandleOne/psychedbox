@@ -34,6 +34,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        env:
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_STRIPE_PRICE_MONTHLY: ${{ secrets.VITE_STRIPE_PRICE_MONTHLY }}
+          VITE_STRIPE_PRICE_QUARTERLY: ${{ secrets.VITE_STRIPE_PRICE_QUARTERLY }}
+          VITE_STRIPE_PRICE_ANNUAL: ${{ secrets.VITE_STRIPE_PRICE_ANNUAL }}
+          VITE_STRIPE_PRICE_GIFT: ${{ secrets.VITE_STRIPE_PRICE_GIFT }}
         run: pnpm build
 
       - name: Deploy dist/public to deploy branch
