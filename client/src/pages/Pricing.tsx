@@ -141,7 +141,7 @@ export default function Pricing() {
       >
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Gift Box */}
-          <div className="rounded-lg p-8 bg-white border border-gray-200">
+          <div className="rounded-lg p-8 bg-white border border-gray-200 flex flex-col">
             <h3 className="text-2xl font-bold mb-2 text-gray-900">
               {giftPlan.name}
             </h3>
@@ -157,7 +157,7 @@ export default function Pricing() {
             </p>
             <p className="text-gray-400 text-sm mb-4">one-time</p>
             <p className="text-gray-600 mb-6">{giftPlan.description}</p>
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-3 mb-8 flex-1">
               {giftPlan.features.map((f, j) => (
                 <li
                   key={j}
@@ -188,7 +188,7 @@ export default function Pricing() {
           </div>
 
           {/* Donation */}
-          <div className="rounded-lg p-8 bg-white border border-gray-200">
+          <div className="rounded-lg p-8 bg-white border border-gray-200 flex flex-col">
             <h3 className="text-2xl font-bold mb-2 text-gray-900">
               {donationPlan.name}
             </h3>
@@ -204,7 +204,7 @@ export default function Pricing() {
             </p>
             <p className="text-gray-400 text-sm mb-4">one-time donation</p>
             <p className="text-gray-600 mb-6">{donationPlan.description}</p>
-            <ul className="space-y-3 mb-6">
+            <ul className="space-y-3 mb-6 flex-1">
               {donationPlan.features.map((f, j) => (
                 <li
                   key={j}
