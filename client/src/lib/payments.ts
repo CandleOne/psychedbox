@@ -1,6 +1,8 @@
 import type {
   CreateCheckoutRequest,
   CreateCheckoutResponse,
+  CreateProductCheckoutRequest,
+  CreateProductCheckoutResponse,
   CreatePortalRequest,
   CreatePortalResponse,
   PricingPlan,
@@ -25,6 +27,21 @@ export async function redirectToCheckout(
 ): Promise<void> {
   const body: CreateCheckoutRequest = { planId, donationAmountCents };
   const { data } = await api.post<CreateCheckoutResponse>("/create-checkout", body);
+  window.location.href = data.url;
+}
+
+/**
+ * Create a Stripe Checkout session for a shop product and redirect.
+ */
+export async function redirectToProductCheckout(
+  productId: string,
+  variant?: string
+): Promise<void> {
+  const body: CreateProductCheckoutRequest = { productId, variant };
+  const { data } = await api.post<CreateProductCheckoutResponse>(
+    "/create-product-checkout",
+    body
+  );
   window.location.href = data.url;
 }
 

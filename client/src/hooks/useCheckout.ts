@@ -1,66 +1,56 @@
 import { useState } from "react";
+import {
+  redirectToCheckout,
+  redirectToPortal,
+  redirectToProductCheckout,
+} from "@/lib/payments";
 
-type Plan = "monthly" | "quarterly" | "annual";
-
-interface UseCheckoutReturn {
-  redirectToCheckout: (plan: Plan) => Promise<void>;
-  redirectToPortal: (customerId: string) => Promise<void>;
-  loading: boolean;
-  error: string | null;
-}
-
-export function useCheckout(): UseCheckoutReturn {
+/**
+ * Hook that wraps Stripe checkout / portal redirects with loading
+ * and error state so the UI can show spinners and error messages.
+ */
+export function useCheckout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const redirectToCheckout = async (plan: Plan) => {
+  async function checkout(planId: string, donationAmountCents?: number) {
     setLoading(true);
     setError(null);
-
     try {
-      const res = await fetch("/api/stripe/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to start checkout.");
-      }
-
-      // Redirect to Stripe-hosted checkout
-      window.location.href = data.url;
+      await redirectToCheckout(planId, donationAmountCents);
     } catch (err: any) {
-      setError(err.message);
+      const msg =
+        err?.response?.data?.error || err?.message || "Something went wrong";
+      setError(msg);
       setLoading(false);
     }
-  };
+  }
 
-  const redirectToPortal = async (customerId: string) => {
+  async function manageSubscription(customerId: string) {
     setLoading(true);
     setError(null);
-
     try {
-      const res = await fetch("/api/stripe/create-portal-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customerId }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to open billing portal.");
-      }
-
-      window.location.href = data.url;
+      await redirectToPortal(customerId);
     } catch (err: any) {
-      setError(err.message);
+      const msg =
+        err?.response?.data?.error || err?.message || "Something went wrong";
+      setError(msg);
       setLoading(false);
     }
-  };
+  }
 
-  return { redirectToCheckout, redirectToPortal, loading, error };
+  async function productCheckout(productId: string, variant?: string) {
+    setLoading(true);
+    setError(null);
+    try {
+      await redirectToProductCheckout(productId, variant);
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.error || err?.message || "Something went wrong";
+      setError(msg);
+      setLoading(false);
+    }
+  }
+
+  return { checkout, productCheckout, manageSubscription, loading, error };
 }

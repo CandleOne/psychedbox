@@ -1,8 +1,9 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { Loader2, ShoppingCart } from "lucide-react";
 
 // ─── Product Data ────────────────────────────────────────────────────────────
 
@@ -229,7 +230,7 @@ const categories: { id: Category; label: string }[] = [
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, onBuy, buying }: { product: Product; onBuy: (productId: string, variant?: string) => void; buying: boolean }) {
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] ?? "");
   const [isHovered, setIsHovered] = useState(false);
 
@@ -260,10 +261,11 @@ function ProductCard({ product }: { product: Product }) {
 
       {/* Quick Add on Hover */}
       <button
-        className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-gray-900 hover:text-white ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
-        onClick={() => alert(`Quick add: ${product.name}`)}
+        disabled={buying}
+        className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center transition-all duration-300 hover:bg-gray-900 hover:text-white disabled:opacity-50 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        onClick={() => onBuy(product.id, selectedVariant)}
       >
-        <ShoppingCart size={18} />
+        {buying ? <Loader2 size={18} className="animate-spin" /> : <ShoppingCart size={18} />}
       </button>
 
       {/* Info */}
@@ -300,10 +302,18 @@ function ProductCard({ product }: { product: Product }) {
             {product.price}
           </p>
           <button
-            className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors"
-            onClick={() => alert(`Add to cart: ${product.name} — ${selectedVariant}`)}
+            disabled={buying}
+            className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => onBuy(product.id, selectedVariant)}
           >
-            Add to Cart
+            {buying ? (
+              <span className="flex items-center gap-2">
+                <Loader2 size={14} className="animate-spin" />
+                Processing…
+              </span>
+            ) : (
+              "Buy Now"
+            )}
           </button>
         </div>
       </div>
@@ -315,6 +325,13 @@ function ProductCard({ product }: { product: Product }) {
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
+  const { productCheckout, loading, error } = useCheckout();
+  const [activeProductId, setActiveProductId] = useState<string | null>(null);
+
+  function handleBuy(productId: string, variant?: string) {
+    setActiveProductId(productId);
+    productCheckout(productId, variant);
+  }
 
   useSEO({
     title: "Shop — Psychedelic Art, Tools & Ceremony Supplies | PsychedBox",
@@ -359,13 +376,25 @@ export default function ShopPage() {
         </div>
       </section>
 
+      {/* Error banner */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-3 text-center text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Product Grid */}
       <section className="px-6 py-12">
         <div className="max-w-6xl mx-auto">
           <p className="text-gray-500 text-sm mb-6">{filtered.length} products</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onBuy={handleBuy}
+                buying={loading && activeProductId === product.id}
+              />
             ))}
           </div>
         </div>

@@ -89,6 +89,38 @@ export const PLANS: PricingPlan[] = [
   },
 ];
 
+// ── Shop product catalog (prices in cents, validated server-side) ──
+
+export interface ShopProduct {
+  id: string;
+  name: string;
+  /** Base price in cents */
+  price: number;
+}
+
+/**
+ * Authoritative product price list. The server uses this to look up prices
+ * so clients cannot tamper with amounts.
+ */
+export const SHOP_PRODUCTS: ShopProduct[] = [
+  { id: "eye-mask", name: "Ceremony Eye Mask", price: 2400 },
+  { id: "integration-journal", name: "Integration Journal", price: 2800 },
+  { id: "singing-bowl", name: "Singing Bowl", price: 3800 },
+  { id: "incense-bundle", name: "Sacred Smoke Bundle", price: 1800 },
+  { id: "herb-grinder", name: "Artist Series Grinder", price: 3200 },
+  { id: "reagent-kit", name: "Harm Reduction Test Kit", price: 2200 },
+  { id: "rolling-tray", name: "Artist Rolling Tray", price: 2600 },
+  { id: "mushroom-kit", name: "Gourmet Mushroom Grow Kit", price: 3400 },
+  { id: "enamel-pins", name: "Enamel Pin", price: 1400 },
+  { id: "playing-cards", name: "Psychedelic Playing Cards", price: 1800 },
+  { id: "art-print", name: "Limited Art Print", price: 2200 },
+  { id: "tapestry", name: "Psychedelic Tapestry", price: 4400 },
+  { id: "sticker-pack", name: "Sticker Pack", price: 1000 },
+  { id: "crystal-set", name: "Crystal & Stone Set", price: 2600 },
+  { id: "candle", name: "Ceremony Candle", price: 2400 },
+  { id: "tea-ceremony-set", name: "Botanical Tea Set", price: 4200 },
+];
+
 // ── API request / response shapes ──
 
 export interface CreateCheckoutRequest {
@@ -98,6 +130,15 @@ export interface CreateCheckoutRequest {
 }
 
 export interface CreateCheckoutResponse {
+  url: string;
+}
+
+export interface CreateProductCheckoutRequest {
+  productId: string;
+  variant?: string;
+}
+
+export interface CreateProductCheckoutResponse {
   url: string;
 }
 

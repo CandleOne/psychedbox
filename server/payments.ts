@@ -1,9 +1,11 @@
 import { Router, raw, json } from "express";
 import Stripe from "stripe";
-import { PLANS } from "../shared/payments.js";
+import { PLANS, SHOP_PRODUCTS } from "../shared/payments.js";
 import type {
   CreateCheckoutRequest,
   CreateCheckoutResponse,
+  CreateProductCheckoutRequest,
+  CreateProductCheckoutResponse,
   CreatePortalRequest,
   CreatePortalResponse,
 } from "../shared/payments.js";
@@ -118,6 +120,50 @@ export function createPaymentRouter(): Router {
       res.json(response);
     } catch (err: any) {
       console.error("[Stripe] create-checkout error:", err);
+      res.status(500).json({ error: err.message || "Failed to create checkout session" });
+    }
+  });
+
+  // ── POST /api/payments/create-product-checkout ──
+  // Creates a Stripe Checkout Session for a shop product (one-time purchase).
+  router.post("/create-product-checkout", json(), async (req, res) => {
+    try {
+      const { productId, variant } = req.body as CreateProductCheckoutRequest;
+
+      const product = SHOP_PRODUCTS.find((p) => p.id === productId);
+      if (!product) {
+        res.status(400).json({ error: "Unknown product" });
+        return;
+      }
+
+      const stripe = getStripe();
+      const base = origin(req);
+
+      const productName = variant
+        ? `${product.name} — ${variant}`
+        : product.name;
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: { name: productName },
+              unit_amount: product.price,
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${base}/shop`,
+        metadata: { productId: product.id, variant: variant || "" },
+      });
+
+      const response: CreateProductCheckoutResponse = { url: session.url! };
+      res.json(response);
+    } catch (err: any) {
+      console.error("[Stripe] create-product-checkout error:", err);
       res.status(500).json({ error: err.message || "Failed to create checkout session" });
     }
   });
