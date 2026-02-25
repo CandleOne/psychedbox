@@ -181,13 +181,13 @@ export default function Home() {
             { name: "Quarterly", price: "$79", desc: "Three boxes, save 10%", features: ["3 monthly puzzles", "Themed goodies", "Digital stories", "Exclusive merch"] },
             { name: "Annual", price: "$299", desc: "Twelve boxes, save 15%", features: ["12 monthly puzzles", "Themed goodies", "Digital stories", "Exclusive merch", "VIP community access"] },
           ].map((plan, i) => (
-            <div key={i} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-lg p-8 bg-white">
+            <div key={i} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-lg p-8 bg-white flex flex-col">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">{plan.name}</h3>
               <p style={{ fontSize: "2.5rem", fontWeight: 900, color: "#FF6B6B" }} className="mb-2">
                 {plan.price}
               </p>
               <p className="text-gray-600 mb-6">{plan.desc}</p>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f, j) => (
                   <li key={j} className="flex items-center gap-2 text-gray-700">
                     <span style={{ color: "#FF6B6B" }} className="font-bold">✓</span> {f}
