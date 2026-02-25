@@ -10,23 +10,15 @@ import type {
   CreatePortalResponse,
   PricingPlan,
 } from "@shared/payments";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 
 const api = axios.create({ baseURL: "/api/payments" });
 
-const STRIPE_PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
-let _stripePromise: ReturnType<typeof loadStripe> | null = null;
-function getStripe() {
-  if (!_stripePromise && STRIPE_PK) _stripePromise = loadStripe(STRIPE_PK);
-  return _stripePromise ?? Promise.resolve(null);
-}
-
-const CLIENT_PRICE_IDS: Record<string, string | undefined> = {
-  monthly:   import.meta.env.VITE_STRIPE_PRICE_MONTHLY as string | undefined,
-  quarterly: import.meta.env.VITE_STRIPE_PRICE_QUARTERLY as string | undefined,
-  annual:    import.meta.env.VITE_STRIPE_PRICE_ANNUAL as string | undefined,
-  gift:      import.meta.env.VITE_STRIPE_PRICE_GIFT as string | undefined,
+// Payment Links from Stripe Dashboard
+const PAYMENT_LINKS: Record<string, string> = {
+  monthly:   "https://buy.stripe.com/5kQ9AU1a78UT5cugG3bAs01",
+  quarterly: "https://buy.stripe.com/00w9AU2eb9YX34m2PdbAs02",
+  annual:    "https://buy.stripe.com/6oUfZi1a72wv9sK9dBbAs03",
 };
 
 /**
@@ -46,16 +38,8 @@ export async function fetchPlans(): Promise<PricingPlan[]> {
  * Stripe's hosted checkout page.
  *
  * Tries the backend API first. If it fails (static hosting / no server),
- * falls back to client-side Stripe Checkout using Price IDs.
+ * falls back to Stripe Payment Links.
  */
-// Payment Links — create in Stripe Dashboard → Payment Links
-// Set these as GitHub secrets: VITE_STRIPE_LINK_MONTHLY, etc.
-const PAYMENT_LINKS: Record<string, string | undefined> = {
-  monthly:   import.meta.env.VITE_STRIPE_LINK_MONTHLY as string | undefined,
-  quarterly: import.meta.env.VITE_STRIPE_LINK_QUARTERLY as string | undefined,
-  annual:    import.meta.env.VITE_STRIPE_LINK_ANNUAL as string | undefined,
-  gift:      import.meta.env.VITE_STRIPE_LINK_GIFT as string | undefined,
-};
 
 export async function redirectToCheckout(
   planId: string,
