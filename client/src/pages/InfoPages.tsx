@@ -50,25 +50,10 @@ function LegalSection({ title, children }: { title: string; children: React.Reac
   );
 }
 
-// ─── Account ────────────────────────────────────────────────────────────────
+// ─── Account (now a thin redirect — real page is in AccountPage.tsx) ─────────
+// Kept as export for backward compat; the route now points to the dedicated file.
 
-export function AccountPage() {
-  useSEO({
-    title: "Your Account — Manage Your Subscription",
-    description: "Manage your PsychedBox subscription, track deliveries, update billing, and set your preferences all in one place.",
-    canonical: "/account",
-  });
-  return (
-    <PageShell eyebrow="Account" title="Your Account" description="Everything you need to manage your membership, deliveries, and preferences in one place.">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InfoCard icon={Package} title="Manage Subscription" description="Switch plans, update billing details, and review renewal dates with full control." />
-        <InfoCard icon={Truck} title="Track Deliveries" description="Check shipping status for your current and upcoming boxes with order visibility." />
-        <InfoCard icon={Star} title="Member Preferences" description="Set content preferences and email settings so your experience stays personalized." />
-        <InfoCard icon={Mail} title="Need Help Fast" description="Contact support directly from your account for shipping, billing, or membership questions." />
-      </div>
-    </PageShell>
-  );
-}
+export { default as AccountPage } from "./AccountPage";
 
 // ─── Shop ────────────────────────────────────────────────────────────────────
 

@@ -194,4 +194,18 @@
   .db-scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .input-field {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #111827;
+    outline: none;
+  }
+  .input-field:focus {
+    border-color: #FF6B6B;
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+  }
 }

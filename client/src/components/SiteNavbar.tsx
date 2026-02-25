@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Search, LogIn, Menu, ShoppingCart, X } from "lucide-react";
+import { Search, LogIn, Menu, ShoppingCart, X, User } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 function Logo() {
   return (
@@ -18,6 +19,7 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
   const [searchOpen, setSearchOpen] = useState(false);
   const [location] = useLocation();
   const { count, openCart } = useCart();
+  const { user } = useAuth();
 
   return (
     <>
@@ -61,10 +63,10 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
               )}
             </button>
             <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
-              ACCOUNT
+              {user ? "ACCOUNT" : "LOG IN"}
             </a>
-            <a href="/account" className="text-white hover:text-white/80 transition-colors hidden sm:block">
-              <LogIn size={18} />
+            <a href={user ? "/account" : "/login"} className="text-white hover:text-white/80 transition-colors hidden sm:block">
+              {user ? <User size={18} /> : <LogIn size={18} />}
             </a>
             <button onClick={() => setMenuOpen(!menuOpen)} className="text-white hover:text-white/80 transition-colors">
               {menuOpen ? <X size={20} /> : <Menu size={20} />}

@@ -4,6 +4,7 @@ import CartDrawer from "@/components/CartDrawer";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import CheckoutCancel from "./pages/CheckoutCancel";
@@ -33,6 +34,9 @@ import Movement from "./pages/Movement";
 import ShopPage from "./pages/ShopPage";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import AdminPage from "./pages/AdminPage";
 
 function Router() {
   return (
@@ -41,7 +45,10 @@ function Router() {
       <Route path={"/pricing"} component={Pricing} />
       <Route path={"/checkout/success"} component={CheckoutSuccess} />
       <Route path={"/checkout/cancel"} component={CheckoutCancel} />
+      <Route path={"/login"} component={LoginPage} />
+      <Route path={"/signup"} component={SignupPage} />
       <Route path={"/account"} component={AccountPage} />
+      <Route path={"/admin"} component={AdminPage} />
 
       <Route path={"/shop"} component={ShopPage} />
       <Route path={"/shop/monthly-boxes"} component={MonthlyBoxesPage} />
@@ -80,13 +87,15 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <CartProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-            <CartDrawer />
-          </TooltipProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+              <CartDrawer />
+            </TooltipProvider>
+          </CartProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
