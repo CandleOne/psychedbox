@@ -108,6 +108,7 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
             </div>
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">About</p>
+              <a href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</a>
               <a href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</a>
               <a href="/about/our-mission" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Our Mission</a>
               <a href="/about/how-it-works" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">How It Works</a>

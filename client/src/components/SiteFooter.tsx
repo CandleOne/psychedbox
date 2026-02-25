@@ -6,6 +6,7 @@ export default function SiteFooter() {
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Company</p>
             <a href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</a>
+            <a href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</a>
             <a href="/about-us" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">About Us</a>
             <a href="/contact" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Contact</a>
             <a href="/careers" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Careers</a>

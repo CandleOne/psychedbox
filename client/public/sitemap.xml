@@ -50,6 +50,42 @@
   </url>
 
   <url>
+    <loc>https://psychedbox.com/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://psychedbox.com/blog/what-is-harm-reduction</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://psychedbox.com/blog/setting-up-a-ceremony-space</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://psychedbox.com/blog/psychedelic-art-history-brief-introduction</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://psychedbox.com/blog/integration-after-psychedelic-experience</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://psychedbox.com/blog/growing-gourmet-mushrooms-at-home</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://psychedbox.com/about/our-mission</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

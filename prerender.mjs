@@ -121,6 +121,42 @@ const routes = [
       "Need to return or report an issue with your PsychedBox? Learn about our returns process and how to contact our support team.",
   },
   {
+    path: "/blog",
+    title: `Blog — Psychedelic Harm Reduction, Art & Community Guides | ${SITE_NAME}`,
+    description:
+      "Guides, stories, and insights on psychedelic harm reduction, ceremony, art, community, and wellness from the PsychedBox team.",
+  },
+  {
+    path: "/blog/what-is-harm-reduction",
+    title: `What Is Harm Reduction? A Beginner's Guide | ${SITE_NAME}`,
+    description:
+      "Harm reduction saves lives. Learn the core principles, practical strategies, and why the psychedelic community is leading the way.",
+  },
+  {
+    path: "/blog/setting-up-a-ceremony-space",
+    title: `How to Set Up a Ceremony Space at Home | ${SITE_NAME}`,
+    description:
+      "Create a safe, intentional environment for your inner work. A step-by-step guide to preparing your space, your mind, and your tools.",
+  },
+  {
+    path: "/blog/psychedelic-art-history-brief-introduction",
+    title: `A Brief History of Psychedelic Art | ${SITE_NAME}`,
+    description:
+      "From Mayan mushroom stones to Alex Grey — how visionary experiences have shaped art across centuries.",
+  },
+  {
+    path: "/blog/integration-after-psychedelic-experience",
+    title: `Integration: What to Do After a Psychedelic Experience | ${SITE_NAME}`,
+    description:
+      "The journey doesn't end when the effects fade. Learn how to process, integrate, and apply the insights from your experiences.",
+  },
+  {
+    path: "/blog/growing-gourmet-mushrooms-at-home",
+    title: `A Beginner's Guide to Growing Gourmet Mushrooms at Home | ${SITE_NAME}`,
+    description:
+      "Lion's mane, oyster, shiitake — growing gourmet mushrooms at home is easier than you think. Here's how to get started.",
+  },
+  {
     path: "/privacy-policy",
     title: `Privacy Policy — ${SITE_NAME}`,
     description: "Read PsychedBox's privacy policy to understand how we collect, use, and protect your personal information.",
