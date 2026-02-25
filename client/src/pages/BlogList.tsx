@@ -52,7 +52,7 @@ export default function BlogList() {
   );
 
   useSEO({
-    title: "Blog — Psychedelic Harm Reduction, Art & Community Guides",
+    title: "Blog — Guides on Psychedelic Harm Reduction, Ceremony, Art & Wellness",
     description:
       "Guides, stories, and insights on psychedelic harm reduction, ceremony, art, community, and wellness from the PsychedBox team.",
     canonical: "/blog",

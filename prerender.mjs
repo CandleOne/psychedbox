@@ -122,7 +122,7 @@ const routes = [
   },
   {
     path: "/blog",
-    title: `Blog — Psychedelic Harm Reduction, Art & Community Guides | ${SITE_NAME}`,
+    title: `Blog — Guides on Psychedelic Harm Reduction, Ceremony, Art & Wellness | ${SITE_NAME}`,
     description:
       "Guides, stories, and insights on psychedelic harm reduction, ceremony, art, community, and wellness from the PsychedBox team.",
   },
