@@ -5,7 +5,7 @@ import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
 import { useState } from "react";
-import { Camera, Users, BookOpen, Calendar, Heart, Package, Gift, RotateCcw, Truck, HelpCircle, Briefcase, Mail, Star, ShieldAlert, Loader2 } from "lucide-react";
+import { Camera, Users, BookOpen, Calendar, Heart, Package, Gift, RotateCcw, Truck, HelpCircle, Briefcase, Mail, Star, ShieldAlert, Loader2, MapPin, Clock, ExternalLink, ThumbsUp, Puzzle, Award, Globe, Mic } from "lucide-react";
 
 // ─── Shared layout components ────────────────────────────────────────────────
 
@@ -196,6 +196,69 @@ export function GiftSubscriptionsPage() {
   );
 }
 
+const pastPuzzles = [
+  {
+    month: "February 2026",
+    name: "Elena Vásquez",
+    role: "Integration Therapist & Author",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    theme: "Healing",
+    pieces: 500,
+    description: "Elena's work bridging traditional ceremony with modern psychotherapy has helped hundreds navigate their healing journeys with safety and intention.",
+    available: true,
+  },
+  {
+    month: "January 2026",
+    name: "Marcus Chen",
+    role: "Harm Reduction Advocate",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    theme: "Safety",
+    pieces: 500,
+    description: "Marcus co-founded a mobile testing service bringing reagent kits and peer support to music festivals across the Pacific Northwest.",
+    available: true,
+  },
+  {
+    month: "December 2025",
+    name: "Amara Osei",
+    role: "Visual Artist & Muralist",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop",
+    theme: "Art & Expression",
+    pieces: 500,
+    description: "Amara's large-scale murals explore consciousness expansion through Afrofuturist imagery, exhibited in galleries from Accra to Brooklyn.",
+    available: false,
+  },
+  {
+    month: "November 2025",
+    name: "Dr. James Whitfield",
+    role: "Psychedelic Researcher",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+    theme: "Research",
+    pieces: 500,
+    description: "Dr. Whitfield leads a clinical research program studying psilocybin-assisted therapy for treatment-resistant depression at a leading university.",
+    available: true,
+  },
+  {
+    month: "October 2025",
+    name: "Sage Running Deer",
+    role: "Indigenous Medicine Keeper",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+    theme: "Tradition",
+    pieces: 500,
+    description: "Sage advocates for indigenous sovereignty over sacred plant medicines and educates communities on the cultural roots of ceremonial practice.",
+    available: false,
+  },
+  {
+    month: "September 2025",
+    name: "Rafael Torres",
+    role: "Veterans Wellness Advocate",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    theme: "Advocacy",
+    pieces: 500,
+    description: "After his own transformative experience, Rafael started a peer support network helping veterans explore psychedelic-assisted healing for PTSD.",
+    available: true,
+  },
+];
+
 export function PastPuzzlesPage() {
   useSEO({
     title: "Past Puzzle Drops — Previous Featured Community Members",
@@ -203,25 +266,140 @@ export function PastPuzzlesPage() {
     canonical: "/shop/past-puzzles",
   });
 
+  const [filter, setFilter] = useState<string>("All");
+  const themes = ["All", ...Array.from(new Set(pastPuzzles.map(p => p.theme)))];
+  const filtered = filter === "All" ? pastPuzzles : pastPuzzles.filter(p => p.theme === filter);
+
   return (
     <PageShell eyebrow="Shop" title="Past Puzzles" description="Every month features a new community member. Browse our archive of past puzzle portraits and the stories behind them.">
-      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-10 text-center mb-10">
-        <Camera size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Archive Coming Soon</h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building out the full archive of past drops. Check back soon — each entry will include the puzzle image, member story, and availability for purchase.</p>
-        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
-          Subscribe for the Latest Box
-        </Link>
+      {/* Filter Tabs */}
+      <div className="flex flex-wrap gap-2 mb-10">
+        {themes.map(t => (
+          <button
+            key={t}
+            onClick={() => setFilter(t)}
+            style={filter === t ? { backgroundColor: "#FF6B6B", color: "#fff" } : { backgroundColor: "#F3F4F6", color: "#374151" }}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-colors hover:opacity-90"
+          >
+            {t}
+          </button>
+        ))}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <InfoCard icon={Package} title="Individual Puzzles Available" description="Past puzzle portraits will be available for individual purchase once the archive is live. Subscribe to be notified." />
-        <InfoCard icon={Star} title="Limited Quantities" description="Past drops are produced in limited runs. Members get first access before past puzzles open to the public." />
+
+      {/* Puzzle Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {filtered.map(puzzle => (
+          <article key={puzzle.month} className="rounded-xl border border-gray-200 bg-white overflow-hidden group">
+            <div className="relative aspect-square overflow-hidden bg-gray-100">
+              <img
+                src={puzzle.image}
+                alt={`${puzzle.name} — ${puzzle.role}`}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+              <span style={{ backgroundColor: "#FF6B6B" }} className="absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-full">
+                {puzzle.theme}
+              </span>
+              {!puzzle.available && (
+                <span className="absolute top-3 right-3 bg-gray-900 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Sold Out
+                </span>
+              )}
+            </div>
+            <div className="p-5">
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">{puzzle.month}</p>
+              <h3 className="text-lg font-bold text-gray-900 mb-0.5">{puzzle.name}</h3>
+              <p style={{ color: "#FF6B6B" }} className="text-sm font-semibold mb-3">{puzzle.role}</p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-4">{puzzle.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-400 text-xs">{puzzle.pieces} pieces</span>
+                <div className="flex gap-2">
+                  <Link href="/community/stories" className="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
+                    Read Story →
+                  </Link>
+                  {puzzle.available && (
+                    <button
+                      style={{ backgroundColor: "#FF6B6B" }}
+                      className="text-sm font-bold text-white px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
+                    >
+                      Buy — $24
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8 md:p-10">
+        <div className="md:flex md:items-center md:justify-between">
+          <div className="mb-6 md:mb-0">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Don't miss the next drop</h2>
+            <p className="text-gray-600 max-w-lg">Subscribe to get every new puzzle portrait delivered to your door — plus themed goodies and the featured member's story.</p>
+          </div>
+          <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity whitespace-nowrap">
+            Subscribe Now
+          </Link>
+        </div>
       </div>
     </PageShell>
   );
 }
 
 // ─── Community ───────────────────────────────────────────────────────────────
+
+const galleryEntries = [
+  {
+    member: "@jessicamindful",
+    image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=600&h=600&fit=crop",
+    caption: "Finally finished the Elena Vásquez portrait! Framed it above my meditation space — feels right.",
+    puzzle: "February 2026 — Elena Vásquez",
+    likes: 142,
+    featured: true,
+  },
+  {
+    member: "@puzzlehead_dan",
+    image: "https://images.unsplash.com/photo-1494451930944-8998635c2123?w=600&h=600&fit=crop",
+    caption: "Sunday session with Marcus Chen's puzzle and some good music. Harm reduction hero 🙌",
+    puzzle: "January 2026 — Marcus Chen",
+    likes: 98,
+    featured: false,
+  },
+  {
+    member: "@artful_healing",
+    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=600&fit=crop",
+    caption: "Wall of PsychedBox puzzles is growing! Three months in and I'm hooked. Community is everything.",
+    puzzle: "Multiple drops",
+    likes: 215,
+    featured: true,
+  },
+  {
+    member: "@the_quiet_trip",
+    image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?w=600&h=600&fit=crop",
+    caption: "Amara Osei's puzzle glued down and lacquered. The colors in this one are absolutely unreal.",
+    puzzle: "December 2025 — Amara Osei",
+    likes: 176,
+    featured: false,
+  },
+  {
+    member: "@cactus_mom_",
+    image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&h=600&fit=crop",
+    caption: "Gift from my partner — unboxing video coming soon! The goodies this month are 🔥",
+    puzzle: "February 2026 — Elena Vásquez",
+    likes: 87,
+    featured: false,
+  },
+  {
+    member: "@integrateandcreate",
+    image: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&h=600&fit=crop",
+    caption: "Built this one with my integration group. 4 people, 2 hours, incredible conversation. That's the magic.",
+    puzzle: "November 2025 — Dr. James Whitfield",
+    likes: 203,
+    featured: true,
+  },
+];
 
 export function MemberGalleryPage() {
   useSEO({
@@ -230,24 +408,140 @@ export function MemberGalleryPage() {
     canonical: "/community/member-gallery",
   });
 
+  const [view, setView] = useState<"all" | "featured">("all");
+  const displayed = view === "featured" ? galleryEntries.filter(e => e.featured) : galleryEntries;
+
   return (
     <PageShell eyebrow="Community" title="Member Gallery" description="PsychedBox is built by its members. This is where they share what they've built, how they've displayed it, and what it means to them.">
-      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-10 text-center mb-10">
-        <Camera size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Gallery Launching Soon</h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building the member gallery. Once live, subscribers can submit photos of their completed puzzles, display setups, and unboxing moments.</p>
-        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
-          Get Your First Box
-        </Link>
+      {/* View Toggle */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setView("all")}
+            style={view === "all" ? { backgroundColor: "#FF6B6B", color: "#fff" } : { backgroundColor: "#F3F4F6", color: "#374151" }}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+          >
+            All Posts
+          </button>
+          <button
+            onClick={() => setView("featured")}
+            style={view === "featured" ? { backgroundColor: "#FF6B6B", color: "#fff" } : { backgroundColor: "#F3F4F6", color: "#374151" }}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+          >
+            ⭐ Featured
+          </button>
+        </div>
+        <p className="text-gray-400 text-sm">{displayed.length} posts</p>
       </div>
+
+      {/* Gallery Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        {displayed.map((entry, i) => (
+          <article key={i} className="rounded-xl border border-gray-200 bg-white overflow-hidden group">
+            <div className="relative aspect-square overflow-hidden bg-gray-100">
+              <img
+                src={entry.image}
+                alt={`${entry.member}'s puzzle build`}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+              {entry.featured && (
+                <span style={{ backgroundColor: "#FF6B6B" }} className="absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                  <Award size={12} /> Featured
+                </span>
+              )}
+            </div>
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-bold text-gray-900 text-sm">{entry.member}</p>
+                <span className="flex items-center gap-1 text-gray-400 text-xs"><ThumbsUp size={12} /> {entry.likes}</span>
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed mb-3">{entry.caption}</p>
+              <p className="text-gray-400 text-xs flex items-center gap-1"><Puzzle size={12} /> {entry.puzzle}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Submit Section */}
+      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8 md:p-10 mb-10">
+        <div className="md:flex md:items-center md:justify-between">
+          <div className="mb-6 md:mb-0">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Share your build</h2>
+            <p className="text-gray-600 max-w-lg">Completed a PsychedBox puzzle? Tag us <strong>@psychedbox</strong> on Instagram or email your photo to <strong>gallery@psychedbox.com</strong> for a chance to be featured.</p>
+          </div>
+          <a href="https://www.instagram.com/psychedbox" target="_blank" rel="noopener noreferrer" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity whitespace-nowrap">
+            <Camera size={16} /> Tag Us on Instagram
+          </a>
+        </div>
+      </div>
+
+      {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <InfoCard icon={Camera} title="Submit Your Build" description="Once the gallery is live, members can submit photos of their completed puzzle portraits to be featured." />
-        <InfoCard icon={Users} title="Community Voted Features" description="The community votes on standout builds each month. Top entries get featured in our newsletter." />
-        <InfoCard icon={Heart} title="Share Your Story" description="Tell us what the puzzle meant to you. We love hearing how community members connect with each featured story." />
+        <InfoCard icon={Camera} title="Submit Your Build" description="Share photos of your completed puzzle portraits, display setups, or unboxing moments to be featured in the gallery." />
+        <InfoCard icon={Users} title="Community Voted" description="Each month the community votes on standout builds. Top entries get featured in our newsletter and win exclusive merch." />
+        <InfoCard icon={Heart} title="Share Your Story" description="Tell us what the puzzle meant to you. We love hearing how members connect with each featured story." />
       </div>
     </PageShell>
   );
 }
+
+const communityStories = [
+  {
+    name: "Elena Vásquez",
+    role: "Integration Therapist & Author",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    month: "February 2026",
+    category: "Healing",
+    excerpt: "I spent ten years in clinical psychology before I understood that healing isn't linear — it's recursive. My own journey with plant medicine showed me what my training couldn't: that transformation requires surrender, not control.",
+    readTime: "8 min read",
+  },
+  {
+    name: "Marcus Chen",
+    role: "Harm Reduction Advocate",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    month: "January 2026",
+    category: "Advocacy",
+    excerpt: "At my first festival, I watched someone have a crisis with no support around them. That moment changed my career. Now I run a team of fifty volunteers across twelve events a year.",
+    readTime: "6 min read",
+  },
+  {
+    name: "Amara Osei",
+    role: "Visual Artist & Muralist",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop",
+    month: "December 2025",
+    category: "Art",
+    excerpt: "My art lives in two worlds — the ancestral visions I carry from my grandmother's stories in Ghana and the expanded perceptions I've found through my own practice. I paint what the in-between looks like.",
+    readTime: "7 min read",
+  },
+  {
+    name: "Dr. James Whitfield",
+    role: "Psychedelic Researcher",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+    month: "November 2025",
+    category: "Research",
+    excerpt: "The data tells one story. The patients tell another. My work exists in the space between clinical rigor and lived experience — trying to build a bridge strong enough to carry both.",
+    readTime: "9 min read",
+  },
+  {
+    name: "Sage Running Deer",
+    role: "Indigenous Medicine Keeper",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+    month: "October 2025",
+    category: "Tradition",
+    excerpt: "These plants were never ours to discover — they were always here, held by hands before ours. My work is about reminding people of that, and ensuring indigenous communities remain at the center of this conversation.",
+    readTime: "10 min read",
+  },
+  {
+    name: "Rafael Torres",
+    role: "Veterans Wellness Advocate",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    month: "September 2025",
+    category: "Advocacy",
+    excerpt: "I came home from three deployments broken in ways the VA couldn't fix. Psychedelic therapy gave me my life back. Now I make sure other veterans know there's a path forward.",
+    readTime: "7 min read",
+  },
+];
 
 export function StoriesPage() {
   useSEO({
@@ -256,24 +550,132 @@ export function StoriesPage() {
     canonical: "/community/stories",
   });
 
+  const [category, setCategory] = useState<string>("All");
+  const categories = ["All", ...Array.from(new Set(communityStories.map(s => s.category)))];
+  const filtered = category === "All" ? communityStories : communityStories.filter(s => s.category === category);
+
   return (
     <PageShell eyebrow="Community" title="Stories" description="Every box tells a story. This is where those stories live — honest, human accounts from people doing meaningful work in the movement.">
-      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-10 text-center mb-10">
-        <BookOpen size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Stories Archive Coming Soon</h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building a home for every featured member's story. Subscribers get digital access to stories the moment their box ships.</p>
-        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
-          Subscribe to Read
-        </Link>
+      {/* Subscriber Badge */}
+      <div style={{ backgroundColor: "#FFF5F5", borderColor: "#FF6B6B" }} className="rounded-xl border p-4 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <Star size={20} style={{ color: "#FF6B6B" }} className="flex-shrink-0 mt-0.5" />
+        <p className="text-gray-700 text-sm"><strong>Subscriber perk:</strong> Stories drop digitally to active subscribers the day each box ships — before they're published here.</p>
       </div>
+
+      {/* Category Filter */}
+      <div className="flex flex-wrap gap-2 mb-10">
+        {categories.map(c => (
+          <button
+            key={c}
+            onClick={() => setCategory(c)}
+            style={category === c ? { backgroundColor: "#FF6B6B", color: "#fff" } : { backgroundColor: "#F3F4F6", color: "#374151" }}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-colors hover:opacity-90"
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {/* Stories List */}
+      <div className="space-y-6 mb-16">
+        {filtered.map(story => (
+          <article key={story.name} className="rounded-xl border border-gray-200 bg-white overflow-hidden md:flex group">
+            <div className="md:w-56 md:flex-shrink-0 aspect-square md:aspect-auto overflow-hidden bg-gray-100">
+              <img
+                src={story.image}
+                alt={story.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </div>
+            <div className="p-6 flex-1 flex flex-col">
+              <div className="flex items-center gap-3 mb-2">
+                <span style={{ backgroundColor: "#FF6B6B" }} className="text-white text-xs font-bold px-2.5 py-0.5 rounded-full">{story.category}</span>
+                <span className="text-gray-400 text-xs">{story.month}</span>
+                <span className="text-gray-400 text-xs flex items-center gap-1"><Clock size={11} /> {story.readTime}</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-0.5">{story.name}</h3>
+              <p style={{ color: "#FF6B6B" }} className="text-sm font-semibold mb-3">{story.role}</p>
+              <p className="text-gray-600 text-sm leading-relaxed flex-1 italic">"{story.excerpt}"</p>
+              <div className="mt-4">
+                <button style={{ color: "#FF6B6B" }} className="text-sm font-bold hover:underline">Read Full Story →</button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* Nominate + Info */}
+      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8 md:p-10 mb-10">
+        <div className="md:flex md:items-center md:justify-between">
+          <div className="mb-6 md:mb-0">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Nominate someone</h2>
+            <p className="text-gray-600 max-w-lg">Know a community member whose story deserves to be told? Subscribers can nominate future featured members each month.</p>
+          </div>
+          <a href="mailto:stories@psychedbox.com" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity whitespace-nowrap">
+            <Mail size={16} /> Nominate Now
+          </a>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <InfoCard icon={BookOpen} title="Subscriber-First Access" description="Every story drops digitally to subscribers the day their box ships — before anything goes public." />
         <InfoCard icon={Heart} title="Human-Centered" description="Stories are written with care and consent, centering the featured member's voice and experience." />
-        <InfoCard icon={Users} title="Nominate Someone" description="Know someone whose story deserves to be told? Members can nominate future feature subjects each month." />
+        <InfoCard icon={Users} title="Community-Driven" description="Featured subjects are nominated by the community. Every member has a voice in who we spotlight next." />
       </div>
     </PageShell>
   );
 }
+
+const upcomingEvents = [
+  {
+    title: "PsychedBox Member Circle — Portland",
+    date: "March 15, 2026",
+    time: "2:00 PM – 5:00 PM PST",
+    location: "The Loft Community Space, Portland, OR",
+    type: "In-Person" as const,
+    tag: "Member Circle",
+    description: "An intimate afternoon of puzzle building, story sharing, and community connection. Open to all active PsychedBox subscribers. Light refreshments provided.",
+    spotsLeft: 12,
+  },
+  {
+    title: "Harm Reduction 101 — Virtual Workshop",
+    date: "March 22, 2026",
+    time: "1:00 PM – 2:30 PM EST",
+    location: "Zoom (link sent after registration)",
+    type: "Virtual" as const,
+    tag: "Partner Event",
+    description: "A DanceSafe-led workshop on substance testing, peer support, and situational awareness. Free for all PsychedBox members.",
+    spotsLeft: null,
+  },
+  {
+    title: "Art & Integration Evening — NYC",
+    date: "April 5, 2026",
+    time: "6:00 PM – 9:00 PM EST",
+    location: "Blossom Gallery, Brooklyn, NY",
+    type: "In-Person" as const,
+    tag: "Community Event",
+    description: "A guided evening combining puzzle art, reflective writing, and group conversation. Facilitated by integration therapist Elena Vásquez.",
+    spotsLeft: 24,
+  },
+  {
+    title: "Fireside Chat: Indigenous Perspectives",
+    date: "April 18, 2026",
+    time: "12:00 PM – 1:30 PM PST",
+    location: "Zoom (link sent after registration)",
+    type: "Virtual" as const,
+    tag: "Speaker Series",
+    description: "A conversation with Sage Running Deer on indigenous sovereignty, sacred plant medicines, and the ethics of the modern psychedelic movement.",
+    spotsLeft: null,
+  },
+];
+
+const pastEvents = [
+  { title: "Launch Party — PsychedBox Debut", date: "September 1, 2025", location: "Denver, CO", type: "In-Person" as const, attendees: 85 },
+  { title: "Veterans & Psychedelics Panel", date: "October 10, 2025", location: "Virtual", type: "Virtual" as const, attendees: 210 },
+  { title: "Holiday Puzzle Build-a-thon", date: "December 14, 2025", location: "Austin, TX", type: "In-Person" as const, attendees: 42 },
+  { title: "New Year Integration Circle", date: "January 11, 2026", location: "Virtual", type: "Virtual" as const, attendees: 130 },
+];
 
 export function EventsPage() {
   useSEO({
@@ -284,18 +686,93 @@ export function EventsPage() {
 
   return (
     <PageShell eyebrow="Community" title="Events" description="Community is built in person. Find gatherings, member circles, and events where the PsychedBox community comes together.">
-      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-10 text-center mb-10">
-        <Calendar size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Events Calendar Coming Soon</h2>
-        <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building the events calendar. Subscribe to the newsletter to be the first to hear about member circles, partner events, and community gatherings.</p>
-        <Link href="/" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
-          Join the Newsletter
-        </Link>
+      {/* Upcoming Events */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <span style={{ backgroundColor: "#FF6B6B" }} className="w-3 h-3 rounded-full inline-block" />
+        Upcoming Events
+      </h2>
+      <div className="space-y-6 mb-16">
+        {upcomingEvents.map(event => (
+          <article key={event.title} className="rounded-xl border border-gray-200 bg-white p-6 md:p-8">
+            <div className="md:flex md:items-start md:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span
+                    style={{ backgroundColor: event.type === "Virtual" ? "#7C3AED" : "#059669" }}
+                    className="text-white text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1"
+                  >
+                    {event.type === "Virtual" ? <Globe size={11} /> : <MapPin size={11} />}
+                    {event.type}
+                  </span>
+                  <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-0.5 rounded-full">{event.tag}</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">{event.description}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1.5"><Calendar size={14} /> {event.date}</span>
+                  <span className="flex items-center gap-1.5"><Clock size={14} /> {event.time}</span>
+                  <span className="flex items-center gap-1.5"><MapPin size={14} /> {event.location}</span>
+                </div>
+              </div>
+              <div className="mt-4 md:mt-0 md:text-right flex-shrink-0">
+                {event.spotsLeft !== null && (
+                  <p className="text-gray-400 text-xs mb-2">{event.spotsLeft} spots left</p>
+                )}
+                <button
+                  style={{ backgroundColor: "#FF6B6B" }}
+                  className="px-6 py-2.5 text-white font-bold text-sm rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  RSVP
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
+
+      {/* Past Events */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Past Events</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+        {pastEvents.map(event => (
+          <div key={event.title} className="rounded-xl border border-gray-100 bg-gray-50 p-5">
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="font-bold text-gray-900 text-sm">{event.title}</h3>
+              <span
+                style={{ backgroundColor: event.type === "Virtual" ? "#EDE9FE" : "#D1FAE5", color: event.type === "Virtual" ? "#7C3AED" : "#059669" }}
+                className="text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ml-2"
+              >
+                {event.type}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-xs text-gray-500">
+              <span>{event.date}</span>
+              <span>·</span>
+              <span>{event.location}</span>
+              <span>·</span>
+              <span>{event.attendees} attended</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Host CTA */}
+      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8 md:p-10 mb-10">
+        <div className="md:flex md:items-center md:justify-between">
+          <div className="mb-6 md:mb-0">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Want to host a member circle?</h2>
+            <p className="text-gray-600 max-w-lg">We support members who want to host local gathering. We'll help with planning, materials, and promotion to members in your area.</p>
+          </div>
+          <a href="mailto:partnerships@psychedbox.com" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity whitespace-nowrap">
+            <Mic size={16} /> Get in Touch
+          </a>
+        </div>
+      </div>
+
+      {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <InfoCard icon={Users} title="Member Circles" description="Small, intentional gatherings hosted by and for PsychedBox members — local and virtual." />
-        <InfoCard icon={Calendar} title="Partner Events" description="Events from our movement partners: DanceSafe, The Zendo Project, Heroic Hearts, and more." />
-        <InfoCard icon={Heart} title="Host an Event" description="Interested in hosting a PsychedBox member circle in your city? Reach out to us at partnerships@psychedbox.com." />
+        <InfoCard icon={Users} title="Member Circles" description="Small, intentional gatherings hosted by and for PsychedBox members — local and virtual, always free for subscribers." />
+        <InfoCard icon={Calendar} title="Partner Events" description="Events from our movement partners: DanceSafe, The Zendo Project, Heroic Hearts, and more — with member-exclusive access." />
+        <InfoCard icon={Heart} title="Speaker Series" description="Monthly virtual conversations with featured community members, researchers, and advocates. Free for all PsychedBox members." />
       </div>
     </PageShell>
   );
