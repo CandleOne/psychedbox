@@ -62,12 +62,28 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
                 </span>
               )}
             </button>
-            <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
-              {user ? "ACCOUNT" : "LOG IN"}
-            </a>
-            <a href={user ? "/account" : "/login"} className="text-white hover:text-white/80 transition-colors hidden sm:block">
-              {user ? <User size={18} /> : <LogIn size={18} />}
-            </a>
+            {user ? (
+              <>
+                <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                  ACCOUNT
+                </a>
+                <a href="/account" className="text-white hover:text-white/80 transition-colors">
+                  <User size={18} />
+                </a>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                  LOG IN
+                </a>
+                <a href="/signup" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                  SIGN UP
+                </a>
+                <a href="/login" className="text-white hover:text-white/80 transition-colors sm:hidden">
+                  <LogIn size={18} />
+                </a>
+              </>
+            )}
             <button onClick={() => setMenuOpen(!menuOpen)} className="text-white hover:text-white/80 transition-colors">
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -121,6 +137,16 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
               <a href="/faq" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">FAQ</a>
               <a href="/shipping-info" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Shipping</a>
               <a href="/returns" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Returns</a>
+            </div>
+            <div className="sm:hidden col-span-2 border-t border-white/10 pt-4 mt-2">
+              {user ? (
+                <a href="/account" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">My Account</a>
+              ) : (
+                <>
+                  <a href="/login" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Log In</a>
+                  <a href="/signup" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Sign Up</a>
+                </>
+              )}
             </div>
           </div>
         </div>
