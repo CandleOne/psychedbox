@@ -1,6 +1,7 @@
 import { Router, raw, json } from "express";
 import Stripe from "stripe";
 import { PLANS, SHOP_PRODUCTS } from "../shared/payments.js";
+import db from "./db.js";
 import type {
   CreateCheckoutRequest,
   CreateCheckoutResponse,
@@ -288,31 +289,85 @@ export function createPaymentRouter(): Router {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+        const planId = session.metadata?.planId;
+        const customerId = session.customer as string | null;
+        const customerEmail = session.customer_details?.email ?? session.customer_email;
         console.log(
-          `[Stripe] ✅ Checkout completed — session=${session.id}, customer=${session.customer}, plan=${session.metadata?.planId}`
+          `[Stripe] ✅ Checkout completed — session=${session.id}, customer=${customerId}, email=${customerEmail}, plan=${planId}`
         );
-        // TODO: Provision access / fulfill order in your database
+
+        // Link Stripe customer to local user and set their plan
+        if (customerEmail) {
+          const user = db.prepare("SELECT id FROM users WHERE email = ? COLLATE NOCASE").get(customerEmail) as { id: number } | undefined;
+          if (user) {
+            db.prepare(
+              "UPDATE users SET stripe_customer_id = COALESCE(?, stripe_customer_id), plan = COALESCE(?, plan), updated_at = datetime('now') WHERE id = ?"
+            ).run(customerId, planId, user.id);
+            console.log(`[Stripe] Linked customer ${customerId} to user ${user.id}, plan=${planId}`);
+          } else {
+            console.warn(`[Stripe] No local user found for email ${customerEmail}`);
+          }
+        }
         break;
       }
 
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
-        console.log(`[Stripe] 🔄 Subscription updated — sub=${sub.id}, status=${sub.status}`);
-        // TODO: Update subscription status in your database
+        const customerId = sub.customer as string;
+        const status = sub.status; // active, past_due, canceled, unpaid, etc.
+        const planId = sub.metadata?.planId;
+        console.log(`[Stripe] 🔄 Subscription updated — sub=${sub.id}, status=${status}, plan=${planId}`);
+
+        // Update user's plan based on subscription status
+        const planValue = (status === "active" || status === "trialing") ? (planId || "active") : null;
+        const result = db.prepare(
+          "UPDATE users SET plan = ?, updated_at = datetime('now') WHERE stripe_customer_id = ?"
+        ).run(planValue, customerId);
+
+        if (result.changes > 0) {
+          console.log(`[Stripe] Updated plan to "${planValue}" for customer ${customerId}`);
+        } else {
+          console.warn(`[Stripe] No user found with stripe_customer_id=${customerId}`);
+        }
         break;
       }
 
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
-        console.log(`[Stripe] ❌ Subscription cancelled — sub=${sub.id}`);
-        // TODO: Revoke access in your database
+        const customerId = sub.customer as string;
+        console.log(`[Stripe] ❌ Subscription cancelled — sub=${sub.id}, customer=${customerId}`);
+
+        // Revoke access: clear the user's plan
+        const result = db.prepare(
+          "UPDATE users SET plan = NULL, updated_at = datetime('now') WHERE stripe_customer_id = ?"
+        ).run(customerId);
+
+        if (result.changes > 0) {
+          console.log(`[Stripe] Revoked access for customer ${customerId}`);
+        } else {
+          console.warn(`[Stripe] No user found with stripe_customer_id=${customerId}`);
+        }
         break;
       }
 
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
-        console.log(`[Stripe] ⚠️ Payment failed — invoice=${invoice.id}, customer=${invoice.customer}`);
-        // TODO: Notify user about failed payment
+        const customerId = invoice.customer as string;
+        const attemptCount = invoice.attempt_count;
+        console.log(
+          `[Stripe] ⚠️ Payment failed — invoice=${invoice.id}, customer=${customerId}, attempt=${attemptCount}`
+        );
+
+        // Mark the user's plan as past_due so the UI can show a warning
+        const result = db.prepare(
+          "UPDATE users SET plan = 'past_due', updated_at = datetime('now') WHERE stripe_customer_id = ?"
+        ).run(customerId);
+
+        if (result.changes > 0) {
+          console.log(`[Stripe] Marked customer ${customerId} as past_due`);
+        } else {
+          console.warn(`[Stripe] No user found with stripe_customer_id=${customerId}`);
+        }
         break;
       }
 

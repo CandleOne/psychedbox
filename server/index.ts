@@ -3,7 +3,6 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
-import { stripeRouter } from "./stripe.js";
 import { createPaymentRouter } from "./payments.js";
 import { createAuthRouter, authMiddleware } from "./auth.js";
 import { createAdminRouter } from "./admin.js";
@@ -19,28 +18,18 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // ⚠️  Webhook route MUST come before express.json() middleware
-  // Stripe needs the raw body buffer for signature verification
-  app.post(
-    "/api/stripe/webhook",
-    express.raw({ type: "application/json" }),
-    (req, res, next) => {
-      // Pass raw buffer to router
-      next();
-    }
-  );
-
-  // Parse JSON and cookies for all other routes
-  app.use(express.json());
+  // Parse JSON for all routes EXCEPT the Stripe webhook
+  // (Stripe webhook needs the raw body buffer for signature verification)
+  app.use((req, res, next) => {
+    if (req.path === "/api/payments/webhook") return next();
+    express.json()(req, res, next);
+  });
   app.use(cookieParser());
 
   // Auth middleware — attaches req.user on every request
   app.use(authMiddleware);
 
-  // Stripe API routes
-  app.use("/api/stripe", stripeRouter);
-
-  // Payments API routes (shop products, plans, portal)
+  // Payments API routes (shop products, plans, portal, webhook)
   app.use("/api/payments", createPaymentRouter());
 
   // Auth API routes (signup, login, logout, me)
