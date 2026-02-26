@@ -1,11 +1,13 @@
 import { useRoute, Link } from "wouter";
+import { useState, useEffect } from "react";
 import { Clock, ArrowLeft, ChevronRight } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
-import { getPostBySlug, blogPosts, type ContentBlock } from "@/data/blog-posts";
+import { getPostBySlug, blogPosts, type ContentBlock, type BlogPost as BlogPostType } from "@/data/blog-posts";
 import NotFound from "./NotFound";
+import axios from "axios";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -94,7 +96,27 @@ function RelatedPosts({ currentSlug, category }: { currentSlug: string; category
 export default function BlogPost() {
   const [, params] = useRoute("/blog/:slug");
   const slug = params?.slug;
-  const post = slug ? getPostBySlug(slug) : undefined;
+  const localPost = slug ? getPostBySlug(slug) : undefined;
+  const [post, setPost] = useState<BlogPostType | undefined>(localPost);
+  const [loading, setLoading] = useState(!localPost && !!slug);
+
+  // Try fetching from API; fall back to hardcoded data
+  useEffect(() => {
+    if (!slug) return;
+    let cancelled = false;
+    axios
+      .get<{ post: BlogPostType }>(`/api/blog/${slug}`)
+      .then(({ data }) => {
+        if (!cancelled && data.post) setPost(data.post);
+      })
+      .catch(() => {
+        // API unavailable — keep local post
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [slug]);
 
   // Always call hooks, but with fallback values when post is missing
   useSEO({
@@ -161,6 +183,17 @@ export default function BlogPost() {
         }
       : {}
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <SiteNavbar />
+        <div className="flex items-center justify-center py-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF6B6B]" />
+        </div>
+      </div>
+    );
+  }
 
   if (!post) return <NotFound />;
 

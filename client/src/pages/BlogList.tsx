@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock, ArrowRight } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import NewsletterForm from "@/components/NewsletterForm";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
-import { blogPosts, allCategories, type BlogCategory } from "@/data/blog-posts";
+import { blogPosts as fallbackPosts, allCategories as fallbackCategories, type BlogCategory, type BlogPost } from "@/data/blog-posts";
+import axios from "axios";
 
 const blogListSchema = {
   "@context": "https://schema.org",
@@ -18,7 +20,7 @@ const blogListSchema = {
     name: "PsychedBox",
     url: "https://psychedbox.com",
   },
-  blogPost: blogPosts.map((post) => ({
+  blogPost: fallbackPosts.map((post) => ({
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
@@ -50,6 +52,32 @@ export default function BlogList() {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "All">(
     "All"
   );
+  const [posts, setPosts] = useState<BlogPost[]>(fallbackPosts);
+  const [categories, setCategories] = useState<BlogCategory[]>(fallbackCategories);
+
+  // Try loading posts from the API; fall back to hardcoded data on failure
+  useEffect(() => {
+    let cancelled = false;
+    axios
+      .get<{ posts: BlogPost[] }>("/api/blog")
+      .then(({ data }) => {
+        if (!cancelled && data.posts.length > 0) {
+          // Merge: API posts first, then any hardcoded posts not already present
+          const apiSlugs = new Set(data.posts.map((p) => p.slug));
+          const merged = [
+            ...data.posts,
+            ...fallbackPosts.filter((p) => !apiSlugs.has(p.slug)),
+          ];
+          setPosts(merged);
+          const cats = Array.from(new Set(merged.map((p) => p.category))) as BlogCategory[];
+          setCategories(cats);
+        }
+      })
+      .catch(() => {
+        // API unavailable (static hosting) — keep fallback data
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   useSEO({
     title: "Blog — Guides on Psychedelic Harm Reduction, Ceremony, Art & Wellness",
@@ -61,8 +89,8 @@ export default function BlogList() {
 
   const filtered =
     activeCategory === "All"
-      ? blogPosts
-      : blogPosts.filter((p) => p.category === activeCategory);
+      ? posts
+      : posts.filter((p) => p.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-white">
@@ -100,7 +128,7 @@ export default function BlogList() {
           >
             All
           </button>
-          {allCategories.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -232,19 +260,7 @@ export default function BlogList() {
             We publish guides, community stories, and harm reduction resources
             every week. Subscribe to stay informed.
           </p>
-          <div className="flex gap-2 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-red-400 text-sm"
-            />
-            <button
-              style={{ backgroundColor: "#FF6B6B" }}
-              className="px-6 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
-            >
-              Subscribe <ArrowRight size={16} />
-            </button>
-          </div>
+          <NewsletterForm source="blog" showIcon className="max-w-md mx-auto" />
         </div>
       </section>
 

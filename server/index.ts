@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { createPaymentRouter } from "./payments.js";
 import { createAuthRouter, authMiddleware } from "./auth.js";
 import { createAdminRouter } from "./admin.js";
+import { createPublicRouter } from "./public.js";
 import dotenv from "dotenv";
 
 // Load .env file
@@ -37,6 +38,9 @@ async function startServer() {
 
   // Admin API routes (requires admin role)
   app.use("/api/admin", createAdminRouter());
+
+  // Public API routes (newsletter subscribe, public blog)
+  app.use("/api", createPublicRouter());
 
   // Serve static files from dist/public in production
   const staticPath =

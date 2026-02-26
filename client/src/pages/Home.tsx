@@ -2,6 +2,7 @@ import { Star, Users, Gift, Zap } from "lucide-react";
 import { Link } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import NewsletterForm from "@/components/NewsletterForm";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
 
@@ -229,16 +230,7 @@ export default function Home() {
         <p className="text-gray-600 mb-6">
           Subscribe to our newsletter for sneak peeks of upcoming puzzle portraits and member stories.
         </p>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            placeholder="Your email address"
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-red-400"
-          />
-          <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
-            SUBSCRIBE
-          </button>
-        </div>
+        <NewsletterForm source="homepage" className="max-w-md mx-auto" />
       </section>
 
       {/* Footer */}
