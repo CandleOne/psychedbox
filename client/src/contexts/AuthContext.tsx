@@ -16,6 +16,7 @@ export interface AuthUser {
   name: string;
   role: "user" | "admin";
   plan: string | null;
+  stripe_customer_id: string | null;
   created_at: string;
 }
 

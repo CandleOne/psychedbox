@@ -35,6 +35,7 @@ export interface AuthUser {
   name: string;
   role: "user" | "admin";
   plan: string | null;
+  stripe_customer_id: string | null;
   created_at: string;
 }
 
@@ -42,7 +43,7 @@ function getUserFromSession(sessionId: string | undefined): AuthUser | null {
   if (!sessionId) return null;
   const row = db
     .prepare(
-      `SELECT u.id, u.email, u.name, u.role, u.plan, u.created_at
+      `SELECT u.id, u.email, u.name, u.role, u.plan, u.stripe_customer_id, u.created_at
        FROM sessions s JOIN users u ON s.user_id = u.id
        WHERE s.id = ? AND s.expires_at > datetime('now')`
     )

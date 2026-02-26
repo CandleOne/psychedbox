@@ -1,9 +1,10 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { Link, useLocation } from "wouter";
-import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2 } from "lucide-react";
+import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2, ExternalLink } from "lucide-react";
 
 export default function AccountPage() {
   useSEO({
@@ -13,6 +14,7 @@ export default function AccountPage() {
   });
 
   const { user, loading, logout, isAdmin } = useAuth();
+  const { manageSubscription, loading: portalLoading } = useCheckout();
   const [, navigate] = useLocation();
 
   async function handleLogout() {
@@ -131,10 +133,54 @@ export default function AccountPage() {
 
           {/* Quick actions grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <QuickCard icon={Package} title="Manage Subscription" description="Switch plans, update billing details, and review renewal dates with full control." />
-            <QuickCard icon={Truck} title="Track Deliveries" description="Check shipping status for your current and upcoming boxes with order visibility." />
-            <QuickCard icon={Star} title="Member Preferences" description="Set content preferences and email settings so your experience stays personalized." />
-            <QuickCard icon={Mail} title="Need Help?" description="Contact support directly from your account for shipping, billing, or membership questions." />
+            {user.plan && user.plan !== "free" ? (
+              <button
+                onClick={() => user.stripe_customer_id && manageSubscription(user.stripe_customer_id)}
+                disabled={portalLoading}
+                className="text-left rounded-xl border border-gray-200 p-6 bg-white hover:border-gray-300 transition-colors"
+              >
+                <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
+                  <Package size={18} className="text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  Manage Subscription
+                  {portalLoading ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={14} className="text-gray-400" />}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">Switch plans, update billing details, and review renewal dates via the Stripe customer portal.</p>
+              </button>
+            ) : (
+              <Link href="/pricing" className="block rounded-xl border border-gray-200 p-6 bg-white hover:border-gray-300 transition-colors">
+                <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
+                  <Package size={18} className="text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Start a Subscription</h3>
+                <p className="text-gray-600 leading-relaxed">Choose a plan to get monthly puzzle portraits, themed goodies, and member stories.</p>
+              </Link>
+            )}
+            <Link href="/shipping-info" className="block rounded-xl border border-gray-200 p-6 bg-white hover:border-gray-300 transition-colors">
+              <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
+                <Truck size={18} className="text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Shipping & Deliveries</h3>
+              <p className="text-gray-600 leading-relaxed">View shipping timelines, tracking info, and delivery details for your boxes.</p>
+            </Link>
+            <article className="rounded-xl border border-gray-200 p-6 bg-white">
+              <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
+                <Star size={18} className="text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Member Preferences</h3>
+              <p className="text-gray-600 leading-relaxed">
+                You're signed in as <strong>{user.email}</strong>.
+                {user.plan ? ` Current plan: ${user.plan}.` : " No active subscription."}
+              </p>
+            </article>
+            <Link href="/contact" className="block rounded-xl border border-gray-200 p-6 bg-white hover:border-gray-300 transition-colors">
+              <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
+                <Mail size={18} className="text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Need Help?</h3>
+              <p className="text-gray-600 leading-relaxed">Contact support for shipping, billing, or membership questions.</p>
+            </Link>
           </div>
         </div>
       </section>
@@ -144,14 +190,4 @@ export default function AccountPage() {
   );
 }
 
-function QuickCard({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
-  return (
-    <article className="rounded-xl border border-gray-200 p-6 bg-white hover:border-gray-300 transition-colors">
-      <div style={{ backgroundColor: "#FF6B6B" }} className="w-10 h-10 rounded-full flex items-center justify-center mb-4">
-        <Icon size={18} className="text-white" />
-      </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
-    </article>
-  );
-}
+

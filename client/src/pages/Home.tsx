@@ -165,9 +165,9 @@ export default function Home() {
             <p className="text-gray-700 text-lg mb-6">
               Every month, we celebrate an inspiring member of our community by creating a unique puzzle portrait. This puzzle isn't just a game—it's a gateway to discovering their story, their passion, and their impact on the world around them.
             </p>
-            <button style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
+            <Link href="/community/stories" style={{ backgroundColor: "#FF6B6B" }} className="inline-block px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
               EXPLORE THEIR STORY
-            </button>
+            </Link>
           </div>
         </div>
       </section>

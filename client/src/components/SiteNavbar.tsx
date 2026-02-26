@@ -1,8 +1,51 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Search, LogIn, Menu, ShoppingCart, X, User, Loader2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+
+// Simple site-wide search: maps query keywords to relevant pages
+const SEARCH_INDEX = [
+  { keywords: ["subscribe", "subscription", "plan", "pricing", "price", "box", "monthly", "quarterly", "annual"], path: "/pricing", label: "Pricing & Plans" },
+  { keywords: ["shop", "store", "product", "buy", "merch", "grinder", "journal", "bowl", "incense", "poster", "sticker", "tray", "mask", "reagent", "test", "kit"], path: "/shop", label: "Shop" },
+  { keywords: ["gift", "present"], path: "/shop/gift-subscriptions", label: "Gift Subscriptions" },
+  { keywords: ["blog", "article", "guide", "read", "post"], path: "/blog", label: "Blog" },
+  { keywords: ["harm", "reduction", "safety", "test", "dancesafe"], path: "/blog/what-is-harm-reduction", label: "What Is Harm Reduction?" },
+  { keywords: ["ceremony", "ritual", "space", "setting", "set"], path: "/blog/setting-up-a-ceremony-space", label: "Setting Up a Ceremony Space" },
+  { keywords: ["movement", "mission", "donate", "donation", "nonprofit", "advocacy", "giveback"], path: "/movement", label: "The Movement" },
+  { keywords: ["about", "team", "who", "company"], path: "/about-us", label: "About Us" },
+  { keywords: ["contact", "email", "support", "help"], path: "/contact", label: "Contact" },
+  { keywords: ["faq", "question", "answer", "how"], path: "/faq", label: "FAQ" },
+  { keywords: ["shipping", "delivery", "track"], path: "/shipping-info", label: "Shipping Info" },
+  { keywords: ["return", "refund", "exchange"], path: "/returns", label: "Returns" },
+  { keywords: ["account", "profile", "settings", "login", "signup", "sign"], path: "/account", label: "My Account" },
+  { keywords: ["gallery", "photo", "community", "member"], path: "/community/member-gallery", label: "Member Gallery" },
+  { keywords: ["story", "stories", "feature", "featured"], path: "/community/stories", label: "Stories" },
+  { keywords: ["event", "events", "meetup"], path: "/community/events", label: "Events" },
+  { keywords: ["puzzle", "past", "archive", "previous"], path: "/shop/past-puzzles", label: "Past Puzzles" },
+  { keywords: ["privacy", "policy", "data"], path: "/privacy-policy", label: "Privacy Policy" },
+  { keywords: ["terms", "service", "legal"], path: "/terms-of-service", label: "Terms of Service" },
+  { keywords: ["career", "job", "work", "hire"], path: "/careers", label: "Careers" },
+  { keywords: ["mushroom", "grow", "gourmet"], path: "/blog/growing-gourmet-mushrooms-at-home", label: "Growing Gourmet Mushrooms" },
+  { keywords: ["integration", "after", "experience", "process"], path: "/blog/integration-after-psychedelic-experience", label: "Integration After an Experience" },
+  { keywords: ["art", "history", "psychedelic art", "culture"], path: "/blog/psychedelic-art-history-brief-introduction", label: "Psychedelic Art History" },
+];
+
+function searchPages(query: string): { path: string; label: string }[] {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+  const words = q.split(/\s+/);
+  const scored = SEARCH_INDEX.map((entry) => {
+    const score = words.reduce((acc, word) => {
+      const match = entry.keywords.some((k) => k.includes(word)) || entry.label.toLowerCase().includes(word);
+      return acc + (match ? 1 : 0);
+    }, 0);
+    return { ...entry, score };
+  })
+    .filter((e) => e.score > 0)
+    .sort((a, b) => b.score - a.score);
+  return scored.slice(0, 5);
+}
 
 function Logo() {
   return (
@@ -17,9 +60,19 @@ function Logo() {
 export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncement?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [location] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [location, navigate] = useLocation();
   const { count, openCart } = useCart();
   const { user, loading } = useAuth();
+
+  const searchResults = searchPages(searchQuery);
+
+  function handleSearchSelect(path: string) {
+    setSearchOpen(false);
+    setSearchQuery("");
+    navigate(path);
+  }
 
   return (
     <>
@@ -35,15 +88,43 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
         <div className="flex items-center justify-between px-4 py-3 max-w-screen-xl mx-auto">
           <div className="flex items-center gap-3">
             {searchOpen ? (
-              <div className="flex items-center gap-2 bg-white/10 rounded px-3 py-1.5">
-                <Search size={14} className="text-white/70" />
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Search..."
-                  className="bg-transparent text-white text-sm outline-none placeholder:text-white/50 w-48"
-                  onBlur={() => setSearchOpen(false)}
-                />
+              <div ref={searchRef} className="relative">
+                <div className="flex items-center gap-2 bg-white/10 rounded px-3 py-1.5">
+                  <Search size={14} className="text-white/70" />
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Search PsychedBox..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); }
+                      if (e.key === "Enter" && searchResults.length > 0) handleSearchSelect(searchResults[0].path);
+                    }}
+                    className="bg-transparent text-white text-sm outline-none placeholder:text-white/50 w-48"
+                  />
+                  <button onClick={() => { setSearchOpen(false); setSearchQuery(""); }} className="text-white/50 hover:text-white">
+                    <X size={14} />
+                  </button>
+                </div>
+                {searchQuery.trim() && (
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50">
+                    {searchResults.length > 0 ? (
+                      searchResults.map((result) => (
+                        <button
+                          key={result.path}
+                          onClick={() => handleSearchSelect(result.path)}
+                          className="w-full px-4 py-3 text-left text-sm text-gray-800 hover:bg-gray-50 flex items-center gap-2 transition-colors border-b border-gray-50 last:border-0"
+                        >
+                          <Search size={12} className="text-gray-400 flex-shrink-0" />
+                          {result.label}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-gray-400">No results found</div>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <button onClick={() => setSearchOpen(true)} className="text-white/80 hover:text-white transition-colors">
