@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Search, LogIn, Menu, ShoppingCart, X, User } from "lucide-react";
-import { useLocation } from "wouter";
+import { Search, LogIn, Menu, ShoppingCart, X, User, Loader2 } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 function Logo() {
   return (
-    <a href="/" className="flex items-center">
+    <Link href="/" className="flex items-center">
       <span style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontWeight: 900, fontSize: "1.2rem", letterSpacing: "0.05em", color: "#ffffff", textTransform: "uppercase", lineHeight: 1 }}>
         Psych<span style={{ color: "#FF6B6B" }}>ed</span>Box
       </span>
-    </a>
+    </Link>
   );
 }
 
@@ -19,15 +19,15 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
   const [searchOpen, setSearchOpen] = useState(false);
   const [location] = useLocation();
   const { count, openCart } = useCart();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   return (
     <>
       {showAnnouncement && (
         <div style={{ backgroundColor: "#FF6B6B" }} className="w-full py-2 text-center">
-          <a href="/movement" className="text-white text-sm font-semibold hover:opacity-80 transition-opacity">
+          <Link href="/movement" className="text-white text-sm font-semibold hover:opacity-80 transition-opacity">
             ✨ Take a piece give a piece! Learn more about our efforts to support the movement ✨
-          </a>
+          </Link>
         </div>
       )}
 
@@ -62,26 +62,28 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
                 </span>
               )}
             </button>
-            {user ? (
+            {loading ? (
+              <Loader2 size={18} className="text-white/50 animate-spin" />
+            ) : user ? (
               <>
-                <a href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                <Link href="/account" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
                   ACCOUNT
-                </a>
-                <a href="/account" className="text-white hover:text-white/80 transition-colors">
+                </Link>
+                <Link href="/account" className="text-white hover:text-white/80 transition-colors">
                   <User size={18} />
-                </a>
+                </Link>
               </>
             ) : (
               <>
-                <a href="/login" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                <Link href="/login" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
                   LOG IN
-                </a>
-                <a href="/signup" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
+                </Link>
+                <Link href="/signup" className="text-white text-xs font-semibold tracking-widest uppercase hidden sm:block hover:text-white/80 transition-colors">
                   SIGN UP
-                </a>
-                <a href="/login" className="text-white hover:text-white/80 transition-colors sm:hidden">
+                </Link>
+                <Link href="/login" className="text-white hover:text-white/80 transition-colors sm:hidden">
                   <LogIn size={18} />
-                </a>
+                </Link>
               </>
             )}
             <button onClick={() => setMenuOpen(!menuOpen)} className="text-white hover:text-white/80 transition-colors">
@@ -109,42 +111,42 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
           visibility: menuOpen ? "visible" : "hidden",
         }}
       >
-        <div className="p-6">
+        <div className="p-6" onClick={() => setMenuOpen(false)}>
           <div className="max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Shop</p>
-              <a href="/shop" className="block text-sm py-1 font-semibold hover:opacity-80 transition-colors" style={{ color: location === "/shop" ? "#FF6B6B" : "#ffffff" }}>All Products</a>
-              <a href="/shop/monthly-boxes" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Monthly Boxes</a>
-              <a href="/shop/gift-subscriptions" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Gift Subscriptions</a>
-              <a href="/shop/past-puzzles" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Past Puzzles</a>
+              <Link href="/shop" className="block text-sm py-1 font-semibold hover:opacity-80 transition-colors" style={{ color: location === "/shop" ? "#FF6B6B" : "#ffffff" }}>All Products</Link>
+              <Link href="/shop/monthly-boxes" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Monthly Boxes</Link>
+              <Link href="/shop/gift-subscriptions" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Gift Subscriptions</Link>
+              <Link href="/shop/past-puzzles" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Past Puzzles</Link>
             </div>
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Community</p>
-              <a href="/community/member-gallery" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Member Gallery</a>
-              <a href="/community/stories" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Stories</a>
-              <a href="/community/events" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Events</a>
+              <Link href="/community/member-gallery" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Member Gallery</Link>
+              <Link href="/community/stories" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Stories</Link>
+              <Link href="/community/events" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Events</Link>
             </div>
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">About</p>
-              <a href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</a>
-              <a href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</a>
-              <a href="/about/our-mission" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Our Mission</a>
-              <a href="/about/how-it-works" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">How It Works</a>
-              <a href="/contact" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Contact</a>
+              <Link href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</Link>
+              <Link href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</Link>
+              <Link href="/about/our-mission" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Our Mission</Link>
+              <Link href="/about/how-it-works" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">How It Works</Link>
+              <Link href="/contact" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Contact</Link>
             </div>
             <div>
               <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Support</p>
-              <a href="/faq" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">FAQ</a>
-              <a href="/shipping-info" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Shipping</a>
-              <a href="/returns" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Returns</a>
+              <Link href="/faq" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">FAQ</Link>
+              <Link href="/shipping-info" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Shipping</Link>
+              <Link href="/returns" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Returns</Link>
             </div>
             <div className="sm:hidden col-span-2 border-t border-white/10 pt-4 mt-2">
               {user ? (
-                <a href="/account" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">My Account</a>
+                <Link href="/account" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">My Account</Link>
               ) : (
                 <>
-                  <a href="/login" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Log In</a>
-                  <a href="/signup" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Sign Up</a>
+                  <Link href="/login" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Log In</Link>
+                  <Link href="/signup" className="block text-white text-sm py-1 font-semibold hover:text-white/70 transition-colors">Sign Up</Link>
                 </>
               )}
             </div>

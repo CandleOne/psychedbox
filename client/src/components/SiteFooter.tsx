@@ -1,3 +1,5 @@
+import { Link } from "wouter";
+
 export default function SiteFooter() {
   return (
     <footer style={{ backgroundColor: "#1a1a1a" }} className="w-full py-12 px-6">
@@ -5,22 +7,22 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Company</p>
-            <a href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</a>
-            <a href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</a>
-            <a href="/about-us" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">About Us</a>
-            <a href="/contact" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Contact</a>
-            <a href="/careers" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Careers</a>
+            <Link href="/movement" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Movement</Link>
+            <Link href="/blog" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Blog</Link>
+            <Link href="/about-us" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">About Us</Link>
+            <Link href="/contact" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Contact</Link>
+            <Link href="/careers" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Careers</Link>
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Support</p>
-            <a href="/faq" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">FAQ</a>
-            <a href="/shipping-info" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Shipping Info</a>
-            <a href="/returns" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Returns</a>
+            <Link href="/faq" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">FAQ</Link>
+            <Link href="/shipping-info" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Shipping Info</Link>
+            <Link href="/returns" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Returns</Link>
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Legal</p>
-            <a href="/privacy-policy" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Privacy Policy</a>
-            <a href="/terms-of-service" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Terms of Service</a>
+            <Link href="/privacy-policy" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="block text-white text-sm py-1 hover:text-white/70 transition-colors">Terms of Service</Link>
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3 font-semibold">Follow</p>

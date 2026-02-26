@@ -1,4 +1,5 @@
 import { Star, Users, Gift, Zap } from "lucide-react";
+import { Link } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useSEO } from "@/hooks/useSEO";
@@ -106,12 +107,12 @@ export default function Home() {
               Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="/movement" style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
+              <Link href="/movement" style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
               Learn more about the work!
-              </a>
-              <a href="/pricing" style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
+              </Link>
+              <Link href="/pricing" style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
               SUBSCRIBE NOW
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -194,9 +195,9 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <a href="/pricing" style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#F0F0F0", color: i === 1 ? "white" : "#333" }} className="w-full py-3 font-bold rounded-lg hover:opacity-90 transition-opacity block text-center">
+              <Link href="/pricing" style={{ backgroundColor: i === 1 ? "#FF6B6B" : "#F0F0F0", color: i === 1 ? "white" : "#333" }} className="w-full py-3 font-bold rounded-lg hover:opacity-90 transition-opacity block text-center">
                 {i === 1 ? "MOST POPULAR" : "SELECT"}
-              </a>
+              </Link>
             </div>
           ))}
         </div>

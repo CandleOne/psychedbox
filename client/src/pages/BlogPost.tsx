@@ -1,4 +1,4 @@
-import { useRoute } from "wouter";
+import { useRoute, Link } from "wouter";
 import { Clock, ArrowLeft, ChevronRight } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
@@ -182,9 +182,9 @@ export default function BlogPost() {
       <article className="max-w-3xl mx-auto px-6 -mt-16 relative z-10">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-1.5 text-sm text-white/80 mb-6">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <ChevronRight size={14} />
-          <a href="/blog" className="hover:text-white transition-colors">Blog</a>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <ChevronRight size={14} />
           <span className="text-white font-medium truncate max-w-[200px]">{post.title}</span>
         </nav>

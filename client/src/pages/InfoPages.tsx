@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useCheckout } from "@/hooks/useCheckout";
@@ -186,9 +187,9 @@ export function PastPuzzlesPage() {
         <Camera size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-3">Archive Coming Soon</h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building out the full archive of past drops. Check back soon — each entry will include the puzzle image, member story, and availability for purchase.</p>
-        <a href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
+        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
           Subscribe for the Latest Box
-        </a>
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <InfoCard icon={Package} title="Individual Puzzles Available" description="Past puzzle portraits will be available for individual purchase once the archive is live. Subscribe to be notified." />
@@ -213,9 +214,9 @@ export function MemberGalleryPage() {
         <Camera size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-3">Gallery Launching Soon</h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building the member gallery. Once live, subscribers can submit photos of their completed puzzles, display setups, and unboxing moments.</p>
-        <a href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
+        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
           Get Your First Box
-        </a>
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <InfoCard icon={Camera} title="Submit Your Build" description="Once the gallery is live, members can submit photos of their completed puzzle portraits to be featured." />
@@ -239,9 +240,9 @@ export function StoriesPage() {
         <BookOpen size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-3">Stories Archive Coming Soon</h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building a home for every featured member's story. Subscribers get digital access to stories the moment their box ships.</p>
-        <a href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
+        <Link href="/shop/monthly-boxes" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
           Subscribe to Read
-        </a>
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <InfoCard icon={BookOpen} title="Subscriber-First Access" description="Every story drops digitally to subscribers the day their box ships — before anything goes public." />
@@ -265,9 +266,9 @@ export function EventsPage() {
         <Calendar size={48} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-3">Events Calendar Coming Soon</h2>
         <p className="text-gray-600 max-w-xl mx-auto mb-6">We're building the events calendar. Subscribe to the newsletter to be the first to hear about member circles, partner events, and community gatherings.</p>
-        <a href="/" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
+        <Link href="/" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
           Join the Newsletter
-        </a>
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <InfoCard icon={Users} title="Member Circles" description="Small, intentional gatherings hosted by and for PsychedBox members — local and virtual." />
