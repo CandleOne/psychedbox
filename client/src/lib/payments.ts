@@ -19,6 +19,7 @@ const PAYMENT_LINKS: Record<string, string> = {
   monthly:   "https://buy.stripe.com/5kQ9AU1a78UT5cugG3bAs01",
   quarterly: "https://buy.stripe.com/00w9AU2eb9YX34m2PdbAs02",
   annual:    "https://buy.stripe.com/6oUfZi1a72wv9sK9dBbAs03",
+  gift:      "https://buy.stripe.com/cNicN6f0Xefd7kC89xbAs05",
 };
 
 /**

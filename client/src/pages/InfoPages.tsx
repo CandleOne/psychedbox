@@ -144,24 +144,46 @@ export function GiftSubscriptionsPage() {
     canonical: "/shop/gift-subscriptions",
   });
 
+  const { checkout, loading, error } = useCheckout();
+  const [activePlan, setActivePlan] = useState<string | null>(null);
+
+  function handleGift(planId: string) {
+    setActivePlan(planId);
+    checkout(planId);
+  }
+
   return (
     <PageShell eyebrow="Shop" title="Gift Subscriptions" description="Share discovery with someone you care about. PsychedBox makes a meaningful, one-of-a-kind gift.">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-3 rounded-lg text-center text-sm mb-8">
+          {error}
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         {[
-          { name: "1 Month Gift", price: "$34", desc: "A single box — perfect intro gift." },
-          { name: "3 Month Gift", price: "$89", desc: "Three months of stories and art." },
-          { name: "12 Month Gift", price: "$329", desc: "A full year of community and culture." },
-        ].map((plan, i) => (
+          { id: "gift", name: "1 Month Gift", price: "$34", desc: "A single box — perfect intro gift." },
+          { id: "gift", name: "3 Month Gift", price: "$89", desc: "Three months of stories and art." },
+          { id: "gift", name: "12 Month Gift", price: "$329", desc: "A full year of community and culture." },
+        ].map((plan, i) => {
+          const isLoading = loading && activePlan === plan.id;
+          return (
           <div key={plan.name} style={{ borderColor: i === 1 ? "#FF6B6B" : "#E0E0E0", borderWidth: i === 1 ? "3px" : "1px" }} className="rounded-xl p-8 bg-white border text-center">
             <Gift size={32} style={{ color: "#FF6B6B" }} className="mx-auto mb-4" />
             <h2 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h2>
             <p className="text-gray-500 text-sm mb-4">{plan.desc}</p>
             <p style={{ color: "#FF6B6B", fontSize: "2rem", fontWeight: 900 }} className="mb-6">{plan.price}</p>
-            <button style={{ backgroundColor: "#FF6B6B" }} className="w-full py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
-              Gift This
+            <button
+              onClick={() => handleGift(plan.id)}
+              disabled={loading}
+              style={{ backgroundColor: "#FF6B6B" }}
+              className="w-full py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+            >
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading ? "Redirecting…" : "Gift This"}
             </button>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
