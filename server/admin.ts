@@ -10,18 +10,42 @@ import db from "./db.js";
 import {
   sendNewsletterEmail,
   sendBlogUpdateEmail,
-  sendBulkEmail,
+  // ─── Image Upload ─────────────────────────────────────────────────────────
   sendWelcomeEmail,
-  sendSubscriberWelcomeEmail,
-  sendOrderConfirmationEmail,
-  sendPaymentFailedEmail,
+  // Set up multer storage to save files to client/public/uploads
 } from "./email.js";
 import {
   newsletterEmail as newsletterTpl,
-  blogUpdateEmail as blogUpdateTpl,
-} from "./email-templates.js";
+    destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => cb(null, uploadDir),
+    filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 export function createAdminRouter(): Router {
+    // ─── Image Upload ─────────────────────────────────────────────────────────
+
+  router.post("/upload", upload.single("image"), (req: Request & { file?: Express.Multer.File }, res: Response) => {
+    const uploadDir = path.resolve("client/public/uploads");
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    const storage = multer.diskStorage({
+      destination: (_req, _file, cb) => cb(null, uploadDir),
+      filename: (_req, file, cb) => {
+        // Use timestamp + original name for uniqueness
+        const unique = Date.now() + "-" + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+        cb(null, unique);
+      },
+    });
+    const upload = multer({ storage });
+
+    // POST /api/admin/upload (multipart/form-data, field: image)
+    router.post("/upload", upload.single("image"), (req: Request, res: Response) => {
+      if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+      // Public URL: /uploads/filename
+      const url = `/uploads/${req.file.filename}`;
+      res.json({ url });
+    });
   const router = Router();
   router.use(requireAdmin);
 

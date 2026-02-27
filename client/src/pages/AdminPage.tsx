@@ -480,6 +480,9 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
   const [author, setAuthor] = useState("PsychedBox Team");
   const [body, setBody] = useState("");
   const [published, setPublished] = useState(false);
+  const [image, setImage] = useState("");
+  const [imageAlt, setImageAlt] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -509,6 +512,8 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
           author,
           body: blocks,
           published,
+          image,
+          image_alt: imageAlt,
           tags: [],
           read_time: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 200))} min read`,
         }),
@@ -518,6 +523,24 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+    async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setUploading(true);
+      setError("");
+      const formData = new FormData();
+      formData.append("image", file);
+      try {
+        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        if (!res.ok) throw new Error("Upload failed");
+        const data = await res.json();
+        setImage(data.url);
+      } catch (err: any) {
+        setError("Image upload failed");
+      } finally {
+        setUploading(false);
+      }
     }
   }
 
@@ -551,6 +574,24 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
           <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} className="input-field" />
         </FormField>
       </div>
+
+
+      <FormField label="Image">
+        <input type="file" accept="image/*" onChange={handleImageChange} className="input-field" />
+        {uploading && <span className="text-xs text-gray-500 ml-2">Uploading…</span>}
+        {image && (
+          <div className="mt-2">
+            <img src={image} alt="Preview" className="max-h-32 rounded border" />
+            <input
+              type="text"
+              value={imageAlt}
+              onChange={(e) => setImageAlt(e.target.value)}
+              className="input-field mt-2"
+              placeholder="Image alt text (for accessibility)"
+            />
+          </div>
+        )}
+      </FormField>
 
       <FormField label="Description">
         <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="input-field" placeholder="Short summary…" />
