@@ -180,5 +180,34 @@ export function createAuthRouter(): Router {
     res.json({ user });
   });
 
+  // GET /api/auth/orders – order history for the logged-in user
+  router.get("/orders", requireAuth, (req: Request, res: Response) => {
+    try {
+      const user = (req as any).user as AuthUser;
+      const orders = db
+        .prepare(
+          `SELECT id, stripe_session_id, amount_cents, currency, status, plan_id, item_summary, created_at
+           FROM orders
+           WHERE user_id = ? OR email = ?
+           ORDER BY created_at DESC
+           LIMIT 50`
+        )
+        .all(user.id, user.email) as any[];
+
+      // Attach line items to each order
+      const getItems = db.prepare(
+        `SELECT product_id, name, variant, quantity, price_cents FROM order_items WHERE order_id = ?`
+      );
+      for (const order of orders) {
+        order.items = getItems.all(order.id);
+      }
+
+      res.json({ orders });
+    } catch (err: any) {
+      console.error("Orders fetch error:", err);
+      res.status(500).json({ error: "Failed to load orders" });
+    }
+  });
+
   return router;
 }

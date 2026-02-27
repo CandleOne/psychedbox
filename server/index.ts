@@ -42,6 +42,12 @@ async function startServer() {
   // Public API routes (newsletter subscribe, public blog)
   app.use("/api", createPublicRouter());
 
+  // Serve uploaded images from the persistent data volume
+  const uploadsPath = process.env.NODE_ENV === "production"
+    ? "/app/data/uploads"
+    : path.resolve(__dirname, "..", "data", "uploads");
+  app.use("/uploads", express.static(uploadsPath));
+
   // Serve static files from dist/public in production
   const staticPath =
     process.env.NODE_ENV === "production"

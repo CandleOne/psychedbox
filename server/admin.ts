@@ -25,8 +25,12 @@ import path from "path";
 import fs from "fs";
 
 // ─── Image Upload Setup ──────────────────────────────────────────────────────
+// In production, use the persistent Fly volume (/app/data/uploads).
+// In development, use a local data/uploads directory.
 
-const uploadDir = path.resolve("client/public/uploads");
+const uploadDir = process.env.NODE_ENV === "production"
+  ? path.resolve("/app/data/uploads")
+  : path.resolve("data/uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({

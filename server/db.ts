@@ -66,10 +66,37 @@ db.exec(`
     created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS orders (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id         INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    stripe_session_id TEXT NOT NULL UNIQUE,
+    stripe_customer_id TEXT,
+    email           TEXT NOT NULL,
+    amount_cents     INTEGER NOT NULL DEFAULT 0,
+    currency        TEXT NOT NULL DEFAULT 'usd',
+    status          TEXT NOT NULL DEFAULT 'completed',
+    plan_id         TEXT,
+    item_summary    TEXT NOT NULL DEFAULT '',
+    created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS order_items (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id    INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id  TEXT NOT NULL,
+    name        TEXT NOT NULL DEFAULT '',
+    variant     TEXT,
+    quantity    INTEGER NOT NULL DEFAULT 1,
+    price_cents INTEGER NOT NULL DEFAULT 0
+  );
+
   CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
   CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
   CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
   CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts(published);
+  CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+  CREATE INDEX IF NOT EXISTS idx_orders_email ON orders(email);
+  CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 `);
 
 export default db;

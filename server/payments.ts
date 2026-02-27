@@ -309,7 +309,7 @@ export function createPaymentRouter(): Router {
             console.warn(`[Stripe] No local user found for email ${customerEmail}`);
           }
 
-          // Send order confirmation email
+          // Build order summary
           const productMeta = session.metadata?.productId;
           const plan = planId ? PLANS.find((p) => p.id === planId) : null;
           const itemName = plan?.name
@@ -319,10 +319,67 @@ export function createPaymentRouter(): Router {
               : session.metadata?.source === "cart"
                 ? `Cart (${session.metadata.itemCount} items)`
                 : "PsychedBox Purchase";
-          const amountStr = session.amount_total
-            ? `$${(session.amount_total / 100).toFixed(2)}`
+          const amountCents = session.amount_total ?? 0;
+          const amountStr = amountCents
+            ? `$${(amountCents / 100).toFixed(2)}`
             : "—";
 
+          // Persist order to database
+          try {
+            const orderResult = db.prepare(`
+              INSERT INTO orders (user_id, stripe_session_id, stripe_customer_id, email, amount_cents, currency, status, plan_id, item_summary)
+              VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)
+            `).run(
+              user?.id ?? null,
+              session.id,
+              customerId,
+              customerEmail,
+              amountCents,
+              session.currency ?? "usd",
+              planId ?? null,
+              itemName
+            );
+            const orderId = orderResult.lastInsertRowid;
+
+            // If it was a cart checkout, persist individual line items
+            if (session.metadata?.source === "cart" && session.metadata.items) {
+              try {
+                const cartItems = JSON.parse(session.metadata.items) as Array<{
+                  id: string;
+                  name?: string;
+                  variant?: string;
+                  quantity: number;
+                  priceCents: number;
+                }>;
+                const insertItem = db.prepare(`
+                  INSERT INTO order_items (order_id, product_id, name, variant, quantity, price_cents)
+                  VALUES (?, ?, ?, ?, ?, ?)
+                `);
+                for (const item of cartItems) {
+                  insertItem.run(orderId, item.id, item.name ?? item.id, item.variant ?? null, item.quantity, item.priceCents ?? 0);
+                }
+              } catch {
+                console.warn("[Stripe] Could not parse cart items metadata");
+              }
+            } else if (productMeta) {
+              // Single product purchase
+              db.prepare(`
+                INSERT INTO order_items (order_id, product_id, name, variant, quantity, price_cents)
+                VALUES (?, ?, ?, ?, 1, ?)
+              `).run(orderId, productMeta, itemName, session.metadata?.variant ?? null, amountCents);
+            }
+
+            console.log(`[Stripe] Order #${orderId} saved for ${customerEmail}`);
+          } catch (err: any) {
+            // Don't fail the webhook if the order already exists (idempotency)
+            if (err.message?.includes("UNIQUE constraint")) {
+              console.log(`[Stripe] Order already exists for session ${session.id}`);
+            } else {
+              console.error("[Stripe] Failed to save order:", err.message);
+            }
+          }
+
+          // Send order confirmation email
           sendOrderConfirmationEmail(
             customerEmail,
             (user as any)?.name || session.customer_details?.name || "",

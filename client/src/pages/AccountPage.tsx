@@ -4,7 +4,28 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { Link, useLocation } from "wouter";
-import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2, ExternalLink } from "lucide-react";
+import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2, ExternalLink, Receipt, ShoppingBag } from "lucide-react";
+import { useState, useEffect } from "react";
+
+interface OrderItem {
+  product_id: string;
+  name: string;
+  variant: string | null;
+  quantity: number;
+  price_cents: number;
+}
+
+interface Order {
+  id: number;
+  stripe_session_id: string;
+  amount_cents: number;
+  currency: string;
+  status: string;
+  plan_id: string | null;
+  item_summary: string;
+  created_at: string;
+  items: OrderItem[];
+}
 
 export default function AccountPage() {
   useSEO({
@@ -16,6 +37,18 @@ export default function AccountPage() {
   const { user, loading, logout, isAdmin } = useAuth();
   const { manageSubscription, loading: portalLoading } = useCheckout();
   const [, navigate] = useLocation();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    setOrdersLoading(true);
+    fetch("/api/auth/orders", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : { orders: [] }))
+      .then((data) => setOrders(data.orders ?? []))
+      .catch(() => setOrders([]))
+      .finally(() => setOrdersLoading(false));
+  }, [user]);
 
   async function handleLogout() {
     await logout();
@@ -181,6 +214,79 @@ export default function AccountPage() {
               <h3 className="text-xl font-bold text-gray-900 mb-2">Need Help?</h3>
               <p className="text-gray-600 leading-relaxed">Contact support for shipping, billing, or membership questions.</p>
             </Link>
+          </div>
+
+          {/* Order History */}
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Receipt size={22} />
+              Order History
+            </h2>
+
+            {ordersLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 size={24} className="animate-spin text-gray-400" />
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-gray-300 p-10 text-center">
+                <ShoppingBag size={36} className="mx-auto text-gray-300 mb-3" />
+                <p className="text-gray-500 font-medium mb-1">No orders yet</p>
+                <p className="text-gray-400 text-sm">Your purchase history will appear here once you place an order.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <div key={order.id} className="rounded-xl border border-gray-200 p-5 bg-white">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+                      <div>
+                        <h3 className="font-bold text-gray-900">{order.item_summary}</h3>
+                        <p className="text-gray-500 text-sm">
+                          {new Date(order.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg font-bold text-gray-900">
+                          ${(order.amount_cents / 100).toFixed(2)}
+                        </span>
+                        <span
+                          className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${
+                            order.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : order.status === "refunded"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                    {order.items.length > 0 && (
+                      <div className="border-t border-gray-100 pt-3 mt-1">
+                        <ul className="space-y-1 text-sm text-gray-600">
+                          {order.items.map((item, idx) => (
+                            <li key={idx} className="flex justify-between">
+                              <span>
+                                {item.name}
+                                {item.variant ? ` (${item.variant})` : ""}
+                                {item.quantity > 1 ? ` × ${item.quantity}` : ""}
+                              </span>
+                              <span className="text-gray-400">
+                                ${(item.price_cents / 100).toFixed(2)}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
