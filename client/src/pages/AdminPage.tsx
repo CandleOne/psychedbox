@@ -465,185 +465,15 @@ function BlogTab() {
                     </td>
                   </tr>
                 ))}
-                    {editPostId && (
-                      <BlogEditForm postId={editPostId} onSaved={() => { setEditPostId(null); loadPosts(); }} onCancel={() => setEditPostId(null)} />
-                    )}
-
-// ─── Blog Edit Form ────────────────────────────────────────────────────────
-
-type BlogEditFormProps = { postId: number; onSaved: () => void; onCancel: () => void };
-function BlogEditForm({ postId, onSaved, onCancel }: BlogEditFormProps) {
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-                const [description, setDescription] = useState("");
-                const [category, setCategory] = useState("News");
-                const [author, setAuthor] = useState("");
-                const [body, setBody] = useState("");
-                const [published, setPublished] = useState(false);
-                const [image, setImage] = useState("");
-                const [imageAlt, setImageAlt] = useState("");
-                const [uploading, setUploading] = useState(false);
-                const [error, setError] = useState("");
-                const [saving, setSaving] = useState(false);
-                const [loading, setLoading] = useState(true);
-
-                useEffect(() => {
-                  api<{ post: any }>(`/api/admin/blog/${postId}`).then(({ post }) => {
-                    setTitle(post.title || "");
-                    setSlug(post.slug || "");
-                    setDescription(post.description || "");
-                    setCategory(post.category || "News");
-                    setAuthor(post.author || "");
-                    setBody(Array.isArray(post.body) ? post.body.map((b: any) => b.content || b.text || "").join("\n\n") : "");
-                    setPublished(!!post.published);
-                    setImage(post.image || "");
-                    setImageAlt(post.image_alt || "");
-                    setLoading(false);
-                  });
-                }, [postId]);
-
-                async function handleSubmit(e: React.FormEvent) {
-                  e.preventDefault();
-                  setError("");
-                  setSaving(true);
-                  // Parse body — each paragraph becomes a "text" content block
-                  const blocks = body
-                    .split(/\n\n+/)
-                    .filter(Boolean)
-                    .map((text) => ({ type: "text" as const, content: text.trim() }));
-                  try {
-                    await api(`/api/admin/blog/${postId}`, {
-                      method: "PUT",
-                      body: JSON.stringify({
-                        title,
-                        slug,
-                        description,
-                        category,
-                        author,
-                        body: blocks,
-                        published,
-                        image,
-                        image_alt: imageAlt,
-                      }),
-                    });
-                    onSaved();
-                  } catch (err: any) {
-                    setError(err.message);
-                  } finally {
-                    setSaving(false);
-                  }
-                }
-
-                async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setUploading(true);
-                  setError("");
-                  const formData = new FormData();
-                  formData.append("image", file);
-                  try {
-                    const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-                    if (!res.ok) throw new Error("Upload failed");
-                    const data = await res.json();
-                    setImage(data.url);
-                  } catch (err: any) {
-                    setError("Image upload failed");
-                  } finally {
-                    setUploading(false);
-                  }
-                }
-
-                if (loading) return <LoadingSpinner />;
-
-                return (
-                  <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-blue-200 p-6 space-y-4 my-8">
-                    <h3 className="text-lg font-bold text-blue-900">Edit Blog Post</h3>
-                    {error && <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">{error}</div>}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField label="Title" required>
-                        <input
-                          type="text"
-                          required
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="input-field"
-                          placeholder="My Post Title"
-                        />
-                      </FormField>
-                      <FormField label="Slug" required>
-                        <input type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} className="input-field" placeholder="my-post-title" />
-                      </FormField>
-                      <FormField label="Category">
-                        <select value={category} onChange={(e) => setCategory(e.target.value)} className="input-field">
-                          {["News", "Education", "Culture", "Guides", "Science", "Community"].map((c) => (
-                            <option key={c} value={c}>{c}</option>
-                          ))}
-                        </select>
-                      </FormField>
-                      <FormField label="Author">
-                        <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} className="input-field" />
-                      </FormField>
-                    </div>
-
-                    <FormField label="Image">
-                      <input type="file" accept="image/*" onChange={handleImageChange} className="input-field" />
-                      {uploading && <span className="text-xs text-gray-500 ml-2">Uploading…</span>}
-                      {image && (
-                        <div className="mt-2">
-                          <img src={image} alt="Preview" className="max-h-32 rounded border" />
-                          <input
-                            type="text"
-                            value={imageAlt}
-                            onChange={(e) => setImageAlt(e.target.value)}
-                            className="input-field mt-2"
-                            placeholder="Image alt text (for accessibility)"
-                          />
-                        </div>
-                      )}
-                    </FormField>
-
-                    <FormField label="Description">
-                      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="input-field" placeholder="Short summary…" />
-                    </FormField>
-
-                    <FormField label="Body (paragraphs separated by blank lines)">
-                      <textarea
-                        rows={8}
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                        className="input-field font-mono text-sm"
-                        placeholder={"First paragraph...\n\nSecond paragraph..."}
-                      />
-                    </FormField>
-
-                    <div className="flex items-center gap-2">
-                      <input id="published-edit" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="rounded" />
-                      <label htmlFor="published-edit" className="text-sm text-gray-700">Published</label>
-                    </div>
-
-                    <div className="flex gap-2 pt-2">
-                      <button
-                        type="submit"
-                        disabled={saving}
-                        style={{ backgroundColor: "#2563EB" }}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-bold hover:opacity-90 disabled:opacity-50"
-                      >
-                        {saving ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
-                        {saving ? "Saving…" : "Save Changes"}
-                      </button>
-                      <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                );
-              }
               </tbody>
             </table>
           </div>
         )}
       </div>
+
+      {editPostId && (
+        <BlogEditForm postId={editPostId} onSaved={() => { setEditPostId(null); loadPosts(); }} onCancel={() => setEditPostId(null)} />
+      )}
     </div>
   );
 }
@@ -702,23 +532,24 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
     } finally {
       setSaving(false);
     }
-    async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      setUploading(true);
-      setError("");
-      const formData = new FormData();
-      formData.append("image", file);
-      try {
-        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Upload failed");
-        const data = await res.json();
-        setImage(data.url);
-      } catch (err: any) {
-        setError("Image upload failed");
-      } finally {
-        setUploading(false);
-      }
+  }
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setImage(data.url);
+    } catch (err: any) {
+      setError("Image upload failed");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -799,6 +630,152 @@ function BlogCreateForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
         >
           {saving && <Loader2 size={14} className="animate-spin" />}
           {saving ? "Saving…" : "Create Post"}
+        </button>
+        <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// ─── Blog Edit Form ────────────────────────────────────────────────────────
+
+type BlogEditFormProps = { postId: number; onSaved: () => void; onCancel: () => void };
+function BlogEditForm({ postId, onSaved, onCancel }: BlogEditFormProps) {
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("News");
+  const [author, setAuthor] = useState("");
+  const [body, setBody] = useState("");
+  const [published, setPublished] = useState(false);
+  const [image, setImage] = useState("");
+  const [imageAlt, setImageAlt] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api<{ post: any }>(`/api/admin/blog/${postId}`).then(({ post }) => {
+      setTitle(post.title || "");
+      setSlug(post.slug || "");
+      setDescription(post.description || "");
+      setCategory(post.category || "News");
+      setAuthor(post.author || "");
+      setBody(Array.isArray(post.body) ? post.body.map((b: any) => b.content || b.text || "").join("\n\n") : "");
+      setPublished(!!post.published);
+      setImage(post.image || "");
+      setImageAlt(post.image_alt || "");
+      setLoading(false);
+    });
+  }, [postId]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSaving(true);
+    const blocks = body
+      .split(/\n\n+/)
+      .filter(Boolean)
+      .map((text) => ({ type: "text" as const, content: text.trim() }));
+    try {
+      await api(`/api/admin/blog/${postId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          title,
+          slug,
+          description,
+          category,
+          author,
+          body: blocks,
+          published,
+          image,
+          image_alt: imageAlt,
+        }),
+      });
+      onSaved();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setImage(data.url);
+    } catch (err: any) {
+      setError("Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-blue-200 p-6 space-y-4 my-4">
+      <h3 className="text-lg font-bold text-blue-900">Edit Blog Post</h3>
+      {error && <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">{error}</div>}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField label="Title" required>
+          <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" placeholder="My Post Title" />
+        </FormField>
+        <FormField label="Slug" required>
+          <input type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} className="input-field" placeholder="my-post-title" />
+        </FormField>
+        <FormField label="Category">
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className="input-field">
+            {["News", "Education", "Culture", "Guides", "Science", "Community"].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </FormField>
+        <FormField label="Author">
+          <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} className="input-field" />
+        </FormField>
+      </div>
+
+      <FormField label="Image">
+        <input type="file" accept="image/*" onChange={handleImageChange} className="input-field" />
+        {uploading && <span className="text-xs text-gray-500 ml-2">Uploading…</span>}
+        {image && (
+          <div className="mt-2">
+            <img src={image} alt="Preview" className="max-h-32 rounded border" />
+            <input type="text" value={imageAlt} onChange={(e) => setImageAlt(e.target.value)} className="input-field mt-2" placeholder="Image alt text (for accessibility)" />
+          </div>
+        )}
+      </FormField>
+
+      <FormField label="Description">
+        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="input-field" placeholder="Short summary…" />
+      </FormField>
+
+      <FormField label="Body (paragraphs separated by blank lines)">
+        <textarea rows={8} value={body} onChange={(e) => setBody(e.target.value)} className="input-field font-mono text-sm" placeholder={"First paragraph...\n\nSecond paragraph..."} />
+      </FormField>
+
+      <div className="flex items-center gap-2">
+        <input id="published-edit" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="rounded" />
+        <label htmlFor="published-edit" className="text-sm text-gray-700">Published</label>
+      </div>
+
+      <div className="flex gap-2 pt-2">
+        <button type="submit" disabled={saving} style={{ backgroundColor: "#2563EB" }} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-bold hover:opacity-90 disabled:opacity-50">
+          {saving ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
+          {saving ? "Saving…" : "Save Changes"}
         </button>
         <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
           Cancel
