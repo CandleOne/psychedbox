@@ -471,7 +471,8 @@ function BlogTab() {
 
 // ─── Blog Edit Form ────────────────────────────────────────────────────────
 
-function BlogEditForm({ postId, onSaved, onCancel }: { postId: number; onSaved: () => void; onCancel: () => void }) {
+type BlogEditFormProps = { postId: number; onSaved: () => void; onCancel: () => void };
+function BlogEditForm({ postId, onSaved, onCancel }: BlogEditFormProps) {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
                 const [description, setDescription] = useState("");
