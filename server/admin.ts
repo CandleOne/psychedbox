@@ -212,6 +212,14 @@ export function createAdminRouter(): Router {
     }
   });
 
+  router.delete("/subscribers/:id", (req: Request, res: Response) => {
+    const result = db.prepare("DELETE FROM subscribers WHERE id = ?").run(req.params.id);
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Subscriber not found" });
+    }
+    res.json({ ok: true });
+  });
+
   // ─── Database Overview ──────────────────────────────────────────────────────
 
   // ─── Email: Send Newsletter ─────────────────────────────────────────────────

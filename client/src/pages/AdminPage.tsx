@@ -595,12 +595,24 @@ function SubscribersTab() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  const loadSubscribers = () => {
     setLoading(true);
     api<{ subscribers: Subscriber[]; total: number }>(`/api/admin/subscribers?page=${page}`)
       .then((data) => { setSubscribers(data.subscribers); setTotal(data.total); })
       .finally(() => setLoading(false));
-  }, [page]);
+  };
+
+  useEffect(() => { loadSubscribers(); }, [page]);
+
+  const handleDelete = async (id: number, email: string) => {
+    if (!confirm(`Remove ${email} from the mailing list?`)) return;
+    try {
+      await api(`/api/admin/subscribers/${id}`, { method: "DELETE" });
+      loadSubscribers();
+    } catch {
+      alert("Failed to remove subscriber");
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -620,6 +632,7 @@ function SubscribersTab() {
                   <th className="px-4 py-3 font-medium">Email</th>
                   <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Subscribed</th>
+                  <th className="px-4 py-3 font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -629,6 +642,14 @@ function SubscribersTab() {
                     <td className="px-4 py-3 font-medium text-gray-900">{s.email}</td>
                     <td className="px-4 py-3 text-gray-600">{s.source}</td>
                     <td className="px-4 py-3 text-gray-400">{new Date(s.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleDelete(s.id, s.email)}
+                        className="text-red-500 hover:text-red-700 text-xs font-medium"
+                      >
+                        Remove
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
