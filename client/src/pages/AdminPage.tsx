@@ -2,7 +2,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSEO } from "@/hooks/useSEO";
-import { Loader2, Users, FileText, Mail, Activity, Shield, Trash2, Search, Database, Play, ChevronDown, ChevronUp, Eye, EyeOff, Plus } from "lucide-react";
+import { Loader2, Users, FileText, Mail, Activity, Shield, Trash2, Search, Database, Play, ChevronDown, ChevronUp, Eye, EyeOff, Plus, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 
@@ -64,12 +64,13 @@ async function api<T>(url: string, opts?: RequestInit): Promise<T> {
 
 // ─── Tabs ────────────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "users" | "blog" | "subscribers" | "database";
+type Tab = "overview" | "users" | "blog" | "subscribers" | "email" | "database";
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "users", label: "Users", icon: Users },
   { id: "blog", label: "Blog Posts", icon: FileText },
   { id: "subscribers", label: "Subscribers", icon: Mail },
+  { id: "email", label: "Email", icon: Send },
   { id: "database", label: "Database", icon: Database },
 ];
 
@@ -156,6 +157,7 @@ export default function AdminPage() {
           {tab === "users" && <UsersTab />}
           {tab === "blog" && <BlogTab />}
           {tab === "subscribers" && <SubscribersTab />}
+          {tab === "email" && <EmailTab />}
           {tab === "database" && <DatabaseTab />}
         </div>
       </section>
@@ -665,6 +667,310 @@ function SubscribersTab() {
           <button disabled={page * 50 >= total} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 rounded border text-sm disabled:opacity-40">Next</button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Database Tab ────────────────────────────────────────────────────────────
+
+// ─── Email Tab ───────────────────────────────────────────────────────────────
+
+type EmailMode = "newsletter" | "blog-notify" | "test";
+
+function EmailTab() {
+  const [mode, setMode] = useState<EmailMode>("newsletter");
+
+  return (
+    <div className="space-y-6">
+      {/* Mode selector */}
+      <div className="flex gap-2">
+        {[
+          { id: "newsletter" as const, label: "Send Newsletter" },
+          { id: "blog-notify" as const, label: "Blog Notification" },
+          { id: "test" as const, label: "Test Email" },
+        ].map((m) => (
+          <button
+            key={m.id}
+            onClick={() => setMode(m.id)}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              mode === m.id
+                ? "bg-[#FF6B6B] text-white"
+                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
+      {mode === "newsletter" && <NewsletterComposer />}
+      {mode === "blog-notify" && <BlogNotifier />}
+      {mode === "test" && <TestEmailSender />}
+    </div>
+  );
+}
+
+function NewsletterComposer() {
+  const [subject, setSubject] = useState("");
+  const [bodyHtml, setBodyHtml] = useState("");
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const [error, setError] = useState("");
+  const [preview, setPreview] = useState(false);
+
+  async function handleSend() {
+    if (!subject.trim() || !bodyHtml.trim()) return;
+    if (!confirm(`Send this newsletter to ALL subscribers?`)) return;
+    setSending(true);
+    setError("");
+    setResult(null);
+    try {
+      const data = await api<{ sent: number; failed: number; total: number }>("/api/admin/email/newsletter", {
+        method: "POST",
+        body: JSON.stringify({ subject, bodyHtml }),
+      });
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+      <div>
+        <h3 className="text-lg font-bold text-gray-900">Compose Newsletter</h3>
+        <p className="text-sm text-gray-500 mt-1">Send a newsletter email to all subscribers.</p>
+      </div>
+
+      <FormField label="Subject" required>
+        <input
+          type="text"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="e.g. March Update — What's Coming Next"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#FF6B6B] focus:ring-2 focus:ring-[#FF6B6B]/20 outline-none"
+        />
+      </FormField>
+
+      <FormField label="Body (HTML)" required>
+        <textarea
+          rows={12}
+          value={bodyHtml}
+          onChange={(e) => setBodyHtml(e.target.value)}
+          placeholder={'<p>Hey there!</p>\n<p>Here\'s what\'s new at PsychedBox...</p>\n<p>— The PsychedBox Team</p>'}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:border-[#FF6B6B] focus:ring-2 focus:ring-[#FF6B6B]/20 outline-none resize-y"
+        />
+      </FormField>
+
+      {/* Preview toggle */}
+      {bodyHtml.trim() && (
+        <div>
+          <button
+            onClick={() => setPreview(!preview)}
+            className="text-sm text-[#FF6B6B] font-semibold hover:underline flex items-center gap-1"
+          >
+            {preview ? <EyeOff size={14} /> : <Eye size={14} />}
+            {preview ? "Hide Preview" : "Show Preview"}
+          </button>
+          {preview && (
+            <div className="mt-3 border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <p className="text-xs text-gray-400 mb-2 uppercase tracking-wide">Preview</p>
+              <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {error && <ErrorMessage message={error} />}
+
+      {result && (
+        <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+          <CheckCircle size={16} />
+          Sent {result.sent} of {result.total} emails.{result.failed > 0 && ` (${result.failed} failed)`}
+        </div>
+      )}
+
+      <button
+        onClick={handleSend}
+        disabled={sending || !subject.trim() || !bodyHtml.trim()}
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
+        style={{ backgroundColor: "#FF6B6B" }}
+      >
+        {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+        {sending ? "Sending..." : "Send to All Subscribers"}
+      </button>
+    </div>
+  );
+}
+
+function BlogNotifier() {
+  const [posts, setPosts] = useState<BlogPostRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sendingId, setSendingId] = useState<number | null>(null);
+  const [results, setResults] = useState<Record<number, { sent: number; failed: number; total: number }>>({});
+  const [errors, setErrors] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    api<{ posts: BlogPostRow[] }>("/api/admin/blog")
+      .then((d) => setPosts(d.posts.filter((p) => p.published)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleNotify(postId: number, title: string) {
+    if (!confirm(`Notify all subscribers about "${title}"?`)) return;
+    setSendingId(postId);
+    setErrors((prev) => { const n = { ...prev }; delete n[postId]; return n; });
+    try {
+      const data = await api<{ sent: number; failed: number; total: number }>(`/api/admin/email/blog-notify/${postId}`, {
+        method: "POST",
+      });
+      setResults((prev) => ({ ...prev, [postId]: data }));
+    } catch (err: any) {
+      setErrors((prev) => ({ ...prev, [postId]: err.message }));
+    } finally {
+      setSendingId(null);
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+      <div>
+        <h3 className="text-lg font-bold text-gray-900">Blog Post Notifications</h3>
+        <p className="text-sm text-gray-500 mt-1">Notify all subscribers about a published blog post.</p>
+      </div>
+
+      {loading ? (
+        <LoadingSpinner />
+      ) : posts.length === 0 ? (
+        <p className="text-gray-500 text-sm">No published blog posts yet.</p>
+      ) : (
+        <div className="space-y-3">
+          {posts.map((p) => (
+            <div
+              key={p.id}
+              className="flex items-center justify-between gap-4 border border-gray-100 rounded-lg px-4 py-3"
+            >
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900 text-sm truncate">{p.title}</p>
+                <p className="text-xs text-gray-400">
+                  {p.category} · {p.author} · {new Date(p.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                {results[p.id] && (
+                  <span className="text-xs text-green-600 flex items-center gap-1">
+                    <CheckCircle size={12} /> {results[p.id].sent} sent
+                  </span>
+                )}
+                {errors[p.id] && (
+                  <span className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle size={12} /> {errors[p.id]}
+                  </span>
+                )}
+                <button
+                  onClick={() => handleNotify(p.id, p.title)}
+                  disabled={sendingId === p.id}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white disabled:opacity-50"
+                  style={{ backgroundColor: "#1a1a1a" }}
+                >
+                  {sendingId === p.id ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <Send size={12} />
+                  )}
+                  Notify
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TestEmailSender() {
+  const { user } = useAuth();
+  const [to, setTo] = useState(user?.email || "");
+  const [template, setTemplate] = useState("welcome");
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<{ sent: boolean; to: string; template: string } | null>(null);
+  const [error, setError] = useState("");
+
+  async function handleSend() {
+    if (!to.trim()) return;
+    setSending(true);
+    setError("");
+    setResult(null);
+    try {
+      const data = await api<{ sent: boolean; to: string; template: string }>("/api/admin/email/test", {
+        method: "POST",
+        body: JSON.stringify({ to, template }),
+      });
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+      <div>
+        <h3 className="text-lg font-bold text-gray-900">Send Test Email</h3>
+        <p className="text-sm text-gray-500 mt-1">Preview how email templates look by sending a test to yourself.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField label="Recipient">
+          <input
+            type="email"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            placeholder="your@email.com"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#FF6B6B] focus:ring-2 focus:ring-[#FF6B6B]/20 outline-none"
+          />
+        </FormField>
+
+        <FormField label="Template">
+          <select
+            value={template}
+            onChange={(e) => setTemplate(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#FF6B6B] focus:ring-2 focus:ring-[#FF6B6B]/20 outline-none bg-white"
+          >
+            <option value="welcome">Welcome (signup)</option>
+            <option value="subscriber">Subscriber Welcome</option>
+            <option value="order">Order Confirmation</option>
+            <option value="payment-failed">Payment Failed</option>
+          </select>
+        </FormField>
+      </div>
+
+      {error && <ErrorMessage message={error} />}
+
+      {result && (
+        <div className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm border ${
+          result.sent
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-700"
+        }`}>
+          {result.sent ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+          {result.sent ? `Test email sent to ${result.to}` : "Failed to send test email"}
+        </div>
+      )}
+
+      <button
+        onClick={handleSend}
+        disabled={sending || !to.trim()}
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
+        style={{ backgroundColor: "#FF6B6B" }}
+      >
+        {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+        {sending ? "Sending..." : "Send Test"}
+      </button>
     </div>
   );
 }
