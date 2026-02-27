@@ -63,13 +63,9 @@ export default function BlogList() {
       .then(({ data }) => {
         if (!cancelled && data.posts.length > 0) {
           // Merge: API posts first, then any hardcoded posts not already present
-          const apiSlugs = new Set(data.posts.map((p) => p.slug));
-          const merged = [
-            ...data.posts,
-            ...fallbackPosts.filter((p) => !apiSlugs.has(p.slug)),
-          ];
-          setPosts(merged);
-          const cats = Array.from(new Set(merged.map((p) => p.category))) as BlogCategory[];
+          // Use only API posts if available (they are already filtered for published)
+          setPosts(data.posts);
+          const cats = Array.from(new Set(data.posts.map((p) => p.category))) as BlogCategory[];
           setCategories(cats);
         }
       })
