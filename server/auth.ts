@@ -8,6 +8,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import db from "./db.js";
+import { sendWelcomeEmail } from "./email.js";
 
 const SESSION_COOKIE = "pb_session";
 const SESSION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -118,6 +119,9 @@ export function createAuthRouter(): Router {
 
       const user = getUserFromSession(sessionId);
       res.status(201).json({ user });
+
+      // Fire-and-forget welcome email
+      sendWelcomeEmail(email, name || "").catch(() => {});
     } catch (err: any) {
       console.error("Signup error:", err);
       res.status(500).json({ error: "Failed to create account" });

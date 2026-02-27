@@ -7,6 +7,19 @@
 import { Router, Request, Response } from "express";
 import { requireAdmin } from "./auth.js";
 import db from "./db.js";
+import {
+  sendNewsletterEmail,
+  sendBlogUpdateEmail,
+  sendBulkEmail,
+  sendWelcomeEmail,
+  sendSubscriberWelcomeEmail,
+  sendOrderConfirmationEmail,
+  sendPaymentFailedEmail,
+} from "./email.js";
+import {
+  newsletterEmail as newsletterTpl,
+  blogUpdateEmail as blogUpdateTpl,
+} from "./email-templates.js";
 
 export function createAdminRouter(): Router {
   const router = Router();
@@ -196,6 +209,105 @@ export function createAdminRouter(): Router {
       res.status(201).json({ ok: true });
     } catch {
       res.status(409).json({ error: "Already subscribed" });
+    }
+  });
+
+  // ─── Database Overview ──────────────────────────────────────────────────────
+
+  // ─── Email: Send Newsletter ─────────────────────────────────────────────────
+
+  router.post("/email/newsletter", async (req: Request, res: Response) => {
+    const { subject, bodyHtml } = req.body;
+    if (!subject || !bodyHtml) {
+      return res.status(400).json({ error: "subject and bodyHtml are required" });
+    }
+
+    const subscribers = db
+      .prepare("SELECT email FROM subscribers ORDER BY created_at ASC")
+      .all() as { email: string }[];
+
+    if (subscribers.length === 0) {
+      return res.json({ sent: 0, failed: 0, total: 0 });
+    }
+
+    const emails = subscribers.map((s) => s.email);
+    const siteUrl = process.env.SITE_URL || "https://psychedbox.com";
+
+    const result = await sendBulkEmail(emails, subject, () => {
+      return newsletterTpl(subject, bodyHtml, siteUrl);
+    });
+
+    res.json({ ...result, total: emails.length });
+  });
+
+  // ─── Email: Notify Subscribers of New Blog Post ─────────────────────────────
+
+  router.post("/email/blog-notify/:id", async (req: Request, res: Response) => {
+    const post = db
+      .prepare("SELECT slug, title, description, author, published FROM blog_posts WHERE id = ?")
+      .get(req.params.id) as
+      | { slug: string; title: string; description: string; author: string; published: number }
+      | undefined;
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    if (!post.published) {
+      return res.status(400).json({ error: "Post is not published yet" });
+    }
+
+    const subscribers = db
+      .prepare("SELECT email FROM subscribers ORDER BY created_at ASC")
+      .all() as { email: string }[];
+
+    if (subscribers.length === 0) {
+      return res.json({ sent: 0, failed: 0, total: 0 });
+    }
+
+    const emails = subscribers.map((s) => s.email);
+    const siteUrl = process.env.SITE_URL || "https://psychedbox.com";
+
+    const result = await sendBulkEmail(
+      emails,
+      `New Post: ${post.title}`,
+      () => blogUpdateTpl(post, siteUrl)
+    );
+
+    res.json({ ...result, total: emails.length });
+  });
+
+  // ─── Email: Send Test Email ─────────────────────────────────────────────────
+
+  router.post("/email/test", async (req: Request, res: Response) => {
+    const { to, template } = req.body;
+    const currentUser = (req as any).user;
+    const targetEmail = to || currentUser.email;
+
+    try {
+      let sent = false;
+      switch (template) {
+        case "welcome":
+          sent = await sendWelcomeEmail(targetEmail, currentUser.name || "Admin");
+          break;
+        case "subscriber":
+          sent = await sendSubscriberWelcomeEmail(targetEmail);
+          break;
+        case "order":
+          sent = await sendOrderConfirmationEmail(targetEmail, currentUser.name || "Admin", {
+            planOrProduct: "PsychedBox — Monthly",
+            amount: "$29.00",
+            sessionId: "cs_test_" + Date.now(),
+          });
+          break;
+        case "payment-failed":
+          sent = await sendPaymentFailedEmail(targetEmail, currentUser.name || "Admin", 1);
+          break;
+        default:
+          return res.status(400).json({ error: "Unknown template. Use: welcome, subscriber, order, payment-failed" });
+      }
+      res.json({ sent, to: targetEmail, template });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
   });
 

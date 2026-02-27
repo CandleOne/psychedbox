@@ -5,6 +5,7 @@
 
 import { Router, Request, Response } from "express";
 import db from "./db.js";
+import { sendSubscriberWelcomeEmail } from "./email.js";
 
 export function createPublicRouter(): Router {
   const router = Router();
@@ -36,6 +37,9 @@ export function createPublicRouter(): Router {
       source || "website"
     );
     res.status(201).json({ ok: true });
+
+    // Fire-and-forget welcome email to new subscriber
+    sendSubscriberWelcomeEmail(trimmed).catch(() => {});
   });
 
   // ─── Public Blog ───────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@ import { Router, raw, json } from "express";
 import Stripe from "stripe";
 import { PLANS, SHOP_PRODUCTS } from "../shared/payments.js";
 import db from "./db.js";
+import { sendOrderConfirmationEmail, sendPaymentFailedEmail } from "./email.js";
 import type {
   CreateCheckoutRequest,
   CreateCheckoutResponse,
@@ -298,7 +299,7 @@ export function createPaymentRouter(): Router {
 
         // Link Stripe customer to local user and set their plan
         if (customerEmail) {
-          const user = db.prepare("SELECT id FROM users WHERE email = ? COLLATE NOCASE").get(customerEmail) as { id: number } | undefined;
+          const user = db.prepare("SELECT id, name FROM users WHERE email = ? COLLATE NOCASE").get(customerEmail) as { id: number; name: string } | undefined;
           if (user) {
             db.prepare(
               "UPDATE users SET stripe_customer_id = COALESCE(?, stripe_customer_id), plan = COALESCE(?, plan), updated_at = datetime('now') WHERE id = ?"
@@ -307,6 +308,26 @@ export function createPaymentRouter(): Router {
           } else {
             console.warn(`[Stripe] No local user found for email ${customerEmail}`);
           }
+
+          // Send order confirmation email
+          const productMeta = session.metadata?.productId;
+          const plan = planId ? PLANS.find((p) => p.id === planId) : null;
+          const itemName = plan?.name
+            ? `PsychedBox — ${plan.name}`
+            : productMeta
+              ? `Shop — ${productMeta}`
+              : session.metadata?.source === "cart"
+                ? `Cart (${session.metadata.itemCount} items)`
+                : "PsychedBox Purchase";
+          const amountStr = session.amount_total
+            ? `$${(session.amount_total / 100).toFixed(2)}`
+            : "—";
+
+          sendOrderConfirmationEmail(
+            customerEmail,
+            (user as any)?.name || session.customer_details?.name || "",
+            { planOrProduct: itemName, amount: amountStr, sessionId: session.id }
+          ).catch(() => {});
         }
         break;
       }
@@ -359,12 +380,22 @@ export function createPaymentRouter(): Router {
         );
 
         // Mark the user's plan as past_due so the UI can show a warning
-        const result = db.prepare(
-          "UPDATE users SET plan = 'past_due', updated_at = datetime('now') WHERE stripe_customer_id = ?"
-        ).run(customerId);
+        const failedUser = db.prepare(
+          "SELECT id, email, name FROM users WHERE stripe_customer_id = ?"
+        ).get(customerId) as { id: number; email: string; name: string } | undefined;
 
-        if (result.changes > 0) {
+        if (failedUser) {
+          db.prepare(
+            "UPDATE users SET plan = 'past_due', updated_at = datetime('now') WHERE id = ?"
+          ).run(failedUser.id);
           console.log(`[Stripe] Marked customer ${customerId} as past_due`);
+
+          // Notify user about payment failure
+          sendPaymentFailedEmail(
+            failedUser.email,
+            failedUser.name,
+            attemptCount ?? 1
+          ).catch(() => {});
         } else {
           console.warn(`[Stripe] No user found with stripe_customer_id=${customerId}`);
         }
