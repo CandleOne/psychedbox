@@ -52,8 +52,8 @@ export default function BlogList() {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "All">(
     "All"
   );
-  const [posts, setPosts] = useState<BlogPost[]>(fallbackPosts);
-  const [categories, setCategories] = useState<BlogCategory[]>(fallbackCategories);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
 
   // Try loading posts from the API; fall back to hardcoded data on failure
   useEffect(() => {
@@ -61,16 +61,16 @@ export default function BlogList() {
     axios
       .get<{ posts: BlogPost[] }>("/api/blog")
       .then(({ data }) => {
-        if (!cancelled && data.posts.length > 0) {
-          // Merge: API posts first, then any hardcoded posts not already present
-          // Use only API posts if available (they are already filtered for published)
+        if (!cancelled) {
           setPosts(data.posts);
           const cats = Array.from(new Set(data.posts.map((p) => p.category))) as BlogCategory[];
           setCategories(cats);
         }
       })
       .catch(() => {
-        // API unavailable (static hosting) — keep fallback data
+        // API unavailable (static hosting) — show nothing
+        setPosts([]);
+        setCategories([]);
       });
     return () => { cancelled = true; };
   }, []);
