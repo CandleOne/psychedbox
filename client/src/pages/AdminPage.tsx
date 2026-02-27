@@ -468,11 +468,12 @@ function BlogTab() {
                     {editPostId && (
                       <BlogEditForm postId={editPostId} onSaved={() => { setEditPostId(null); loadPosts(); }} onCancel={() => setEditPostId(null)} />
                     )}
-              // ─── Blog Edit Form ────────────────────────────────────────────────────────
 
-              function BlogEditForm({ postId, onSaved, onCancel }: { postId: number; onSaved: () => void; onCancel: () => void }) {
-                const [title, setTitle] = useState("");
-                const [slug, setSlug] = useState("");
+// ─── Blog Edit Form ────────────────────────────────────────────────────────
+
+function BlogEditForm({ postId, onSaved, onCancel }: { postId: number; onSaved: () => void; onCancel: () => void }) {
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
                 const [description, setDescription] = useState("");
                 const [category, setCategory] = useState("News");
                 const [author, setAuthor] = useState("");
