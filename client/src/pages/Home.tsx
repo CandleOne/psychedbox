@@ -111,9 +111,9 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/75" />
 
         <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-12">
             {/* Left — headline + CTA */}
-            <div className="max-w-md">
+            <div className="max-w-lg">
               <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }} className="mb-4">
                 Let's Piece it together
               </h1>
@@ -137,21 +137,21 @@ export default function Home() {
             {latestPost && (
               <Link
                 href={`/blog/${latestPost.slug}`}
-                className="hidden md:flex flex-col max-w-sm w-full bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:bg-white/15 transition-colors group"
+                className="hidden md:flex flex-col max-w-md w-full bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:bg-white/15 transition-colors group"
               >
                 <img
                   src={latestPost.image}
                   alt={latestPost.imageAlt || latestPost.title}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-52 object-cover"
                 />
-                <div className="p-5">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF6B6B] mb-2">
+                <div className="p-6">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF6B6B] mb-3">
                     Check out our newest blog post
                   </p>
-                  <h3 className="text-white font-bold text-lg leading-snug mb-2 group-hover:text-[#FF6B6B] transition-colors">
+                  <h3 className="text-white font-bold text-xl leading-snug mb-2 group-hover:text-[#FF6B6B] transition-colors">
                     {latestPost.title}
                   </h3>
-                  <p className="text-white/70 text-sm line-clamp-2 mb-3">
+                  <p className="text-white/70 text-sm line-clamp-3 mb-4">
                     {latestPost.description}
                   </p>
                   <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#FF6B6B]">
