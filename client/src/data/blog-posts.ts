@@ -29,6 +29,7 @@ export type ContentBlock =
   | { type: "heading"; text: string }
   | { type: "subheading"; text: string }
   | { type: "image"; src: string; alt: string; caption?: string }
+  | { type: "image-text"; src: string; alt: string; title: string; text: string }
   | { type: "quote"; text: string; attribution?: string }
   | { type: "list"; items: string[] };
 

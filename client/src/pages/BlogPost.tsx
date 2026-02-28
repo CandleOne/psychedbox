@@ -34,6 +34,21 @@ function RenderBlock({ block }: { block: ContentBlock }) {
           {block.caption && <figcaption className="text-gray-400 text-sm text-center mt-2">{block.caption}</figcaption>}
         </figure>
       );
+    case "image-text":
+      return (
+        <div className="flex gap-5 my-8 items-start">
+          <img
+            src={block.src}
+            alt={block.alt}
+            className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover flex-shrink-0"
+            loading="lazy"
+          />
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{block.title}</h3>
+            <p className="text-gray-700 text-base leading-relaxed">{block.text}</p>
+          </div>
+        </div>
+      );
     case "quote":
       return (
         <blockquote className="border-l-4 border-[#FF6B6B] pl-6 my-8">
