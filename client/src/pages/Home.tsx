@@ -1,10 +1,12 @@
-import { Star, Users, Gift, Zap } from "lucide-react";
+import { Star, Users, Gift, Zap, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
+import { useState, useEffect } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import NewsletterForm from "@/components/NewsletterForm";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
+import type { BlogPost } from "@/data/blog-posts";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -82,6 +84,18 @@ export default function Home() {
     canonical: "/",
   });
   useJsonLd(organizationSchema);
+
+  const [latestPost, setLatestPost] = useState<BlogPost | null>(null);
+  useEffect(() => {
+    fetch("/api/blog")
+      .then((r) => r.json())
+      .then((data) => {
+        const posts: BlogPost[] = data.posts ?? [];
+        if (posts.length > 0) setLatestPost(posts[0]);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
@@ -96,25 +110,56 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-black/75" />
 
-        <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full">
-          <div className="max-w-md">
-            <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }} className="mb-4">
-              Let's Piece it together
-            </h1>
-            <p className="text-lg text-white mb-6">
-              PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
-            </p>
-            <p className="text-lg text-white mb-6">
-              Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/movement" style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
-              Learn more about the work!
-              </Link>
-              <Link href="/pricing" style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
-              SUBSCRIBE NOW
-              </Link>
+        <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            {/* Left — headline + CTA */}
+            <div className="max-w-md">
+              <h1 style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }} className="mb-4">
+                Let's Piece it together
+              </h1>
+              <p className="text-lg text-white mb-6">
+                PsychedBox aims to educate and connect the psychedelic community through immersive art and storytelling.
+              </p>
+              <p className="text-lg text-white mb-6">
+                Each discovery box contains a unique puzzle highlighting an exemplary community member, themed goodies, and a story that highlights their journey of wellness, and work within the movement.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/movement" style={{ backgroundColor: "#282828" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
+                Learn more about the work!
+                </Link>
+                <Link href="/pricing" style={{ backgroundColor: "#FF6B6B" }} className="px-8 py-3 text-white font-bold rounded-lg hover:opacity-90 transition-opacity text-center">
+                SUBSCRIBE NOW
+                </Link>
+              </div>
             </div>
+
+            {/* Right — latest blog post preview */}
+            {latestPost && (
+              <Link
+                href={`/blog/${latestPost.slug}`}
+                className="hidden md:flex flex-col max-w-sm w-full bg-white/10 backdrop-blur-md rounded-xl overflow-hidden border border-white/20 hover:bg-white/15 transition-colors group"
+              >
+                <img
+                  src={latestPost.image}
+                  alt={latestPost.imageAlt || latestPost.title}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-5">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF6B6B] mb-2">
+                    Check out our newest blog post
+                  </p>
+                  <h3 className="text-white font-bold text-lg leading-snug mb-2 group-hover:text-[#FF6B6B] transition-colors">
+                    {latestPost.title}
+                  </h3>
+                  <p className="text-white/70 text-sm line-clamp-2 mb-3">
+                    {latestPost.description}
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#FF6B6B]">
+                    Read more <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </section>
