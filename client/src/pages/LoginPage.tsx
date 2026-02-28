@@ -15,6 +15,7 @@ export default function LoginPage() {
 
   const { login } = useAuth();
   const [, navigate] = useLocation();
+  const redirectTo = new URLSearchParams(window.location.search).get("redirect") || "/account";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,7 +30,7 @@ export default function LoginPage() {
     if (result.error) {
       setError(result.error);
     } else {
-      navigate("/account");
+      navigate(redirectTo);
     }
   }
 
@@ -104,7 +105,7 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-gray-600">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-semibold text-[#FF6B6B] hover:underline">
+            <Link href={redirectTo !== "/account" ? `/signup?redirect=${encodeURIComponent(redirectTo)}` : "/signup"} className="font-semibold text-[#FF6B6B] hover:underline">
               Sign up
             </Link>
           </p>

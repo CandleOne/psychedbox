@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { PLANS, SHOP_PRODUCTS } from "../shared/payments.js";
 import db from "./db.js";
 import { sendOrderConfirmationEmail, sendPaymentFailedEmail } from "./email.js";
+import { requireAuth, type AuthUser } from "./auth.js";
 import type {
   CreateCheckoutRequest,
   CreateCheckoutResponse,
@@ -58,8 +59,9 @@ export function createPaymentRouter(): Router {
 
   // ── POST /api/payments/create-checkout ──
   // Creates a Stripe Checkout Session and returns the hosted URL.
-  router.post("/create-checkout", json(), async (req, res) => {
+  router.post("/create-checkout", json(), requireAuth, async (req, res) => {
     try {
+      const user = (req as any).user as AuthUser;
       const { planId, donationAmountCents } = req.body as CreateCheckoutRequest;
 
       const plan = PLANS.find((p) => p.id === planId);
@@ -116,8 +118,10 @@ export function createPaymentRouter(): Router {
         line_items: [lineItem],
         success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${base}/checkout/cancel`,
+        customer_email: user.stripe_customer_id ? undefined : user.email,
+        ...(user.stripe_customer_id && { customer: user.stripe_customer_id }),
         ...(mode === "subscription" && { subscription_data: { metadata: { planId: plan.id } } }),
-        metadata: { planId: plan.id },
+        metadata: { planId: plan.id, userId: String(user.id) },
       });
 
       const response: CreateCheckoutResponse = { url: session.url! };
@@ -130,8 +134,9 @@ export function createPaymentRouter(): Router {
 
   // ── POST /api/payments/create-product-checkout ──
   // Creates a Stripe Checkout Session for a shop product (one-time purchase).
-  router.post("/create-product-checkout", json(), async (req, res) => {
+  router.post("/create-product-checkout", json(), requireAuth, async (req, res) => {
     try {
+      const user = (req as any).user as AuthUser;
       const { productId, variant } = req.body as CreateProductCheckoutRequest;
 
       const product = SHOP_PRODUCTS.find((p) => p.id === productId);
@@ -161,7 +166,9 @@ export function createPaymentRouter(): Router {
         ],
         success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${base}/shop`,
-        metadata: { productId: product.id, variant: variant || "" },
+        customer_email: user.stripe_customer_id ? undefined : user.email,
+        ...(user.stripe_customer_id && { customer: user.stripe_customer_id }),
+        metadata: { productId: product.id, variant: variant || "", userId: String(user.id) },
       });
 
       const response: CreateProductCheckoutResponse = { url: session.url! };
@@ -174,8 +181,9 @@ export function createPaymentRouter(): Router {
 
   // ── POST /api/payments/create-cart-checkout ──
   // Creates a Stripe Checkout Session for multiple shop products (cart).
-  router.post("/create-cart-checkout", json(), async (req, res) => {
+  router.post("/create-cart-checkout", json(), requireAuth, async (req, res) => {
     try {
+      const user = (req as any).user as AuthUser;
       const { items } = req.body as CreateCartCheckoutRequest;
 
       if (!items || !Array.isArray(items) || items.length === 0) {
@@ -232,10 +240,13 @@ export function createPaymentRouter(): Router {
         line_items: lineItems,
         success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${base}/shop`,
+        customer_email: user.stripe_customer_id ? undefined : user.email,
+        ...(user.stripe_customer_id && { customer: user.stripe_customer_id }),
         metadata: {
           source: "cart",
           itemCount: String(lineItems.length),
           items: JSON.stringify(cartItemsMeta),
+          userId: String(user.id),
         },
       });
 
@@ -318,88 +329,97 @@ export function createPaymentRouter(): Router {
         );
 
         // Link Stripe customer to local user and set their plan
-        if (customerEmail) {
-          const user = db.prepare("SELECT id, name FROM users WHERE email = ? COLLATE NOCASE").get(customerEmail) as { id: number; name: string } | undefined;
-          if (user) {
-            db.prepare(
-              "UPDATE users SET stripe_customer_id = COALESCE(?, stripe_customer_id), plan = COALESCE(?, plan), updated_at = datetime('now') WHERE id = ?"
-            ).run(customerId, planId, user.id);
-            console.log(`[Stripe] Linked customer ${customerId} to user ${user.id}, plan=${planId}`);
-          } else {
-            console.warn(`[Stripe] No local user found for email ${customerEmail}`);
-          }
+        // Prefer userId from metadata (set during checkout), fall back to email lookup
+        const metaUserId = session.metadata?.userId ? Number(session.metadata.userId) : null;
+        const user = metaUserId
+          ? db.prepare("SELECT id, name FROM users WHERE id = ?").get(metaUserId) as { id: number; name: string } | undefined
+          : customerEmail
+            ? db.prepare("SELECT id, name FROM users WHERE email = ? COLLATE NOCASE").get(customerEmail) as { id: number; name: string } | undefined
+            : undefined;
 
-          // Build order summary
-          const productMeta = session.metadata?.productId;
-          const plan = planId ? PLANS.find((p) => p.id === planId) : null;
-          const itemName = plan?.name
-            ? `PsychedBox — ${plan.name}`
-            : productMeta
-              ? `Shop — ${productMeta}`
-              : session.metadata?.source === "cart"
-                ? `Cart (${session.metadata.itemCount} items)`
-                : "PsychedBox Purchase";
-          const amountCents = session.amount_total ?? 0;
-          const amountStr = amountCents
-            ? `$${(amountCents / 100).toFixed(2)}`
-            : "—";
+        if (user) {
+          db.prepare(
+            "UPDATE users SET stripe_customer_id = COALESCE(?, stripe_customer_id), plan = COALESCE(?, plan), updated_at = datetime('now') WHERE id = ?"
+          ).run(customerId, planId, user.id);
+          console.log(`[Stripe] Linked customer ${customerId} to user ${user.id}, plan=${planId}`);
+        } else if (customerEmail) {
+          console.warn(`[Stripe] No local user found for email ${customerEmail}`);
+        } else {
+          console.warn(`[Stripe] No user info in session ${session.id}`);
+        }
 
-          // Persist order to database
-          try {
-            const orderResult = db.prepare(`
-              INSERT INTO orders (user_id, stripe_session_id, stripe_customer_id, email, amount_cents, currency, status, plan_id, item_summary)
-              VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)
-            `).run(
-              user?.id ?? null,
-              session.id,
-              customerId,
-              customerEmail,
-              amountCents,
-              session.currency ?? "usd",
-              planId ?? null,
-              itemName
-            );
-            const orderId = orderResult.lastInsertRowid;
+        // Build order summary
+        const productMeta = session.metadata?.productId;
+        const plan = planId ? PLANS.find((p) => p.id === planId) : null;
+        const itemName = plan?.name
+          ? `PsychedBox — ${plan.name}`
+          : productMeta
+            ? `Shop — ${productMeta}`
+            : session.metadata?.source === "cart"
+              ? `Cart (${session.metadata.itemCount} items)`
+              : "PsychedBox Purchase";
+        const amountCents = session.amount_total ?? 0;
+        const amountStr = amountCents
+          ? `$${(amountCents / 100).toFixed(2)}`
+          : "—";
 
-            // If it was a cart checkout, persist individual line items
-            if (session.metadata?.source === "cart" && session.metadata.items) {
-              try {
-                const cartItems = JSON.parse(session.metadata.items) as Array<{
-                  id: string;
-                  name?: string;
-                  variant?: string;
-                  quantity: number;
-                  priceCents: number;
-                }>;
-                const insertItem = db.prepare(`
-                  INSERT INTO order_items (order_id, product_id, name, variant, quantity, price_cents)
-                  VALUES (?, ?, ?, ?, ?, ?)
-                `);
-                for (const item of cartItems) {
-                  insertItem.run(orderId, item.id, item.name ?? item.id, item.variant ?? null, item.quantity, item.priceCents ?? 0);
-                }
-              } catch {
-                console.warn("[Stripe] Could not parse cart items metadata");
-              }
-            } else if (productMeta) {
-              // Single product purchase
-              db.prepare(`
+        // Persist order to database
+        try {
+          const orderResult = db.prepare(`
+            INSERT INTO orders (user_id, stripe_session_id, stripe_customer_id, email, amount_cents, currency, status, plan_id, item_summary)
+            VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)
+          `).run(
+            user?.id ?? null,
+            session.id,
+            customerId,
+            customerEmail,
+            amountCents,
+            session.currency ?? "usd",
+            planId ?? null,
+            itemName
+          );
+          const orderId = orderResult.lastInsertRowid;
+
+          // If it was a cart checkout, persist individual line items
+          if (session.metadata?.source === "cart" && session.metadata.items) {
+            try {
+              const cartItems = JSON.parse(session.metadata.items) as Array<{
+                id: string;
+                name?: string;
+                variant?: string;
+                quantity: number;
+                priceCents: number;
+              }>;
+              const insertItem = db.prepare(`
                 INSERT INTO order_items (order_id, product_id, name, variant, quantity, price_cents)
-                VALUES (?, ?, ?, ?, 1, ?)
-              `).run(orderId, productMeta, itemName, session.metadata?.variant ?? null, amountCents);
+                VALUES (?, ?, ?, ?, ?, ?)
+              `);
+              for (const item of cartItems) {
+                insertItem.run(orderId, item.id, item.name ?? item.id, item.variant ?? null, item.quantity, item.priceCents ?? 0);
+              }
+            } catch {
+              console.warn("[Stripe] Could not parse cart items metadata");
             }
-
-            console.log(`[Stripe] Order #${orderId} saved for ${customerEmail}`);
-          } catch (err: any) {
-            // Don't fail the webhook if the order already exists (idempotency)
-            if (err.message?.includes("UNIQUE constraint")) {
-              console.log(`[Stripe] Order already exists for session ${session.id}`);
-            } else {
-              console.error("[Stripe] Failed to save order:", err.message);
-            }
+          } else if (productMeta) {
+            // Single product purchase
+            db.prepare(`
+              INSERT INTO order_items (order_id, product_id, name, variant, quantity, price_cents)
+              VALUES (?, ?, ?, ?, 1, ?)
+            `).run(orderId, productMeta, itemName, session.metadata?.variant ?? null, amountCents);
           }
 
-          // Send order confirmation email
+          console.log(`[Stripe] Order #${orderId} saved for ${customerEmail}`);
+        } catch (err: any) {
+          // Don't fail the webhook if the order already exists (idempotency)
+          if (err.message?.includes("UNIQUE constraint")) {
+            console.log(`[Stripe] Order already exists for session ${session.id}`);
+          } else {
+            console.error("[Stripe] Failed to save order:", err.message);
+          }
+        }
+
+        // Send order confirmation email
+        if (customerEmail) {
           sendOrderConfirmationEmail(
             customerEmail,
             (user as any)?.name || session.customer_details?.name || "",
