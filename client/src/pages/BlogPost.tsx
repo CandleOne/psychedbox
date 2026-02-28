@@ -58,7 +58,7 @@ function RenderBlock({ block }: { block: ContentBlock }) {
                     </a>
                   )}
                 </div>
-                <p className="text-[10px] text-gray-400 text-center mt-1 leading-tight">Listen on Spotify<br />and Apple Podcasts</p>
+                <p className="text-xs text-gray-400 text-center mt-1 leading-tight">Listen on Spotify<br />and Apple Podcasts</p>
               </div>
             )}
           </div>

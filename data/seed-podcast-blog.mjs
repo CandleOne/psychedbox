@@ -161,10 +161,7 @@ const body = JSON.stringify([
     type: "paragraph",
     text: "If you're new to psychedelic media, start with whichever show matches your interests — clinical science, business, personal growth, or cultural critique — and let the rabbit hole take you where it will. And if you're already a seasoned listener, consider sharing these shows with someone in your life who might benefit from hearing a more balanced, compassionate take on what psychedelics actually are and what they can do.",
   },
-  {
-    type: "paragraph",
-    text: "The narrative is changing. These podcasters are helping write the next chapter. Hit subscribe, and join the conversation.",
-  },
+
 
 ]);
 
