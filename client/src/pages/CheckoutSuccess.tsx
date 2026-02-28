@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 import { Check, Package } from "lucide-react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
+import { useCart } from "@/contexts/CartContext";
 
 export default function CheckoutSuccess() {
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setSessionId(params.get("session_id"));
-  }, []);
+    // Clear the cart after a successful purchase
+    clearCart();
+  }, [clearCart]);
 
   return (
     <div className="min-h-screen bg-white">

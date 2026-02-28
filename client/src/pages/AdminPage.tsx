@@ -2,8 +2,8 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSEO } from "@/hooks/useSEO";
-import { Loader2, Users, FileText, Mail, Activity, Shield, Trash2, Search, Database, Play, ChevronDown, ChevronUp, Eye, EyeOff, Plus, Send, CheckCircle, AlertCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { Loader2, Users, FileText, Mail, Activity, Shield, Trash2, Search, Database, Play, ChevronDown, ChevronUp, Eye, EyeOff, Plus, Send, CheckCircle, AlertCircle, ShoppingBag } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -64,11 +64,12 @@ async function api<T>(url: string, opts?: RequestInit): Promise<T> {
 
 // ─── Tabs ────────────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "users" | "blog" | "subscribers" | "email" | "database";
+type Tab = "overview" | "users" | "blog" | "orders" | "subscribers" | "email" | "database";
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "users", label: "Users", icon: Users },
   { id: "blog", label: "Blog Posts", icon: FileText },
+  { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "subscribers", label: "Subscribers", icon: Mail },
   { id: "email", label: "Email", icon: Send },
   { id: "database", label: "Database", icon: Database },
@@ -156,6 +157,7 @@ export default function AdminPage() {
           {tab === "overview" && <OverviewTab />}
           {tab === "users" && <UsersTab />}
           {tab === "blog" && <BlogTab />}
+          {tab === "orders" && <OrdersTab />}
           {tab === "subscribers" && <SubscribersTab />}
           {tab === "email" && <EmailTab />}
           {tab === "database" && <DatabaseTab />}
@@ -861,6 +863,226 @@ function SubscribersTab() {
           <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 rounded border text-sm disabled:opacity-40">Prev</button>
           <span className="px-3 py-1 text-sm text-gray-500">Page {page}</span>
           <button disabled={page * 50 >= total} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 rounded border text-sm disabled:opacity-40">Next</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Orders Tab ──────────────────────────────────────────────────────────────
+
+interface AdminOrder {
+  id: number;
+  user_id: number | null;
+  stripe_session_id: string;
+  email: string;
+  amount_cents: number;
+  currency: string;
+  status: string;
+  plan_id: string | null;
+  item_summary: string;
+  created_at: string;
+  user_name: string | null;
+  items: { product_id: string; name: string; variant: string | null; quantity: number; price_cents: number }[];
+}
+
+const ORDER_STATUSES = ["completed", "shipped", "pending", "refunded", "cancelled"] as const;
+
+function OrdersTab() {
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const limit = 25;
+
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+      if (search) params.set("search", search);
+      if (statusFilter) params.set("status", statusFilter);
+      const data = await api<{ orders: AdminOrder[]; total: number }>(`/api/admin/orders?${params}`);
+      setOrders(data.orders);
+      setTotal(data.total);
+    } catch {
+      setOrders([]);
+    }
+    setLoading(false);
+  }, [page, search, statusFilter]);
+
+  useEffect(() => { fetchOrders(); }, [fetchOrders]);
+
+  async function updateStatus(orderId: number, newStatus: string) {
+    try {
+      await api(`/api/admin/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status: newStatus } : o));
+    } catch { /* ignore */ }
+  }
+
+  const totalPages = Math.ceil(total / limit);
+
+  const statusColor = (s: string) => {
+    switch (s) {
+      case "completed": return "bg-green-100 text-green-700";
+      case "shipped": return "bg-blue-100 text-blue-700";
+      case "pending": return "bg-yellow-100 text-yellow-700";
+      case "refunded": return "bg-orange-100 text-orange-700";
+      case "cancelled": return "bg-red-100 text-red-700";
+      default: return "bg-gray-100 text-gray-700";
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by email, item, or session ID..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] bg-white"
+        >
+          <option value="">All statuses</option>
+          {ORDER_STATUSES.map((s) => (
+            <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Summary */}
+      <p className="text-sm text-gray-500">{total} order{total !== 1 ? "s" : ""} found</p>
+
+      {loading ? <LoadingSpinner /> : orders.length === 0 ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
+          No orders found.
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
+                  <th className="text-left px-4 py-3 font-medium">#</th>
+                  <th className="text-left px-4 py-3 font-medium">Date</th>
+                  <th className="text-left px-4 py-3 font-medium">Customer</th>
+                  <th className="text-left px-4 py-3 font-medium">Item</th>
+                  <th className="text-right px-4 py-3 font-medium">Amount</th>
+                  <th className="text-left px-4 py-3 font-medium">Status</th>
+                  <th className="text-left px-4 py-3 font-medium w-8"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <React.Fragment key={order.id}>
+                    <tr
+                      className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer"
+                      onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
+                    >
+                      <td className="px-4 py-3 text-gray-400 font-mono text-xs">{order.id}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-gray-900">{order.user_name || "—"}</div>
+                        <div className="text-gray-500 text-xs">{order.email}</div>
+                      </td>
+                      <td className="px-4 py-3 max-w-[200px] truncate" title={order.item_summary}>
+                        {order.item_summary}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold whitespace-nowrap">
+                        ${(order.amount_cents / 100).toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={order.status}
+                          onChange={(e) => { e.stopPropagation(); updateStatus(order.id, e.target.value); }}
+                          onClick={(e) => e.stopPropagation()}
+                          className={`text-xs font-medium px-2 py-1 rounded-full border-0 cursor-pointer ${statusColor(order.status)}`}
+                        >
+                          {ORDER_STATUSES.map((s) => (
+                            <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-4 py-3 text-gray-400">
+                        {expandedId === order.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </td>
+                    </tr>
+                    {expandedId === order.id && (
+                      <tr>
+                        <td colSpan={7} className="px-4 py-4 bg-gray-50 border-b border-gray-100">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div>
+                              <p className="text-gray-500 mb-1">Stripe Session</p>
+                              <p className="font-mono text-gray-700 break-all">{order.stripe_session_id}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500 mb-1">Plan</p>
+                              <p className="text-gray-700">{order.plan_id || "—"}</p>
+                            </div>
+                          </div>
+                          {order.items.length > 0 && (
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <p className="text-xs text-gray-500 mb-2 font-medium">Line Items</p>
+                              <ul className="space-y-1 text-xs text-gray-700">
+                                {order.items.map((item, idx) => (
+                                  <li key={idx} className="flex justify-between">
+                                    <span>
+                                      {item.name}
+                                      {item.variant ? ` (${item.variant})` : ""}
+                                      {item.quantity > 1 ? ` × ${item.quantity}` : ""}
+                                    </span>
+                                    <span className="text-gray-400">${(item.price_cents / 100).toFixed(2)}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1 rounded text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <span className="text-xs text-gray-500">Page {page} of {totalPages}</span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-1 rounded text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

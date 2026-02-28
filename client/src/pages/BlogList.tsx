@@ -5,7 +5,7 @@ import SiteNavbar from "@/components/SiteNavbar";
 import NewsletterForm from "@/components/NewsletterForm";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
-import { blogPosts as fallbackPosts, allCategories as fallbackCategories, type BlogCategory, type BlogPost } from "@/data/blog-posts";
+import { allCategories as fallbackCategories, type BlogCategory, type BlogPost } from "@/data/blog-posts";
 import axios from "axios";
 
 const blogListSchema = {
@@ -20,15 +20,6 @@ const blogListSchema = {
     name: "PsychedBox",
     url: "https://psychedbox.com",
   },
-  blogPost: fallbackPosts.map((post) => ({
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: { "@type": "Person", name: post.author },
-    url: `https://psychedbox.com/blog/${post.slug}`,
-    image: post.image,
-  })),
 };
 
 const categoryColors: Record<BlogCategory, string> = {

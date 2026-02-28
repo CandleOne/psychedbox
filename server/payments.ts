@@ -78,7 +78,7 @@ export function createPaymentRouter(): Router {
               price_data: {
                 currency: "usd",
                 product_data: { name: "Donation — Support the Movement" },
-                unit_amount: donationAmountCents || 500, // minimum $5
+                unit_amount: Math.max(donationAmountCents || 500, 50), // Stripe minimum is $0.50
               },
               quantity: 1,
             }
@@ -475,6 +475,40 @@ export function createPaymentRouter(): Router {
           ).catch(() => {});
         } else {
           console.warn(`[Stripe] No user found with stripe_customer_id=${customerId}`);
+        }
+        break;
+      }
+
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+        const paymentIntentId = charge.payment_intent as string | null;
+        const chargeCustomer = charge.customer as string | null;
+        const amountRefunded = charge.amount_refunded;
+        console.log(
+          `[Stripe] 💸 Charge refunded — charge=${charge.id}, pi=${paymentIntentId}, customer=${chargeCustomer}, refunded=${amountRefunded}`
+        );
+
+        // Try to find the matching order via payment_intent → checkout session
+        if (paymentIntentId) {
+          try {
+            const stripe = getStripe();
+            const sessions = await stripe.checkout.sessions.list({ payment_intent: paymentIntentId, limit: 1 });
+            const matchedSession = sessions.data[0];
+            if (matchedSession) {
+              const result = db.prepare(
+                "UPDATE orders SET status = 'refunded', updated_at = datetime('now') WHERE stripe_session_id = ?"
+              ).run(matchedSession.id);
+              if (result.changes > 0) {
+                console.log(`[Stripe] Marked order for session ${matchedSession.id} as refunded`);
+              } else {
+                console.warn(`[Stripe] No order found for session ${matchedSession.id}`);
+              }
+            } else {
+              console.warn(`[Stripe] No checkout session found for payment_intent ${paymentIntentId}`);
+            }
+          } catch (err: any) {
+            console.error("[Stripe] Failed to look up session for refund:", err.message);
+          }
         }
         break;
       }

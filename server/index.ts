@@ -3,11 +3,13 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createPaymentRouter } from "./payments.js";
 import { createAuthRouter, authMiddleware } from "./auth.js";
 import { createAdminRouter } from "./admin.js";
 import { createPublicRouter } from "./public.js";
+import db from "./db.js";
 import dotenv from "dotenv";
 
 // Load .env file
@@ -27,6 +29,24 @@ async function startServer() {
     express.json()(req, res, next);
   });
   app.use(cookieParser());
+
+  // ── Security headers (Helmet) ─────────────────────────────────────────
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://cloud.umami.is"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.stripe.com", "blob:"],
+          frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
+          connectSrc: ["'self'", "https://api.stripe.com", "https://cloud.umami.is"],
+        },
+      },
+      crossOriginEmbedderPolicy: false, // needed for external images
+    })
+  );
 
   // ── Rate limiting ──────────────────────────────────────────────────────
   // Strict limiter for auth-sensitive routes (login, signup, forgot-password)
@@ -67,6 +87,50 @@ async function startServer() {
   // Public API routes (newsletter subscribe, public blog)
   app.use("/api", createPublicRouter());
 
+  // Health check endpoint (for Fly.io health checks)
+  app.get("/api/health", (_req, res) => {
+    try {
+      // Quick DB check to ensure SQLite is responsive
+      db.prepare("SELECT 1").get();
+      res.json({ status: "ok", timestamp: new Date().toISOString() });
+    } catch {
+      res.status(503).json({ status: "error", message: "Database unavailable" });
+    }
+  });
+
+  // Dynamic sitemap — auto-includes blog posts from DB
+  app.get("/sitemap.xml", (_req, res) => {
+    const baseUrl = process.env.SITE_URL || "https://psychedbox.com";
+
+    // Static routes
+    const staticRoutes = [
+      "/", "/pricing", "/shop", "/shop/monthly-boxes", "/shop/gift-subscriptions",
+      "/shop/past-puzzles", "/community/member-gallery", "/community/stories",
+      "/community/events", "/about/our-mission", "/about/how-it-works", "/about-us",
+      "/contact", "/careers", "/faq", "/shipping-info", "/returns", "/blog",
+      "/movement",
+    ];
+
+    // Dynamic blog posts from DB
+    const blogPosts = db.prepare(
+      "SELECT slug, updated_at FROM blog_posts WHERE published = 1 ORDER BY created_at DESC"
+    ).all() as { slug: string; updated_at: string }[];
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    for (const route of staticRoutes) {
+      xml += `  <url><loc>${baseUrl}${route}</loc></url>\n`;
+    }
+    for (const post of blogPosts) {
+      const lastmod = post.updated_at ? post.updated_at.split("T")[0] || post.updated_at.split(" ")[0] : "";
+      xml += `  <url><loc>${baseUrl}/blog/${post.slug}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}</url>\n`;
+    }
+
+    xml += `</urlset>`;
+    res.header("Content-Type", "application/xml").send(xml);
+  });
+
   // Serve uploaded images from the persistent data volume
   const uploadsPath = process.env.NODE_ENV === "production"
     ? "/app/data/uploads"
@@ -79,7 +143,14 @@ async function startServer() {
       ? path.resolve(__dirname, "public")
       : path.resolve(__dirname, "..", "dist", "public");
 
-  app.use(express.static(staticPath));
+  // Hashed assets (assets/*) get long-lived cache; other static files get short cache
+  app.use("/assets", express.static(path.join(staticPath, "assets"), {
+    maxAge: "1y",
+    immutable: true,
+  }));
+  app.use(express.static(staticPath, {
+    maxAge: "1h",
+  }));
 
   // Handle client-side routing - serve index.html for all routes
   app.get("*", (_req, res) => {

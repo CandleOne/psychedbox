@@ -33,6 +33,9 @@ const uploadDir = process.env.NODE_ENV === "production"
   : path.resolve("data/uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml", "image/avif"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
@@ -40,7 +43,17 @@ const storage = multer.diskStorage({
     cb(null, unique);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`File type not allowed. Accepted: ${ALLOWED_MIME_TYPES.join(", ")}`));
+    }
+  },
+});
 
 export function createAdminRouter(): Router {
   const router = Router();
@@ -346,6 +359,63 @@ export function createAdminRouter(): Router {
   });
 
   // ─── Database Overview ──────────────────────────────────────────────────────
+
+  // ─── Orders Management ────────────────────────────────────────────────────
+
+  router.get("/orders", (req: Request, res: Response) => {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50));
+    const offset = (page - 1) * limit;
+    const search = (req.query.search as string) || "";
+    const status = (req.query.status as string) || "";
+
+    let where = "1=1";
+    const params: any[] = [];
+
+    if (search) {
+      where += " AND (o.email LIKE ? OR o.item_summary LIKE ? OR o.stripe_session_id LIKE ?)";
+      const p = `%${search}%`;
+      params.push(p, p, p);
+    }
+    if (status) {
+      where += " AND o.status = ?";
+      params.push(status);
+    }
+
+    const rows = db.prepare(`
+      SELECT o.id, o.user_id, o.stripe_session_id, o.email, o.amount_cents, o.currency,
+             o.status, o.plan_id, o.item_summary, o.created_at,
+             u.name as user_name
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.id
+      WHERE ${where}
+      ORDER BY o.created_at DESC
+      LIMIT ? OFFSET ?
+    `).all(...params, limit, offset) as any[];
+
+    const total = db.prepare(`SELECT COUNT(*) as count FROM orders o WHERE ${where}`).get(...params) as { count: number };
+
+    // Attach items to each order
+    const getItems = db.prepare("SELECT product_id, name, variant, quantity, price_cents FROM order_items WHERE order_id = ?");
+    for (const row of rows) {
+      row.items = getItems.all(row.id);
+    }
+
+    res.json({ orders: rows, total: total.count, page, limit });
+  });
+
+  router.patch("/orders/:id/status", (req: Request, res: Response) => {
+    const { status } = req.body;
+    const allowed = ["completed", "refunded", "cancelled", "pending", "shipped"];
+    if (!status || !allowed.includes(status)) {
+      return res.status(400).json({ error: `Invalid status. Allowed: ${allowed.join(", ")}` });
+    }
+    const result = db.prepare("UPDATE orders SET status = ? WHERE id = ?").run(status, req.params.id);
+    if (result.changes === 0) return res.status(404).json({ error: "Order not found" });
+    res.json({ ok: true });
+  });
+
+  // ─── Database Overview (continued) ──────────────────────────────────────────
 
   router.get("/db/tables", (_req: Request, res: Response) => {
     const tables = db.prepare(

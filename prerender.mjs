@@ -157,6 +157,36 @@ const routes = [
       "Lion's mane, oyster, shiitake — growing gourmet mushrooms at home is easier than you think. Here's how to get started.",
   },
   {
+    path: "/login",
+    title: `Log In — ${SITE_NAME}`,
+    description: "Log in to your PsychedBox account to manage your subscription, view orders, and access exclusive content.",
+    noIndex: true,
+  },
+  {
+    path: "/signup",
+    title: `Sign Up — ${SITE_NAME}`,
+    description: "Create your PsychedBox account to subscribe, shop, and join the psychedelic art community.",
+    noIndex: true,
+  },
+  {
+    path: "/forgot-password",
+    title: `Forgot Password — ${SITE_NAME}`,
+    description: "Reset your PsychedBox account password. Enter your email and we'll send you a reset link.",
+    noIndex: true,
+  },
+  {
+    path: "/reset-password",
+    title: `Reset Password — ${SITE_NAME}`,
+    description: "Set a new password for your PsychedBox account.",
+    noIndex: true,
+  },
+  {
+    path: "/verify-email",
+    title: `Verify Email — ${SITE_NAME}`,
+    description: "Verify your email address to complete your PsychedBox account setup.",
+    noIndex: true,
+  },
+  {
     path: "/privacy-policy",
     title: `Privacy Policy — ${SITE_NAME}`,
     description: "Read PsychedBox's privacy policy to understand how we collect, use, and protect your personal information.",

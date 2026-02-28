@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNavbar from "@/components/SiteNavbar";
 import { useSEO } from "@/hooks/useSEO";
 import { useJsonLd } from "@/hooks/useJsonLd";
-import { getPostBySlug, blogPosts, type ContentBlock, type BlogPost as BlogPostType } from "@/data/blog-posts";
+import { type ContentBlock, type BlogPost as BlogPostType } from "@/data/blog-posts";
 import NotFound from "./NotFound";
 import axios from "axios";
 
@@ -62,10 +62,24 @@ function RenderBlock({ block }: { block: ContentBlock }) {
 // ─── Related Posts ───────────────────────────────────────────────────────────
 
 function RelatedPosts({ currentSlug, category }: { currentSlug: string; category: string }) {
-  const related = blogPosts
-    .filter((p) => p.slug !== currentSlug)
-    .filter((p) => p.category === category || p.tags.some((t) => blogPosts.find((bp) => bp.slug === currentSlug)?.tags.includes(t)))
-    .slice(0, 3);
+  const [related, setRelated] = useState<BlogPostType[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    axios
+      .get<{ posts: BlogPostType[] }>("/api/blog")
+      .then(({ data }) => {
+        if (!cancelled) {
+          const filtered = data.posts
+            .filter((p) => p.slug !== currentSlug)
+            .filter((p) => p.category === category)
+            .slice(0, 3);
+          setRelated(filtered);
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [currentSlug, category]);
 
   if (related.length === 0) return null;
 
@@ -96,11 +110,10 @@ function RelatedPosts({ currentSlug, category }: { currentSlug: string; category
 export default function BlogPost() {
   const [, params] = useRoute("/blog/:slug");
   const slug = params?.slug;
-  const localPost = slug ? getPostBySlug(slug) : undefined;
-  const [post, setPost] = useState<BlogPostType | undefined>(localPost);
-  const [loading, setLoading] = useState(!localPost && !!slug);
+  const [post, setPost] = useState<BlogPostType | undefined>(undefined);
+  const [loading, setLoading] = useState(!!slug);
 
-  // Try fetching from API; fall back to hardcoded data
+  // Fetch post from API
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
