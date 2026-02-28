@@ -219,3 +219,49 @@ ${button("Read the Full Post", postUrl)}`,
     </p>`
   );
 }
+
+/** Email verification email */
+export function emailVerificationEmail(
+  name: string,
+  verifyUrl: string,
+  siteUrl: string
+): string {
+  const displayName = name || "there";
+  return layout(
+    `<h2 style="margin:0 0 16px;font-size:22px;color:#1a1a1a;">Verify Your Email ✉️</h2>
+<p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#444;">
+  Hey ${escapeHtml(displayName)}, thanks for signing up! Please verify your email address by clicking the button below:
+</p>
+${button("Verify Email", verifyUrl)}
+<p style="margin:0 0 8px;font-size:14px;line-height:1.6;color:#888;">
+  This link expires in 24 hours. If you didn't create a PsychedBox account, you can safely ignore this email.
+</p>
+<p style="margin:0;font-size:12px;color:#aaa;word-break:break-all;">
+  Or paste this URL in your browser: ${escapeHtml(verifyUrl)}
+</p>`,
+    siteUrl
+  );
+}
+
+/** Password reset email */
+export function passwordResetEmail(
+  name: string,
+  resetUrl: string,
+  siteUrl: string
+): string {
+  const displayName = name || "there";
+  return layout(
+    `<h2 style="margin:0 0 16px;font-size:22px;color:#1a1a1a;">Reset Your Password 🔑</h2>
+<p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#444;">
+  Hey ${escapeHtml(displayName)}, we received a request to reset your password. Click the button below to choose a new one:
+</p>
+${button("Reset Password", resetUrl)}
+<p style="margin:0 0 8px;font-size:14px;line-height:1.6;color:#888;">
+  This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email — your password won't change.
+</p>
+<p style="margin:0;font-size:12px;color:#aaa;word-break:break-all;">
+  Or paste this URL in your browser: ${escapeHtml(resetUrl)}
+</p>`,
+    siteUrl
+  );
+}

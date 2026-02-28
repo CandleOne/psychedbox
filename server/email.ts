@@ -12,6 +12,8 @@ import {
   paymentFailedEmail,
   newsletterEmail,
   blogUpdateEmail,
+  passwordResetEmail,
+  emailVerificationEmail,
 } from "./email-templates.js";
 
 // ── Transporter (lazy-initialized) ──────────────────────────────────────────
@@ -126,6 +128,32 @@ export async function sendBlogUpdateEmail(
     to,
     `New Post: ${post.title}`,
     blogUpdateEmail(post, SITE_URL)
+  );
+}
+
+/** Send password reset email */
+export async function sendPasswordResetEmail(
+  to: string,
+  name: string,
+  resetUrl: string
+): Promise<boolean> {
+  return send(
+    to,
+    "Reset Your Password — PsychedBox",
+    passwordResetEmail(name, resetUrl, SITE_URL)
+  );
+}
+
+/** Send email verification email */
+export async function sendEmailVerificationEmail(
+  to: string,
+  name: string,
+  verifyUrl: string
+): Promise<boolean> {
+  return send(
+    to,
+    "Verify Your Email — PsychedBox",
+    emailVerificationEmail(name, verifyUrl, SITE_URL)
   );
 }
 

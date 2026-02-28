@@ -371,6 +371,12 @@ export function createAdminRouter(): Router {
       return res.status(403).json({ error: "Only SELECT and PRAGMA queries are allowed" });
     }
 
+    // Block access to sensitive tables/columns
+    const forbidden = /\bpassword\b|\bsessions\b|\bpassword_resets\b/i;
+    if (forbidden.test(sql)) {
+      return res.status(403).json({ error: "Access to sensitive columns/tables (password, sessions, password_resets) is restricted" });
+    }
+
     try {
       const rows = db.prepare(sql).all();
       res.json({ rows, count: rows.length });

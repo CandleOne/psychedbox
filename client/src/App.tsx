@@ -7,13 +7,11 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import CheckoutCancel from "./pages/CheckoutCancel";
-import CheckoutSuccess from "./pages/CheckoutSuccess";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
 import Home from "./pages/Home";
-import Pricing from "./pages/Pricing";
 import {
   AboutPage,
-  AccountPage,
   CareersPage,
   ContactPage,
   EventsPage,
@@ -31,24 +29,45 @@ import {
   TermsPage,
 } from "./pages/InfoPages";
 import Movement from "./pages/Movement";
-import ShopPage from "./pages/ShopPage";
-import BlogList from "./pages/BlogList";
-import BlogPost from "./pages/BlogPost";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import AdminPage from "./pages/AdminPage";
+
+// Lazy-loaded heavy pages (code splitting)
+const Pricing = lazy(() => import("./pages/Pricing"));
+const ShopPage = lazy(() => import("./pages/ShopPage"));
+const BlogList = lazy(() => import("./pages/BlogList"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignupPage = lazy(() => import("./pages/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
+const CheckoutCancel = lazy(() => import("./pages/CheckoutCancel"));
+
+function LazyFallback() {
+  return (
+    <div className="flex items-center justify-center py-32">
+      <Loader2 size={32} className="animate-spin text-gray-400" />
+    </div>
+  );
+}
 
 function Router() {
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/pricing"} component={Pricing} />
-      <Route path={"/checkout/success"} component={CheckoutSuccess} />
-      <Route path={"/checkout/cancel"} component={CheckoutCancel} />
-      <Route path={"/login"} component={LoginPage} />
-      <Route path={"/signup"} component={SignupPage} />
-      <Route path={"/account"} component={AccountPage} />
-      <Route path={"/admin"} component={AdminPage} />
+    <Suspense fallback={<LazyFallback />}>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/pricing"} component={Pricing} />
+        <Route path={"/checkout/success"} component={CheckoutSuccess} />
+        <Route path={"/checkout/cancel"} component={CheckoutCancel} />
+        <Route path={"/login"} component={LoginPage} />
+        <Route path={"/signup"} component={SignupPage} />
+        <Route path={"/forgot-password"} component={ForgotPasswordPage} />
+        <Route path={"/reset-password"} component={ResetPasswordPage} />
+        <Route path={"/verify-email"} component={VerifyEmailPage} />
+        <Route path={"/account"} component={AccountPage} />
+        <Route path={"/admin"} component={AdminPage} />
 
       <Route path={"/shop"} component={ShopPage} />
       <Route path={"/shop/monthly-boxes"} component={MonthlyBoxesPage} />
@@ -80,6 +99,7 @@ function Router() {
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
+    </Suspense>
   );
 }
 

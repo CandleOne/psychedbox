@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useSEO } from "@/hooks/useSEO";
 import { Link, useLocation } from "wouter";
-import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2, ExternalLink, Receipt, ShoppingBag } from "lucide-react";
+import { LogOut, Settings, Shield, Package, Truck, Star, Mail, Loader2, ExternalLink, Receipt, ShoppingBag, AlertTriangle, CheckCircle2, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface OrderItem {
@@ -34,11 +34,17 @@ export default function AccountPage() {
     canonical: "/account",
   });
 
-  const { user, loading, logout, isAdmin } = useAuth();
+  const { user, loading, logout, deleteAccount, isAdmin } = useAuth();
   const { manageSubscription, loading: portalLoading } = useCheckout();
   const [, navigate] = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -49,6 +55,31 @@ export default function AccountPage() {
       .catch(() => setOrders([]))
       .finally(() => setOrdersLoading(false));
   }, [user]);
+
+  async function handleResendVerification() {
+    setVerificationLoading(true);
+    try {
+      const res = await fetch("/api/auth/send-verification", { method: "POST", credentials: "include" });
+      if (res.ok) setVerificationSent(true);
+    } catch { /* ignore */ }
+    setVerificationLoading(false);
+  }
+
+  async function handleDeleteAccount() {
+    if (!deletePassword) {
+      setDeleteError("Enter your password to confirm.");
+      return;
+    }
+    setDeleteLoading(true);
+    setDeleteError("");
+    const result = await deleteAccount(deletePassword);
+    if (result.error) {
+      setDeleteError(result.error);
+      setDeleteLoading(false);
+    } else {
+      navigate("/");
+    }
+  }
 
   async function handleLogout() {
     await logout();
@@ -163,6 +194,33 @@ export default function AccountPage() {
               </div>
             </div>
           </div>
+
+          {/* Email verification banner */}
+          {!user.email_verified && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <AlertTriangle size={20} className="text-amber-600 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-amber-900 font-semibold text-sm">Email not verified</p>
+                <p className="text-amber-700 text-sm">
+                  Please verify your email address to secure your account.
+                </p>
+              </div>
+              {verificationSent ? (
+                <span className="inline-flex items-center gap-1 text-green-700 text-sm font-medium">
+                  <CheckCircle2 size={14} /> Sent!
+                </span>
+              ) : (
+                <button
+                  onClick={handleResendVerification}
+                  disabled={verificationLoading}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50"
+                >
+                  {verificationLoading ? <Loader2 size={14} className="animate-spin" /> : <Mail size={14} />}
+                  Resend Verification
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Quick actions grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -285,6 +343,59 @@ export default function AccountPage() {
                     )}
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Delete Account */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <h2 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+              <Trash2 size={18} className="text-red-500" />
+              Delete Account
+            </h2>
+            <p className="text-gray-500 text-sm mb-4">
+              Permanently delete your account and all associated data. This action cannot be undone.
+            </p>
+
+            {!deleteConfirm ? (
+              <button
+                onClick={() => setDeleteConfirm(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-red-300 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors"
+              >
+                <Trash2 size={14} />
+                Delete My Account
+              </button>
+            ) : (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-5 max-w-md">
+                <p className="text-red-800 text-sm font-semibold mb-3">
+                  Enter your password to confirm permanent deletion:
+                </p>
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder="Your password"
+                  className="w-full px-3 py-2 rounded-lg border border-red-300 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-400"
+                />
+                {deleteError && (
+                  <p className="text-red-600 text-sm mb-3">{deleteError}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={deleteLoading}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50"
+                  >
+                    {deleteLoading ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                    Permanently Delete
+                  </button>
+                  <button
+                    onClick={() => { setDeleteConfirm(false); setDeletePassword(""); setDeleteError(""); }}
+                    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             )}
           </div>

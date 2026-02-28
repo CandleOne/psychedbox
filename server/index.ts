@@ -3,6 +3,7 @@ import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 import { createPaymentRouter } from "./payments.js";
 import { createAuthRouter, authMiddleware } from "./auth.js";
 import { createAdminRouter } from "./admin.js";
@@ -26,6 +27,30 @@ async function startServer() {
     express.json()(req, res, next);
   });
   app.use(cookieParser());
+
+  // ── Rate limiting ──────────────────────────────────────────────────────
+  // Strict limiter for auth-sensitive routes (login, signup, forgot-password)
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 15,                  // 15 attempts per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many attempts. Please try again in a few minutes." },
+  });
+  app.use("/api/auth/login", authLimiter);
+  app.use("/api/auth/signup", authLimiter);
+  app.use("/api/auth/forgot-password", authLimiter);
+  app.use("/api/auth/reset-password", authLimiter);
+
+  // General API limiter (generous — catches abuse without affecting normal usage)
+  const apiLimiter = rateLimit({
+    windowMs: 60 * 1000,      // 1 minute
+    max: 120,                 // 120 requests per minute
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests. Please slow down." },
+  });
+  app.use("/api/", apiLimiter);
 
   // Auth middleware — attaches req.user on every request
   app.use(authMiddleware);

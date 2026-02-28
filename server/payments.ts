@@ -215,6 +215,18 @@ export function createPaymentRouter(): Router {
         });
       }
 
+      // Serialize cart items into metadata so the webhook can persist line items
+      const cartItemsMeta = items.map((ci) => {
+        const prod = SHOP_PRODUCTS.find((p) => p.id === ci.productId);
+        return {
+          id: ci.productId,
+          name: prod?.name ?? ci.productId,
+          variant: ci.variant || null,
+          quantity: Math.max(1, Math.min(ci.quantity || 1, 10)),
+          priceCents: prod?.price ?? 0,
+        };
+      });
+
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: lineItems,
@@ -223,6 +235,7 @@ export function createPaymentRouter(): Router {
         metadata: {
           source: "cart",
           itemCount: String(lineItems.length),
+          items: JSON.stringify(cartItemsMeta),
         },
       });
 
@@ -241,6 +254,13 @@ export function createPaymentRouter(): Router {
       const { customerId } = req.body as CreatePortalRequest;
       if (!customerId) {
         res.status(400).json({ error: "customerId is required" });
+        return;
+      }
+
+      // Verify the logged-in user owns this Stripe customer ID
+      const user = (req as any).user;
+      if (!user || user.stripe_customer_id !== customerId) {
+        res.status(403).json({ error: "You can only manage your own subscription" });
         return;
       }
 

@@ -17,6 +17,7 @@ export interface AuthUser {
   role: "user" | "admin";
   plan: string | null;
   stripe_customer_id: string | null;
+  email_verified: boolean;
   created_at: string;
 }
 
@@ -26,6 +27,7 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<{ error?: string }>;
   signup: (email: string, password: string, name?: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
+  deleteAccount: (password: string) => Promise<{ error?: string }>;
   refresh: () => Promise<void>;
   isAdmin: boolean;
 }
@@ -99,11 +101,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const deleteAccount = useCallback(async (password: string) => {
+    try {
+      const res = await fetch("/api/auth/account", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { error: data.error || "Failed to delete account" };
+      setUser(null);
+      return {};
+    } catch {
+      return { error: "Network error — please try again" };
+    }
+  }, []);
+
   const isAdmin = user?.role === "admin";
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, login, signup, logout, refresh, isAdmin }),
-    [user, loading, login, signup, logout, refresh, isAdmin]
+    () => ({ user, loading, login, signup, logout, deleteAccount, refresh, isAdmin }),
+    [user, loading, login, signup, logout, deleteAccount, refresh, isAdmin]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
