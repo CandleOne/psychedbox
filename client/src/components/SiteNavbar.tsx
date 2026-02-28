@@ -85,7 +85,7 @@ export default function SiteNavbar({ showAnnouncement = false }: { showAnnouncem
       )}
 
       <nav style={{ backgroundColor: "#1a1a1a" }} className="sticky top-0 z-50 w-full">
-        <div className="flex items-center justify-between px-4 py-3 max-w-screen-xl mx-auto">
+        <div className="flex items-center justify-between px-8 md:px-16 lg:px-24 py-3">
           <div className="flex items-center gap-3">
             {searchOpen ? (
               <div ref={searchRef} className="relative">
