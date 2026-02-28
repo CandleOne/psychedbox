@@ -98,6 +98,12 @@
   </url>
 
   <url>
+    <loc>https://psychedbox.com/blog/top-psychedelic-podcasts-changing-the-narrative</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://psychedbox.com/about/our-mission</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
