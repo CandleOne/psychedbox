@@ -46,6 +46,16 @@ function RenderBlock({ block }: { block: ContentBlock }) {
           <div className="flex-1 min-w-0">
             <h3 className="text-xl font-bold text-gray-900 mb-2">{block.title}</h3>
             <p className="text-gray-700 text-base leading-relaxed">{block.text}</p>
+            {block.link && (
+              <a
+                href={block.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-[#FF6B6B] hover:text-[#e55a5a] transition-colors"
+              >
+                {block.linkLabel || "Listen Now"} →
+              </a>
+            )}
           </div>
         </div>
       );

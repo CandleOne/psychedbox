@@ -52,6 +52,8 @@ const body = JSON.stringify([
     alt: "Psychedelics Today podcast logo",
     title: "1. Psychedelics Today",
     text: "Founded by Joe Moore and Kyle Buller, Psychedelics Today is one of the longest-running and most respected voices in the space. The show covers everything from cutting-edge clinical research and policy developments to personal healing narratives and integration strategies. With hundreds of episodes in its archive and guests ranging from leading neuroscientists to indigenous practitioners, it has become a go-to resource for anyone serious about understanding the psychedelic landscape. Their educational platform, Vital, extends the conversation into structured coursework and professional training.",
+    link: "https://psychedelicstoday.com",
+    linkLabel: "Visit Website",
   },
   {
     type: "image-text",
@@ -59,6 +61,8 @@ const body = JSON.stringify([
     alt: "Adventures Through The Mind podcast logo",
     title: "2. Adventures Through The Mind",
     text: "Hosted by author and speaker James W. Jesso, Adventures Through The Mind blends psychology, philosophy, and psychedelic experience into long-form, deeply reflective conversations. Jesso's interviewing style is intimate and exploratory — less news-driven, more soul-searching. Episodes often dive into trauma, relationships, altered states of consciousness, and the ethics of the psychedelic movement. If you prefer depth over breadth and genuine introspection over soundbites, this podcast is a perfect fit.",
+    link: "https://podcasts.apple.com/us/podcast/adventures-through-the-mind/id968927571",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -66,6 +70,8 @@ const body = JSON.stringify([
     alt: "Psychedelic Therapy Frontiers podcast logo",
     title: "3. Psychedelic Therapy Frontiers",
     text: "Produced by the team at Novamind, Psychedelic Therapy Frontiers is laser-focused on the clinical side of psychedelic-assisted therapy. Hosted by Dr. Steve Thayer and Dr. Reid Robison, the show breaks down complex research papers, discusses therapeutic protocols, and explores the practical realities of bringing psychedelic medicine into mainstream healthcare. It's an essential listen for clinicians, therapists, and anyone interested in the medical applications of psilocybin, MDMA, and ketamine.",
+    link: "https://podcasts.apple.com/us/podcast/psychedelic-therapy-frontiers/id1573959330",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -73,6 +79,8 @@ const body = JSON.stringify([
     alt: "The Psychedelic Podcast logo",
     title: "4. The Psychedelic Podcast",
     text: "From Third Wave, the organization dedicated to mainstream psychedelic education, The Psychedelic Podcast explores the intersection of psychedelics with leadership, creativity, and personal growth. Host Paul Austin brings a unique lens that bridges the worlds of microdosing, self-optimization, and conscious entrepreneurship. The show is particularly strong for listeners who are interested in how psychedelics can be integrated into professional and personal development rather than purely clinical contexts.",
+    link: "https://thethirdwave.co/podcast",
+    linkLabel: "Visit Website",
   },
   {
     type: "image-text",
@@ -80,6 +88,8 @@ const body = JSON.stringify([
     alt: "Business Trip podcast logo",
     title: "5. Business Trip",
     text: "Hosted by Greg Kubin and Matias Serebrinsky, Business Trip is indispensable for those keeping an eye on the business side of the psychedelic renaissance. The podcast takes an unflinching look at the emerging psychedelic industry — from biotech startups and venture capital to regulatory hurdles and ethical debates around commercialization. It doesn't shy away from hard questions: Who profits from psychedelics going mainstream? How do we protect indigenous knowledge? What happens when Wall Street meets ayahuasca? This is essential listening for investors, founders, and critical observers alike.",
+    link: "https://podcasts.apple.com/us/podcast/business-trip/id1520085146",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -87,6 +97,8 @@ const body = JSON.stringify([
     alt: "Inner Integration Podcast logo",
     title: "6. Inner Integration Podcast",
     text: "Integration is where the real work happens, and this podcast makes that abundantly clear. Hosted by psychedelic integration coach and educator Meredith Miller, the Inner Integration Podcast focuses on the often-overlooked period after a psychedelic experience — how to process, embody, and sustain the insights gained. Topics include shadow work, somatic practices, journaling techniques, and navigating difficult or challenging trips. It's a compassionate, grounded resource for anyone trying to make lasting meaning from their experiences.",
+    link: "https://podcasts.apple.com/us/podcast/inner-integration-podcast/id1418633395",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -94,6 +106,8 @@ const body = JSON.stringify([
     alt: "Mycopreneur podcast logo",
     title: "7. Mycopreneur",
     text: "Hosted by Dennis Walker, Mycopreneur sits at the crossroads of mycology, wellness, and entrepreneurship. This podcast dives into the world of functional and psychoactive mushrooms from a business and innovation perspective. Episodes cover everything from mushroom cultivation techniques and supplement science to brand building and the legal landscape around psilocybin. If you're curious about the booming fungal economy and the entrepreneurs driving it forward, Mycopreneur offers a unique niche that few other shows fill.",
+    link: "https://podcasts.apple.com/us/podcast/mycopreneur/id1550343391",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -101,6 +115,8 @@ const body = JSON.stringify([
     alt: "The Entheogenic Evolution podcast logo",
     title: "8. The Entheogenic Evolution",
     text: "Hosted by Martin W. Ball, The Entheogenic Evolution is one of the true OGs of psychedelic podcasting, holding space for these conversations long before the current renaissance made them trendy. The show covers entheogens — psychoactive substances used in spiritual contexts — with an emphasis on personal transformation, ceremony, and the broader counter-cultural significance of these experiences. Its extensive back catalog is a treasure trove for listeners who want to understand the roots of the modern psychedelic movement.",
+    link: "https://podcasts.apple.com/us/podcast/the-entheogenic-evolution/id272825477",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -108,6 +124,8 @@ const body = JSON.stringify([
     alt: "Webdelics Podcast logo",
     title: "9. Webdelics Podcast",
     text: "Hosted by Mark McNally, Chiara Burns, and Scott Mason, Webdelics brings a fresh, web-native energy to psychedelic discourse. The podcast explores psychedelic culture through the lens of digital communities, online harm reduction, and the evolving relationship between technology and altered states. It's a newer voice in the space but an important one — grappling with how the internet shapes psychedelic education, access, and misinformation. If you spend time in psychedelic subreddits, Discord servers, or online forums, this show speaks directly to your world.",
+    link: "https://podcasts.apple.com/us/podcast/webdelics-podcast/id1654755584",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "image-text",
@@ -115,6 +133,8 @@ const body = JSON.stringify([
     alt: "Divergent States podcast logo",
     title: "10. Divergent States",
     text: "Hosted by 3L1T3, founder of r/Psychonaut — the world's largest psychedelic harm-reduction community — and co-hosted by Bryan, a USMC veteran and advocate for psychedelic healing, Divergent States stands out for its commitment to amplifying underrepresented and diverse perspectives within the psychedelic space. The podcast tackles topics that many others overlook: racial equity in psychedelic medicine, queer experiences with entheogens, disability and neurodivergence, and the decolonization of plant medicine traditions. In a field that has historically centered certain voices, Divergent States is a much-needed corrective — thoughtful, inclusive, and unflinching in its honesty.",
+    link: "https://podcasts.apple.com/us/podcast/divergent-states/id1777650311",
+    linkLabel: "Listen on Apple Podcasts",
   },
   {
     type: "heading",
