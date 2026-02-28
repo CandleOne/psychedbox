@@ -165,21 +165,7 @@ const body = JSON.stringify([
     type: "paragraph",
     text: "The narrative is changing. These podcasters are helping write the next chapter. Hit subscribe, and join the conversation.",
   },
-  {
-    type: "list",
-    items: [
-      "Psychedelics Today — Deep research, policy, and healing narratives",
-      "Adventures Through The Mind — Philosophy, psychology, and introspection",
-      "Psychedelic Therapy Frontiers — Clinical research and therapeutic protocols",
-      "The Psychedelic Podcast — Personal growth, microdosing, and leadership",
-      "Business Trip — Industry analysis, ethics, and commercialization",
-      "Inner Integration Podcast — Post-experience processing and integration",
-      "Mycopreneur — Mushroom business, cultivation, and innovation",
-      "The Entheogenic Evolution — Ceremony, counter-culture, and spiritual use",
-      "Webdelics Podcast — Digital culture, online harm reduction, and community",
-      "Divergent States — Equity, inclusion, and decolonization in psychedelics",
-    ],
-  },
+
 ]);
 
 // Check for existing post with same slug

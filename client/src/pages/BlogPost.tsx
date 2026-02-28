@@ -45,17 +45,20 @@ function RenderBlock({ block }: { block: ContentBlock }) {
               loading="lazy"
             />
             {(block.spotifyUrl || block.appleUrl) && (
-              <div className="flex items-center justify-center gap-3 mt-2">
-                {block.spotifyUrl && (
-                  <a href={block.spotifyUrl} target="_blank" rel="noopener noreferrer" title="Listen on Spotify" className="opacity-70 hover:opacity-100 transition-opacity">
-                    <img src="/uploads/spotify-icon.png" alt="Spotify" className="w-5 h-5" />
-                  </a>
-                )}
-                {block.appleUrl && (
-                  <a href={block.appleUrl} target="_blank" rel="noopener noreferrer" title="Listen on Apple Podcasts" className="opacity-70 hover:opacity-100 transition-opacity">
-                    <img src="/uploads/apple-podcasts-icon.png" alt="Apple Podcasts" className="w-5 h-5" />
-                  </a>
-                )}
+              <div className="mt-3">
+                <div className="flex items-center justify-center gap-3">
+                  {block.spotifyUrl && (
+                    <a href={block.spotifyUrl} target="_blank" rel="noopener noreferrer" title="Listen on Spotify" className="opacity-70 hover:opacity-100 transition-opacity">
+                      <img src="/uploads/spotify-icon.png" alt="Spotify" className="w-8 h-8" />
+                    </a>
+                  )}
+                  {block.appleUrl && (
+                    <a href={block.appleUrl} target="_blank" rel="noopener noreferrer" title="Listen on Apple Podcasts" className="opacity-70 hover:opacity-100 transition-opacity">
+                      <img src="/uploads/apple-podcasts-icon.png" alt="Apple Podcasts" className="w-8 h-8" />
+                    </a>
+                  )}
+                </div>
+                <p className="text-[10px] text-gray-400 text-center mt-1 leading-tight">Listen on Spotify<br />and Apple Podcasts</p>
               </div>
             )}
           </div>
