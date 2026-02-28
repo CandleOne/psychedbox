@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    background: #1a1a1a;
+    font-family: 'DM Sans', 'Arial Black', Arial, sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Gradient overlay */
+  .bg-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 15% 80%, rgba(255,107,107,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 500px at 85% 20%, rgba(124,58,237,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(255,107,107,0.06) 0%, transparent 70%);
+  }
+
+  /* Thin coral border frame */
+  .frame {
+    position: absolute;
+    inset: 24px;
+    border: 2px solid rgba(255,107,107,0.25);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  .layout {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    z-index: 10;
+  }
+
+  /* Left content area */
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px 60px 64px;
+  }
+
+  .category {
+    font-size: 13px;
+    font-weight: 700;
+    color: #FF6B6B;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 40px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    max-width: 560px;
+  }
+
+  .title em {
+    color: #FF6B6B;
+    font-style: normal;
+  }
+
+  .divider {
+    width: 50px;
+    height: 3px;
+    background: #FF6B6B;
+    margin-bottom: 18px;
+    border-radius: 2px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    max-width: 480px;
+  }
+
+  .brand {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .brand-dot {
+    width: 6px;
+    height: 6px;
+    background: #FF6B6B;
+    border-radius: 50%;
+  }
+
+  /* Right side - podcast grid */
+  .right {
+    width: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 50px 50px 0;
+  }
+
+  .podcast-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 90px);
+    grid-template-rows: repeat(3, 90px);
+    gap: 12px;
+  }
+
+  .podcast-thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  .podcast-thumb:nth-child(1) { transform: rotate(-3deg); }
+  .podcast-thumb:nth-child(2) { transform: rotate(2deg); }
+  .podcast-thumb:nth-child(3) { transform: rotate(-1deg); }
+  .podcast-thumb:nth-child(4) { transform: rotate(1deg); }
+  .podcast-thumb:nth-child(5) { transform: rotate(-2deg) scale(1.05); border-color: rgba(255,107,107,0.4); }
+  .podcast-thumb:nth-child(6) { transform: rotate(3deg); }
+  .podcast-thumb:nth-child(7) { transform: rotate(2deg); }
+  .podcast-thumb:nth-child(8) { transform: rotate(-2deg); }
+  .podcast-thumb:nth-child(9) { transform: rotate(1deg); }
+
+  /* Floating headphone icon */
+  .icon-wrap {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    z-index: 20;
+  }
+
+  .icon-wrap svg {
+    width: 28px;
+    height: 28px;
+    opacity: 0.25;
+  }
+
+  /* Extra count badge */
+  .more-badge {
+    position: absolute;
+    bottom: 52px;
+    right: 52px;
+    background: rgba(255,107,107,0.9);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    z-index: 20;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="frame"></div>
+
+  <div class="layout">
+    <div class="left">
+      <div class="category">Art &amp; Culture</div>
+      <h1 class="title">Pushing the Digital Envelope: <em>Top Psychedelic Podcasts</em></h1>
+      <div class="divider"></div>
+      <p class="subtitle">How these 10 groundbreaking shows are changing the narrative around psychedelics in online spaces.</p>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-text">PsychedBox</span>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="podcast-grid">
+        <img class="podcast-thumb" src="../data/uploads/Psychedelics-Today---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Adventures-Through-The-Mind---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Psychedelic-Therapy-Frontiers---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/The-Psychedelic-Podcast---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Business-Trip---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Inner-Integration-Podcast---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Mycopreneur---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/The-Entheogenic-Evolution---Show.jpg" alt="" />
+        <img class="podcast-thumb" src="../data/uploads/Webdelics-Podcast---Show.jpg" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <div class="more-badge">+1 more</div>
+</body>
+</html>
