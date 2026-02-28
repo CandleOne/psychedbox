@@ -142,7 +142,7 @@ export default function Home() {
                 <img
                   src={latestPost.image}
                   alt={latestPost.imageAlt || latestPost.title}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-48 object-cover object-top"
                 />
                 <div className="p-6">
                   <p className="text-xs font-bold uppercase tracking-widest text-[#FF6B6B] mb-3">
