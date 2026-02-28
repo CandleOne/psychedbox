@@ -37,25 +37,31 @@ function RenderBlock({ block }: { block: ContentBlock }) {
     case "image-text":
       return (
         <div className="flex gap-5 my-8 items-start">
-          <img
-            src={block.src}
-            alt={block.alt}
-            className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover flex-shrink-0"
-            loading="lazy"
-          />
+          <div className="flex-shrink-0">
+            <img
+              src={block.src}
+              alt={block.alt}
+              className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover"
+              loading="lazy"
+            />
+            {(block.spotifyUrl || block.appleUrl) && (
+              <div className="flex items-center justify-center gap-3 mt-2">
+                {block.spotifyUrl && (
+                  <a href={block.spotifyUrl} target="_blank" rel="noopener noreferrer" title="Listen on Spotify" className="opacity-70 hover:opacity-100 transition-opacity">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify" className="w-5 h-5" />
+                  </a>
+                )}
+                {block.appleUrl && (
+                  <a href={block.appleUrl} target="_blank" rel="noopener noreferrer" title="Listen on Apple Podcasts" className="opacity-70 hover:opacity-100 transition-opacity">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Podcasts_%28iOS%29.svg" alt="Apple Podcasts" className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-xl font-bold text-gray-900 mb-2">{block.title}</h3>
             <p className="text-gray-700 text-base leading-relaxed">{block.text}</p>
-            {block.link && (
-              <a
-                href={block.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-[#FF6B6B] hover:text-[#e55a5a] transition-colors"
-              >
-                {block.linkLabel || "Listen Now"} →
-              </a>
-            )}
           </div>
         </div>
       );
