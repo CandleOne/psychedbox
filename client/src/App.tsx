@@ -29,7 +29,6 @@ import {
   TermsPage,
 } from "./pages/InfoPages";
 import Movement from "./pages/Movement";
-import FebPodcastBlog from "./pages/blog/FebPodcastBlog";
 
 // Lazy-loaded heavy pages (code splitting)
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -97,7 +96,6 @@ function Router() {
       <Route path={"/blog/:slug"} component={BlogPost} />
 
       <Route path={"/movement"} component={Movement} />
-      <Route path={"/blog/feb-2026-top-psychedelic-podcasts"} component={FebPodcastBlog} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
