@@ -110,7 +110,7 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-black/75" />
 
-        <div className="relative z-10 px-6 md:px-8 py-12 md:py-20 w-full max-w-7xl mx-auto">
+        <div className="relative z-10 px-8 md:px-16 lg:px-24 py-12 md:py-20 w-full">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-12">
             {/* Left — headline + CTA */}
             <div className="max-w-lg">
