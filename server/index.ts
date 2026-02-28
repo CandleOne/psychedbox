@@ -222,9 +222,10 @@ async function startServer() {
   setInterval(cleanupExpiredTokens, 6 * 60 * 60 * 1000); // every 6 hours
 
   const port = process.env.PORT || 3000;
+  const host = process.env.HOST || "0.0.0.0";
 
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  server.listen(Number(port), host, () => {
+    console.log(`Server running on http://${host}:${port}/`);
   });
 
   // ── Graceful shutdown ──────────────────────────────────────────────────
