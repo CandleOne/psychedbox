@@ -90,7 +90,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden min-h-[520px] flex items-center">
         <img
-          src="https://images.unsplash.com/photo-1604076913837-52ab5f0e2f20?w=1920&q=80&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?w=1920&q=80&auto=format&fit=crop"
           alt="Psychedelic puzzle pattern"
           className="absolute inset-0 w-full h-full object-cover"
         />
