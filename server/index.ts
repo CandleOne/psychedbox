@@ -157,11 +157,57 @@ async function startServer() {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 
+  // ── Global error-handling middleware ────────────────────────────────────
+  // Must be registered AFTER all routes (4-arg signature tells Express it's an error handler)
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error("[Server] Unhandled error:", err.stack || err.message || err);
+    if (!res.headersSent) {
+      res.status(err.status || 500).json({ error: "Internal server error" });
+    }
+  });
+
+  // ── Periodic cleanup: expired tokens ───────────────────────────────────
+  function cleanupExpiredTokens() {
+    try {
+      const pr = db.prepare("DELETE FROM password_resets WHERE expires_at < datetime('now')").run();
+      const ev = db.prepare("DELETE FROM email_verifications WHERE expires_at < datetime('now')").run();
+      if (pr.changes || ev.changes) {
+        console.log(`[Cleanup] Removed ${pr.changes} expired password resets, ${ev.changes} expired email verifications`);
+      }
+    } catch (err) {
+      console.error("[Cleanup] Token cleanup failed:", err);
+    }
+  }
+  cleanupExpiredTokens();
+  setInterval(cleanupExpiredTokens, 6 * 60 * 60 * 1000); // every 6 hours
+
   const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+
+  // ── Graceful shutdown ──────────────────────────────────────────────────
+  // On SIGTERM (Fly.io deploy) or SIGINT (Ctrl-C), close HTTP connections
+  // and the SQLite database cleanly before exiting.
+  function shutdown(signal: string) {
+    console.log(`\n[Server] ${signal} received — shutting down gracefully...`);
+    server.close(() => {
+      console.log("[Server] HTTP server closed");
+      try {
+        db.close();
+        console.log("[Server] Database closed");
+      } catch { /* already closed */ }
+      process.exit(0);
+    });
+    // Force exit after 10s if connections don't drain
+    setTimeout(() => {
+      console.warn("[Server] Forcing exit after timeout");
+      process.exit(1);
+    }, 10_000).unref();
+  }
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 startServer().catch(console.error);

@@ -1,0 +1,23 @@
+# Litestream configuration for continuous SQLite replication.
+# Replicates the PsychedBox database to an S3-compatible bucket.
+#
+# Required env vars (set as Fly.io secrets):
+#   LITESTREAM_ACCESS_KEY_ID
+#   LITESTREAM_SECRET_ACCESS_KEY
+#   LITESTREAM_BUCKET         (e.g. "psychedbox-backups")
+#   LITESTREAM_ENDPOINT       (e.g. "https://<account>.r2.cloudflarestorage.com" for R2)
+#   LITESTREAM_REGION         (e.g. "auto" for R2, "us-east-1" for S3)
+
+dbs:
+  - path: /app/data/psychedbox.db
+    replicas:
+      - type: s3
+        bucket: ${LITESTREAM_BUCKET}
+        path: psychedbox
+        endpoint: ${LITESTREAM_ENDPOINT}
+        region: ${LITESTREAM_REGION}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        retention: 72h
+        snapshot-interval: 1h
+        sync-interval: 1s

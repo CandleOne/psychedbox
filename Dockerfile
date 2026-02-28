@@ -23,6 +23,10 @@ RUN pnpm build
 # ── Production stage ──────────────────────────────────────────────────────────
 FROM node:24-slim AS production
 
+# Install Litestream for continuous SQLite backup
+ADD https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb /tmp/litestream.deb
+RUN dpkg -i /tmp/litestream.deb && rm /tmp/litestream.deb
+
 WORKDIR /app
 
 # Copy full node_modules with compiled native addons from build stage
@@ -32,6 +36,11 @@ COPY --from=build /app/package.json ./
 # Copy built output from build stage
 COPY --from=build /app/dist ./dist
 
+# Copy Litestream config and entrypoint
+COPY litestream.yml /etc/litestream.yml
+COPY run.sh /app/run.sh
+RUN chmod +x /app/run.sh
+
 # Create data directory for SQLite (persisted via Fly volume)
 RUN mkdir -p /app/data
 
@@ -40,4 +49,4 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+CMD ["/app/run.sh"]
