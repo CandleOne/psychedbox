@@ -486,142 +486,26 @@ export function MemberGalleryPage() {
   );
 }
 
-const communityStories = [
-  {
-    name: "Elena Vásquez",
-    role: "Integration Therapist & Author",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-    month: "February 2026",
-    category: "Healing",
-    excerpt: "I spent ten years in clinical psychology before I understood that healing isn't linear — it's recursive. My own journey with plant medicine showed me what my training couldn't: that transformation requires surrender, not control.",
-    readTime: "8 min read",
-  },
-  {
-    name: "Marcus Chen",
-    role: "Harm Reduction Advocate",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    month: "January 2026",
-    category: "Advocacy",
-    excerpt: "At my first festival, I watched someone have a crisis with no support around them. That moment changed my career. Now I run a team of fifty volunteers across twelve events a year.",
-    readTime: "6 min read",
-  },
-  {
-    name: "Amara Osei",
-    role: "Visual Artist & Muralist",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop",
-    month: "December 2025",
-    category: "Art",
-    excerpt: "My art lives in two worlds — the ancestral visions I carry from my grandmother's stories in Ghana and the expanded perceptions I've found through my own practice. I paint what the in-between looks like.",
-    readTime: "7 min read",
-  },
-  {
-    name: "Dr. James Whitfield",
-    role: "Psychedelic Researcher",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-    month: "November 2025",
-    category: "Research",
-    excerpt: "The data tells one story. The patients tell another. My work exists in the space between clinical rigor and lived experience — trying to build a bridge strong enough to carry both.",
-    readTime: "9 min read",
-  },
-  {
-    name: "Sage Running Deer",
-    role: "Indigenous Medicine Keeper",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
-    month: "October 2025",
-    category: "Tradition",
-    excerpt: "These plants were never ours to discover — they were always here, held by hands before ours. My work is about reminding people of that, and ensuring indigenous communities remain at the center of this conversation.",
-    readTime: "10 min read",
-  },
-  {
-    name: "Rafael Torres",
-    role: "Veterans Wellness Advocate",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-    month: "September 2025",
-    category: "Advocacy",
-    excerpt: "I came home from three deployments broken in ways the VA couldn't fix. Psychedelic therapy gave me my life back. Now I make sure other veterans know there's a path forward.",
-    readTime: "7 min read",
-  },
-];
-
 export function StoriesPage() {
   useSEO({
-    title: "Community Stories — Psychedelic Wellness & Personal Journeys",
-    description: "Read first-person stories from psychedelic community members featured in PsychedBox. Journeys of healing, advocacy, art, and transformation.",
+    title: "Community Stories — Coming Soon | PsychedBox",
+    description: "Community stories are coming soon to PsychedBox. Real stories from real people doing meaningful work in the psychedelic movement.",
     canonical: "/community/stories",
   });
 
-  const [category, setCategory] = useState<string>("All");
-  const categories = ["All", ...Array.from(new Set(communityStories.map(s => s.category)))];
-  const filtered = category === "All" ? communityStories : communityStories.filter(s => s.category === category);
-
   return (
     <PageShell eyebrow="Community" title="Stories" description="Every box tells a story. This is where those stories live — honest, human accounts from people doing meaningful work in the movement.">
-      {/* Subscriber Badge */}
-      <div style={{ backgroundColor: "#FFF5F5", borderColor: "#FF6B6B" }} className="rounded-xl border p-4 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <Star size={20} style={{ color: "#FF6B6B" }} className="flex-shrink-0 mt-0.5" />
-        <p className="text-gray-700 text-sm"><strong>Subscriber perk:</strong> Stories drop digitally to active subscribers the day each box ships — before they're published here.</p>
-      </div>
-
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-2 mb-10">
-        {categories.map(c => (
-          <button
-            key={c}
-            onClick={() => setCategory(c)}
-            style={category === c ? { backgroundColor: "#FF6B6B", color: "#fff" } : { backgroundColor: "#F3F4F6", color: "#374151" }}
-            className="px-4 py-2 rounded-full text-sm font-semibold transition-colors hover:opacity-90"
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
-      {/* Stories List */}
-      <div className="space-y-6 mb-16">
-        {filtered.map(story => (
-          <article key={story.name} className="rounded-xl border border-gray-200 bg-white overflow-hidden md:flex group">
-            <div className="md:w-56 md:flex-shrink-0 aspect-square md:aspect-auto overflow-hidden bg-gray-100">
-              <img
-                src={story.image}
-                alt={story.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-              />
-            </div>
-            <div className="p-6 flex-1 flex flex-col">
-              <div className="flex items-center gap-3 mb-2">
-                <span style={{ backgroundColor: "#FF6B6B" }} className="text-white text-xs font-bold px-2.5 py-0.5 rounded-full">{story.category}</span>
-                <span className="text-gray-400 text-xs">{story.month}</span>
-                <span className="text-gray-400 text-xs flex items-center gap-1"><Clock size={11} /> {story.readTime}</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-0.5">{story.name}</h3>
-              <p style={{ color: "#FF6B6B" }} className="text-sm font-semibold mb-3">{story.role}</p>
-              <p className="text-gray-600 text-sm leading-relaxed flex-1 italic">"{story.excerpt}"</p>
-              <div className="mt-4">
-                <button style={{ color: "#FF6B6B" }} className="text-sm font-bold hover:underline">Read Full Story →</button>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      {/* Nominate + Info */}
-      <div style={{ backgroundColor: "#F7F7F7" }} className="rounded-xl p-8 md:p-10 mb-10">
-        <div className="md:flex md:items-center md:justify-between">
-          <div className="mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Nominate someone</h2>
-            <p className="text-gray-600 max-w-lg">Know a community member whose story deserves to be told? Subscribers can nominate future featured members each month.</p>
-          </div>
-          <a href="mailto:stories@psychedbox.com" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity whitespace-nowrap">
-            <Mail size={16} /> Nominate Now
-          </a>
+      <div className="text-center py-20">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6" style={{ backgroundColor: "#FFF5F5" }}>
+          <BookOpen size={28} style={{ color: "#FF6B6B" }} />
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <InfoCard icon={BookOpen} title="Subscriber-First Access" description="Every story drops digitally to subscribers the day their box ships — before anything goes public." />
-        <InfoCard icon={Heart} title="Human-Centered" description="Stories are written with care and consent, centering the featured member's voice and experience." />
-        <InfoCard icon={Users} title="Community-Driven" description="Featured subjects are nominated by the community. Every member has a voice in who we spotlight next." />
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">Coming Soon</h2>
+        <p className="text-gray-600 max-w-md mx-auto mb-8">
+          We're gathering real stories from real people in the psychedelic wellness community. Check back soon — the first features are on their way.
+        </p>
+        <a href="mailto:stories@psychedbox.com" style={{ backgroundColor: "#FF6B6B" }} className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg text-white font-bold hover:opacity-90 transition-opacity">
+          <Mail size={16} /> Share Your Story
+        </a>
       </div>
     </PageShell>
   );
