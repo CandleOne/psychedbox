@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import * as Sentry from "@sentry/node";
 import { createPaymentRouter } from "./payments.js";
 import { createAuthRouter, authMiddleware } from "./auth.js";
 import { createAdminRouter } from "./admin.js";
@@ -14,6 +15,26 @@ import dotenv from "dotenv";
 
 // Load .env file
 dotenv.config();
+
+// ── Sentry error tracking ────────────────────────────────────────────────────
+// Initialize early so it can capture errors from the start.
+// Set SENTRY_DSN as a Fly.io secret to activate.
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || "development",
+    tracesSampleRate: 0.2,    // 20% of requests get performance traces
+    profilesSampleRate: 0.1,  // 10% of traced requests get profiles
+    beforeSend(event) {
+      // Scrub sensitive data from events
+      if (event.request?.cookies) delete event.request.cookies;
+      if (event.request?.headers?.["cookie"]) delete event.request.headers["cookie"];
+      if (event.request?.headers?.["authorization"]) delete event.request.headers["authorization"];
+      return event;
+    },
+  });
+  console.log("[Sentry] Server error tracking enabled");
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,12 +57,13 @@ async function startServer() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://cloud.umami.is"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://cloud.umami.is", "https://*.sentry.io", "https://browser.sentry-cdn.com"],
           styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
           imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://*.stripe.com", "blob:"],
           frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
-          connectSrc: ["'self'", "https://api.stripe.com", "https://cloud.umami.is"],
+          connectSrc: ["'self'", "https://api.stripe.com", "https://cloud.umami.is", "https://*.ingest.sentry.io"],
+          workerSrc: ["'self'", "blob:"],
         },
       },
       crossOriginEmbedderPolicy: false, // needed for external images
@@ -87,12 +109,25 @@ async function startServer() {
   // Public API routes (newsletter subscribe, public blog)
   app.use("/api", createPublicRouter());
 
-  // Health check endpoint (for Fly.io health checks)
+  // Health check endpoint (for Fly.io + external uptime monitors)
+  // Provides detailed status for monitoring dashboards.
+  const serverStartTime = Date.now();
   app.get("/api/health", (_req, res) => {
     try {
       // Quick DB check to ensure SQLite is responsive
       db.prepare("SELECT 1").get();
-      res.json({ status: "ok", timestamp: new Date().toISOString() });
+      const mem = process.memoryUsage();
+      res.json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        uptime: Math.floor((Date.now() - serverStartTime) / 1000),
+        memory: {
+          rss: Math.round(mem.rss / 1024 / 1024),
+          heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
+          heapTotal: Math.round(mem.heapTotal / 1024 / 1024),
+        },
+        version: process.env.npm_package_version || "unknown",
+      });
     } catch {
       res.status(503).json({ status: "error", message: "Database unavailable" });
     }
@@ -156,6 +191,11 @@ async function startServer() {
   app.get("*", (_req, res) => {
     res.sendFile(path.join(staticPath, "index.html"));
   });
+
+  // ── Sentry error handler (must be before custom error handler) ─────────
+  if (process.env.SENTRY_DSN) {
+    Sentry.setupExpressErrorHandler(app);
+  }
 
   // ── Global error-handling middleware ────────────────────────────────────
   // Must be registered AFTER all routes (4-arg signature tells Express it's an error handler)
