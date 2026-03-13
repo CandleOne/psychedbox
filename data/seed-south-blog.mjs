@@ -192,15 +192,6 @@ const body = JSON.stringify([
 
   {
     type: "subheading",
-    text: "Psychedelic Discussion & Integration Group",
-  },
-  {
-    type: "paragraph",
-    text: "This community-centered group provides a space for individuals to process and integrate psychedelic experiences in a supportive, non-judgmental setting. Integration — the practice of making sense of and applying insights from psychedelic experiences to everyday life — is increasingly recognized as a critical component of safe and effective psychedelic use. Groups like this fill a vital gap in the South, where access to psychedelic-informed therapists and clinicians is extremely limited.",
-  },
-
-  {
-    type: "subheading",
     text: "Birmingham Psychedelic Society",
   },
   {
