@@ -228,15 +228,6 @@ const body = JSON.stringify([
 
   {
     type: "subheading",
-    text: "PsyAtlanta",
-  },
-  {
-    type: "paragraph",
-    text: "PsyAtlanta is Atlanta's local psychedelic community hub, bringing together therapists, researchers, advocates, and curious community members for regular events, workshops, and discussions. As the largest city in the Southeast, Atlanta is a natural epicenter for psychedelic advocacy in the region, and PsyAtlanta plays a critical role in connecting the city's diverse population with evidence-based psychedelic education and harm reduction resources.",
-  },
-
-  {
-    type: "subheading",
     text: "Athens Psychedelic Society",
   },
   {
