@@ -17,12 +17,33 @@ function formatDate(iso: string) {
   });
 }
 
+// ─── Inline Link Parser ──────────────────────────────────────────────────────
+// Converts markdown-style [text](url) links in a string into React elements.
+
+function parseInlineLinks(text: string): (string | React.ReactElement)[] {
+  const parts: (string | React.ReactElement)[] = [];
+  const re = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+  let last = 0;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    parts.push(
+      <a key={match.index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-[#FF6B6B] underline hover:text-[#e05555]">
+        {match[1]}
+      </a>
+    );
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
 // ─── Content Block Renderer ──────────────────────────────────────────────────
 
 function RenderBlock({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case "paragraph":
-      return <p className="text-gray-700 text-lg leading-relaxed mb-6">{block.text}</p>;
+      return <p className="text-gray-700 text-lg leading-relaxed mb-6">{parseInlineLinks(block.text)}</p>;
     case "heading":
       return <h2 className="text-2xl font-bold text-gray-900 mt-10 mb-4">{block.text}</h2>;
     case "subheading":

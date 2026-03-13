@@ -133,7 +133,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "The Florida chapter of Decriminalize Nature works to decriminalize entheogenic plants and fungi across the state. Operating out of a statewide network, DN Florida educates communities about the therapeutic potential of plant medicines, advocates for policy reform at the municipal and state level, and connects Floridians with resources for safe and intentional use. Their work is particularly focused on building political will in a state with a large and diverse population that spans deep-red rural counties and progressive urban centers.",
+    text: "The Florida chapter of Decriminalize Nature works to decriminalize entheogenic plants and fungi across the state. Operating out of a statewide network, DN Florida educates communities about the therapeutic potential of plant medicines, advocates for policy reform at the municipal and state level, and connects Floridians with resources for safe and intentional use. Their work is particularly focused on building political will in a state with a large and diverse population that spans deep-red rural counties and progressive urban centers. Follow their work on [Instagram](https://www.instagram.com/decrimnaturefl).",
   },
 
   {
@@ -142,7 +142,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "Decriminalize Nature Georgia (DecriminalizeNatureGeorgia.org) has been a driving force behind the advocacy that made Georgia's legislative breakthroughs possible. The chapter focuses on community education, lobbying state legislators, and building coalitions with healthcare professionals and veterans' groups. Their work helped create the political environment in which bills like HB 382 and HB 717 could gain traction — and their continued advocacy is critical as HB 382 moves to the Senate.",
+    text: "Decriminalize Nature Georgia (DecriminalizeNatureGeorgia.org) has been a driving force behind the advocacy that made Georgia's legislative breakthroughs possible. The chapter focuses on community education, lobbying state legislators, and building coalitions with healthcare professionals and veterans' groups. Their work helped create the political environment in which bills like HB 382 and HB 717 could gain traction — and their continued advocacy is critical as HB 382 moves to the Senate. Follow their work on [Instagram](https://www.instagram.com/decriminalizenaturegeorgia).",
   },
 
   {
@@ -151,7 +151,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "The Baton Rouge chapter of Decriminalize Nature operates in one of Louisiana's most politically complex environments. Through community outreach, social media education, and partnership with local advocates, DN Baton Rouge is working to shift public perception around entheogenic plants and push for municipal-level decriminalization. You can connect with them on Instagram at @decrimnaturebr or via email at Decrimnaturebr@gmail.com.",
+    text: "The Baton Rouge chapter of Decriminalize Nature operates in one of Louisiana's most politically complex environments. Through community outreach, social media education, and partnership with local advocates, DN Baton Rouge is working to shift public perception around entheogenic plants and push for municipal-level decriminalization. You can connect with them on Instagram at @decrimnaturebr or via email at Decrimnaturebr@gmail.com. Follow their work on [Instagram](https://www.instagram.com/decriminalizenaturebatonrouge).",
   },
 
   {
@@ -160,7 +160,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "The Psychedelic Society of New Orleans serves as a hub for psychedelic education, harm reduction, and community building in one of the South's most culturally vibrant cities. The organization hosts regular meetups, discussion circles, and educational events that bring together people from all walks of life to explore the science, history, and personal dimensions of psychedelic experiences. In a city with deep roots in spiritual and ceremonial traditions, the Society provides a grounded, evidence-based complement to New Orleans' existing culture of consciousness exploration.",
+    text: "The Psychedelic Society of New Orleans serves as a hub for psychedelic education, harm reduction, and community building in one of the South's most culturally vibrant cities. The organization hosts regular meetups, discussion circles, and educational events that bring together people from all walks of life to explore the science, history, and personal dimensions of psychedelic experiences. In a city with deep roots in spiritual and ceremonial traditions, the Society provides a grounded, evidence-based complement to New Orleans' existing culture of consciousness exploration. Learn more at their [website](https://www.psychedelicsocietynola.com).",
   },
 
   {
@@ -169,7 +169,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "The Louisiana Psychedelic Society takes a statewide approach to advocacy and education. The organization focuses on connecting individuals across Louisiana who are interested in psychedelic science, therapy, integration, and policy reform. Through workshops, guest speaker events, and community networking, the LPS is building a coalition that can advocate for legislative change as the national reform movement gains momentum.",
+    text: "The Louisiana Psychedelic Society takes a statewide approach to advocacy and education. The organization focuses on connecting individuals across Louisiana who are interested in psychedelic science, therapy, integration, and policy reform. Through workshops, guest speaker events, and community networking, the LPS is building a coalition that can advocate for legislative change as the national reform movement gains momentum. Connect with them on [Facebook](https://www.facebook.com/share/1DD3BZ6MK7/).",
   },
 
   {
@@ -178,7 +178,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "People of TechnoColor is a collective that centers the experiences and leadership of people of color in the psychedelic space. Recognizing that communities of color have been disproportionately harmed by drug criminalization — and historically excluded from the emerging psychedelic wellness industry — People of TechnoColor creates spaces for BIPOC individuals to engage with psychedelic education, healing, and advocacy on their own terms. Their work is essential in ensuring that the psychedelic reform movement in the South is equitable and inclusive.",
+    text: "People of TechnoColor is a collective that centers the experiences and leadership of people of color in the psychedelic space. Recognizing that communities of color have been disproportionately harmed by drug criminalization — and historically excluded from the emerging psychedelic wellness industry — People of TechnoColor creates spaces for BIPOC individuals to engage with psychedelic education, healing, and advocacy on their own terms. Their work is essential in ensuring that the psychedelic reform movement in the South is equitable and inclusive. Connect with them on [Facebook](https://www.facebook.com/share/g/1CERkU3AGd/).",
   },
 
   {
@@ -187,7 +187,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "Operating on the Alabama Gulf Coast, the Mobile Bay Psychedelic Society provides a rare space for psychedelic community building in one of the most legally restrictive states in the nation. The Society hosts discussion groups, educational events, and integration circles — creating a supportive environment for people to explore psychedelic experiences safely and connect with others in a region where open conversation about these topics can carry real social risk.",
+    text: "Operating on the Alabama Gulf Coast, the Mobile Bay Psychedelic Society provides a rare space for psychedelic community building in one of the most legally restrictive states in the nation. The Society hosts discussion groups, educational events, and integration circles — creating a supportive environment for people to explore psychedelic experiences safely and connect with others in a region where open conversation about these topics can carry real social risk. Follow them on [Instagram](https://www.instagram.com/mobilebaypsychedelics).",
   },
 
   {
@@ -201,11 +201,20 @@ const body = JSON.stringify([
 
   {
     type: "subheading",
+    text: "Birmingham Psychedelic Society",
+  },
+  {
+    type: "paragraph",
+    text: "The Birmingham Psychedelic Society brings together advocates, educators, and community members across the Birmingham metro area to foster open dialogue about psychedelic science, therapy, and reform. The group complements the city's integration-focused community by providing a broader platform for education, networking, and political engagement in one of Alabama's most important urban centers. Connect with them on [Facebook](https://www.facebook.com/share/g/1A71JEsVHS/).",
+  },
+
+  {
+    type: "subheading",
     text: "Huntsville Psychedelic Society",
   },
   {
     type: "paragraph",
-    text: "Based in Huntsville, Alabama — a city better known for its aerospace industry and military installations — the Huntsville Psychedelic Society is building community around psychedelic education and advocacy in an unlikely but strategically important location. Huntsville's large veteran and defense-sector population makes it a natural target for conversations about psychedelic-assisted therapy for PTSD and depression, and the Society is working to bridge the gap between cutting-edge psychedelic research and local community needs.",
+    text: "Based in Huntsville, Alabama — a city better known for its aerospace industry and military installations — the Huntsville Psychedelic Society is building community around psychedelic education and advocacy in an unlikely but strategically important location. Huntsville's large veteran and defense-sector population makes it a natural target for conversations about psychedelic-assisted therapy for PTSD and depression, and the Society is working to bridge the gap between cutting-edge psychedelic research and local community needs. Follow them on [Instagram](https://www.instagram.com/huntsvillepsychedelicsociety).",
   },
 
   {
@@ -214,7 +223,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "Serving the northern reaches of the state, the North Georgia Community for Psychedelics and Transformation focuses on education, community support, and personal growth through responsible engagement with psychedelic experiences. The group serves as a regional anchor for Georgians outside of Atlanta who are interested in psychedelic science, integration, and the broader movement toward reform.",
+    text: "Serving the northern reaches of the state, the North Georgia Community for Psychedelics and Transformation focuses on education, community support, and personal growth through responsible engagement with psychedelic experiences. The group serves as a regional anchor for Georgians outside of Atlanta who are interested in psychedelic science, integration, and the broader movement toward reform. Find upcoming events on [Meetup](https://www.meetup.com/north-georgia-society-for-psychedelics-transformation/).",
   },
 
   {
@@ -228,11 +237,20 @@ const body = JSON.stringify([
 
   {
     type: "subheading",
+    text: "Athens Psychedelic Society",
+  },
+  {
+    type: "paragraph",
+    text: "The Athens Psychedelic Society serves the Athens, Georgia community \u2014 home to the University of Georgia and a thriving counterculture scene \u2014 with education, harm reduction resources, and community events centered on psychedelic science and advocacy. The Society provides a vital connection point for students, researchers, and community members interested in the growing body of evidence supporting psychedelic-assisted therapies. Follow them on [Instagram](https://www.instagram.com/athenspsychedelic).",
+  },
+
+  {
+    type: "subheading",
     text: "Tampa Bay Psychedelic, Inc.",
   },
   {
     type: "paragraph",
-    text: "Tampa Bay Psychedelic, Inc. is a nonprofit organization dedicated to psychedelic education, community building, and advocacy in the Tampa Bay region of Florida. The organization hosts regular events including speaker series, film screenings, and community discussions, and works to build support for psychedelic policy reform among Florida's Gulf Coast communities. Their nonprofit structure enables them to pursue grants and partnerships that sustain long-term advocacy work.",
+    text: "Tampa Bay Psychedelic, Inc. is a nonprofit organization dedicated to psychedelic education, community building, and advocacy in the Tampa Bay region of Florida. The organization hosts regular events including speaker series, film screenings, and community discussions, and works to build support for psychedelic policy reform among Florida's Gulf Coast communities. Their nonprofit structure enables them to pursue grants and partnerships that sustain long-term advocacy work. Follow them on [Instagram](https://www.instagram.com/tampabaypsychedelictribe).",
   },
 
   {
@@ -241,7 +259,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "Serving Florida's Space Coast — the Brevard County area known for Kennedy Space Center and a large military and aerospace workforce — the Space Coast Psychedelic Society provides education, community support, and harm reduction resources. Like Huntsville, the Space Coast's concentration of veterans and defense-sector workers creates a natural constituency for psychedelic-assisted therapy advocacy, and the Society is working to connect those communities with the latest research and resources.",
+    text: "Serving Florida's Space Coast — the Brevard County area known for Kennedy Space Center and a large military and aerospace workforce — the Space Coast Psychedelic Society provides education, community support, and harm reduction resources. Like Huntsville, the Space Coast's concentration of veterans and defense-sector workers creates a natural constituency for psychedelic-assisted therapy advocacy, and the Society is working to connect those communities with the latest research and resources. Follow them on [Instagram](https://www.instagram.com/spacecoastpsychedelicsociety).",
   },
 
   {
@@ -250,7 +268,7 @@ const body = JSON.stringify([
   },
   {
     type: "paragraph",
-    text: "The South Florida Psychedelic Society serves the Miami-Dade, Broward, and Palm Beach communities with psychedelic education, integration support, and advocacy. South Florida's diverse, international population and its proximity to Latin American and Caribbean traditions of plant medicine give the Society a unique cultural context. The group hosts regular meetups and educational events and works to build political support for psychedelic reform in one of the most densely populated regions in the Southeast.",
+    text: "The South Florida Psychedelic Society serves the Miami-Dade, Broward, and Palm Beach communities with psychedelic education, integration support, and advocacy. South Florida's diverse, international population and its proximity to Latin American and Caribbean traditions of plant medicine give the Society a unique cultural context. The group hosts regular meetups and educational events and works to build political support for psychedelic reform in one of the most densely populated regions in the Southeast. Connect with them on [Facebook](https://www.facebook.com/share/g/18GQJ1cAxH/).",
   },
 
   // ── VETERANS ───────────────────────────────────────────────────────────────
