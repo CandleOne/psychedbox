@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block legal/account pages from indexing
+Disallow: /privacy-policy
+Disallow: /terms-of-service
+Disallow: /account
+
+Sitemap: https://psychedbox.com/sitemap.xml
